@@ -50,7 +50,7 @@ axios.get('/update/DashboardRefresh/').then(function (response) {
                         </tr>
                         <tr className="fw-bold second-row bg-warning">
                           <th className="text-center" scope="col">Date</th>
-                          <th className="text-center" scope="col">Time</th>
+                          <th className="text-center" scope="col">Tim</th>
                         </tr>
                       </thead>
                       <tbody>
