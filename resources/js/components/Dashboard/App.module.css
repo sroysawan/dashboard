@@ -1,0 +1,27 @@
+
+.container {
+    display: flex;
+
+    gap: 10px;
+    gap: 10px 20px; /* row-gap column gap */
+    row-gap: 10px;
+    column-gap: 20px;
+  }
+
+.list-item{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: blue;
+    width: 80%;
+    height: 50%;
+    margin: 5px;
+    list-style: none;
+  }
+.trd{
+  background-color: blue;
+}
+
+.progress{
+  background-color: orange;
+}
