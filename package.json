@@ -35,6 +35,7 @@
         "react-blink-text": "^1.0.5",
         "react-bootstrap": "^2.4.0",
         "react-bootstrap-table": "^4.3.1",
+        "react-bs-datatable": "^3.6.1",
         "react-burger-menu": "^3.0.8",
         "react-color": "^2.19.3",
         "react-digital-clock": "^0.1.2",
