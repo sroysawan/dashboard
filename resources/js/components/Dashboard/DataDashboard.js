@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import DashboardRow from './DashboardRow';
-import styles from "./App.module.css";
-
+import { Pagination } from 'react-bootstrap';
 class DataDashboard extends Component{
   constructor(props) { //รับค่า props
     super(props); //ส่งค่า props
@@ -24,11 +23,17 @@ axios.get('/update/DashboardRefresh/').then(function (response) {
 });
 }
 
-
-
-    render(){
+    render() {
         return(
           <div className="card-body">
+           
+            <input
+        type="text"
+        className="form-control"
+        style={{width:"240px"}}
+        placeholder="Search"
+        onChange={(e) => setInput(e.target.value)}
+        />
              <div class="table-responsive">
                     <table id="datatablesSimple" className="table table-bordered table-striped">
                       <thead>

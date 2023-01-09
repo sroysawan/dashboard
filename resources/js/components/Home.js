@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import Navbars from "./Dashboard/Navbar/Navbars";
 import DashboardCard from "./Dashboard/DashboardCard";
+import Search from "./Dashboard/Bars/Search";
 
 class Home extends Component {
     render(){
@@ -9,6 +10,7 @@ class Home extends Component {
                 <div>
                     <Navbars />
                     <DashboardCard />
+                    {/* <Search /> */}
                 </div>
             </body>
         );

@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import Clock from "react-digital-clock";
 import DataDashboard from "./DataDashboard";
+import DataTable from "./DataTable";
 import Hide from "./Bars/Hide";
 import Search from "./Bars/Search";
 import Color from "./Bars/Color";
+import Dash from "./Dash";
 
-class DashboardCard extends Component {
-    render() {
+function DashboardCard() {
+   
         return (
             <div>
                 <header className="page-header page-header-dark pb-5"></header>
@@ -24,43 +26,16 @@ class DashboardCard extends Component {
                                 {/* <Search /> */}
                             </div>
                         </div>
-
-                        {/* <div className="d-flex">
-        <div className="p-2 flex-grow-1"><Hide /></div>
-        <div className="p-2"><Color /></div>
-        <div className="p-2"><Search /></div>
-      </div> */}
-
-                        {/* <div className="d-flex bg-light mb-3">
-        <div className="me-auto p-2"><Hide /></div>
-        <div className="p-2"><Color /></div>
-        <div className="p-2"><Search /></div>
-      </div> */}
-      
-                        {/* <div className="card-header text-black">
-                            <div className="d-flex justify-content-between">
-                                <Hide />
-                                <Color />
-                                <Search /> 
-                            </div>
-                        </div> */}
-
-
-                        
-{/* <div className="card-header text-black">
-<div className='grid'>
-<div className='g-col-4'><Hide /></div>
-      <div className='g-col-4'><Color /></div>
-      <div className='g-col-4'><Search /></div>
-    </div>
-    </div> */}
                         <DataDashboard />
-                        <Search />
+                        {/* <Dash /> */}
+                        {/* <Search /> */}
+                        <DataTable />
+                        
                     </div>
                 </div>
             </div>
         );
     }
-}
+
 
 export default DashboardCard;

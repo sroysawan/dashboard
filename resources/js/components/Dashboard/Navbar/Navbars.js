@@ -7,7 +7,7 @@ class Navbars extends Component{
       return(
 <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
   <Container fluid>
-    <Navbar.Brand href="/"><a class="navbar-brand ps-lg-2">Marjoratte</a></Navbar.Brand>
+    <Navbar.Brand href="/"><a class="navbar-brand ps-lg-2">Marjorette</a></Navbar.Brand>
     <Navbar.Toggle aria-controls="basic-navbar-nav" />
     <Navbar.Collapse id="basic-navbar-nav">
       <Nav className="me-auto">
