@@ -61,10 +61,10 @@ getUserdata();
               <thead>
                 <tr>
                   <th>Sr. No </th>
-                  <th>First Name</th>
-                  <th>Last Name</th>
-                  <th>Email</th>
-                  <th>Gender</th>
+                  <th>M/C</th>
+                  <th>Item Number</th>
+                  <th>Op.</th>
+                  <th>Color</th>
                 </tr>
               </thead>
               <tbody>
