@@ -1,18 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Container } from "react-bootstrap";
-import ProgressBar from 'react-bootstrap/ProgressBar';
-import { FaCommentsDollar, FaFlag } from "react-icons/Fa";
-import Blink from 'react-blink-text';
-import DashboardButton from './Buttons/DashboardButton';
-import DashboardButton2 from './Buttons/DashboardButton2';
-
-var frequency = 10000; // 10 seconds in miliseconds
-var interval_update = 0;
-
-var qty_accum;
-var percent;
-var run_time_open;
-var runtimes;
 
 function Searchdata()
 {

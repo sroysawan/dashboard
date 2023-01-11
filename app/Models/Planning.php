@@ -38,6 +38,7 @@ class Planning extends Model
         'run_time_std',
         'run_time_actual',
         'run_open_total',
+        'qty_per_pulse2',
     ];
     public $timestamps = false;
 }

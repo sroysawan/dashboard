@@ -476,6 +476,7 @@ class dashboardRefreshController extends Controller
     }
 
     //v4 runtime_actual = 0
+    //use it
     public function dashboardRefreshV5(){
         try{
             $machineId = MachineQueue::where('queue_number' ,'1')->get();

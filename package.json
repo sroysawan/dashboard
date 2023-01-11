@@ -38,6 +38,7 @@
         "react-bs-datatable": "^3.6.1",
         "react-burger-menu": "^3.0.8",
         "react-color": "^2.19.3",
+        "react-data-table-component": "^7.5.3",
         "react-digital-clock": "^0.1.2",
         "react-icons": "^4.4.0",
         "react-is": "16.8",
@@ -46,6 +47,6 @@
         "react-router-dom": "^6.3.0",
         "reactstrap": "^9.1.1",
         "startbootstrap-simple-sidebar": "^6.0.5",
-        "styled-components": "^5.0.0"
+        "styled-components": "^5.3.6"
     }
 }

@@ -6,6 +6,7 @@ import Hide from "./Bars/Hide";
 import Search from "./Bars/Search";
 import Color from "./Bars/Color";
 import Dash from "./Dash";
+import DashboardNow from "./DashboardNow";
 
 function DashboardCard() {
    
@@ -30,6 +31,7 @@ function DashboardCard() {
                         {/* <Dash /> */}
                         {/* <Search /> */}
                         <DataTable />
+                        <DashboardNow />
                         
                     </div>
                 </div>
