@@ -13,11 +13,12 @@ class DashboardButton extends Component{
             currentDashboardItemno: null,
             currentDashboardOp: null,
             currentDashboardDatedue: null,
+            // currentDashboardQtypertray: null,
             currentDashboardQtyaccum: null,
             currentDashboardQtyorder: null,
             currentDashboardQtypercent: null,
             currentDashboardIdtask: null,
-            currentDashboardIdjob: null,
+            // currentDashboardIdjob: null,
             currentDashboardDtupdate: null,
         }
     }
@@ -34,18 +35,17 @@ class DashboardButton extends Component{
                 currentDashboardItemno: response.data.item_no,
                 currentDashboardOp: response.data.operation,
                 currentDashboardDatedue: response.data.date_due,
+                // currentDashboardQtypertray: response.data.qty_per_tray,
                 currentDashboardQtyaccum: response.data.qty_accum,
                 currentDashboardQtyorder: response.data.qty_order,
                 currentDashboardQtypercent: response.data.qty_percent,
                 currentDashboardIdtask: response.data.id_task,
-                currentDashboardIdjob: response.data.id_job,
+                // currentDashboardIdjob: response.data.id_job,
                 currentDashboardDtupdate: response.data.datetime_update
             })
             console.log(response.data);
             // console.log(response.data[1]);
         })
-
-
     }
     
     render(){

@@ -23,16 +23,14 @@ function DashboardCard() {
                         <div className="card-header text-black">
                             <div className="d-flex justify-content-start">
                                 <Hide />
-                                <Color />
-                                {/* <Search /> */}
+                                <Color />                               
                             </div>
                         </div>
                         <DataDashboard />
                         {/* <Dash /> */}
                         {/* <Search /> */}
-                        <DataTable />
-                        <DashboardNow />
-                        
+                        {/* <DataTable /> */}
+                        {/* <DashboardNow /> */}
                     </div>
                 </div>
             </div>

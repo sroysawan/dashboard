@@ -6,7 +6,10 @@ class ViewModal extends Component{
         super(props);
     }
 
-    
+    goToOperation = () => {
+        location.href = '/operation'
+    }
+
     render(){  
         return(    
             <div className="modal fade" id={"viewModal"+this.props.modalId} tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -35,6 +38,10 @@ class ViewModal extends Component{
                                         <td>Date due:</td>
                                         <td>{this.props.sumResult.currentDashboardDatedue}</td>
                             </tr>
+                            {/* <tr>
+                                        <td>Qty per tray:</td>
+                                        <td>{this.props.sumResult.currentDashboardQtypertray}</td>    
+                            </tr>   */}
                             <tr>
                                         <td>Qty accum:</td>
                                         <td>{this.props.sumResult.currentDashboardQtyaccum}</td>    
@@ -51,10 +58,10 @@ class ViewModal extends Component{
                                         <td>Task ID:</td>
                                         <td>{this.props.sumResult.currentDashboardIdtask}</td>    
                             </tr>
-                            <tr>
+                            {/* <tr>
                                         <td>Job ID:</td>
                                         <td>{this.props.sumResult.currentDashboardIdjob}</td>    
-                            </tr>
+                            </tr> */}
                             <tr>
                                         <td>Last update:</td>
                                         <td>{this.props.sumResult.currentDashboardDtupdate}</td>    
@@ -70,18 +77,6 @@ class ViewModal extends Component{
                                     Change operation (เปลี่ยน Operation)
                                 </label>
                             </div>
-                            {/* <div class="form-check">
-                                <input class="form-check-input radioCurrentTask" type="radio" name="radioCurrentTask" id="radioForceStop" value="2"></input>
-                                <label class="form-check-label" for="radioForceStop">
-                                    Force stop
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input radioCurrentTask" type="radio" name="radioCurrentTask" id="radioComplete" value="3"></input>
-                                <label class="form-check-label" for="radioComplete">
-                                    Mark as complete
-                                </label>
-                            </div> */}
                             <div class="form-check">
                                 <input class="form-check-input radioCurrentTask" type="radio" name="radioCurrentTask" id="radioRemove" value="4"></input>
                                 <label class="form-check-label" for="radioRemove">
@@ -112,6 +107,13 @@ class ViewModal extends Component{
                 <div className="modal-footer">
                     <button type="button" 
                     className="btn btn-primary"
+                    onClick={''}
+                    >Edit
+                    </button>
+
+                    <button type="button" 
+                    className="btn btn-primary"
+                    onClick={this.goToOperation}
                     >Go!
                     </button>
                 </div>

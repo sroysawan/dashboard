@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { FaCommentsDollar, FaFlag } from "react-icons/Fa";
 import Blink from 'react-blink-text';

@@ -1,39 +1,62 @@
-import React, { Component } from 'react';
+import React, { Component, forEach } from 'react';
 import axios from 'axios';
 import DashboardRow from './DashboardRow';
 import { Pagination } from 'react-bootstrap';
+import { DataTable } from 'simple-datatables-classic';
+
+var tempData =[];
 class DataDashboard extends Component{
   constructor(props) { //รับค่า props
     super(props); //ส่งค่า props
     this.state = {
+      searchValue : "",
       DashboardRefresh : [],
+      TempDashboardRefresh : [],
     }
 }
 
-componentDidMount() {
+componentDidMount = () => {
  this.getDashboardRefresh();
 }
 
 getDashboardRefresh = () => {
-let self = this;
+let self = Object.entries.this;
 axios.get('/update/DashboardRefresh/').then(function (response) {
+  console.log(response.data);
     self.setState({                                                                                                                                                                                                                                                                                                                       
-      DashboardRefresh: response.data
+      DashboardRefresh: response.data,
+      TempDashboardRefresh:response.data
     });
 });
 }
 
+setInput = (event) => {
+  this.state.TempDashboardRefresh.map((x, index) => {
+    // console.log(x.operation);
+    if(x.operation.toLowerCase().includes(event.target.value.toLowerCase())|| x.id_machine.toLowerCase().includes(event.target.value.toLowerCase()) ||x.item_no.toLowerCase().includes(event.target.value.toLowerCase())){
+      tempData.push(x);
+      this.setState({searchValue:event.target.value,
+        DashboardRefresh:tempData});
+    }
+    else if(event.target.value === "" ){
+      this.setState({DashboardRefresh:TempDashboardRefresh,
+        searchValue:event.target.value,});
+    }
+    })
+  tempData=[];
+}
+  
     render() {
         return(
-          <div className="card-body">
-           
-            <input
-        type="text"
-        className="form-control"
-        style={{width:"240px"}}
-        placeholder="Search"
-        onChange={(e) => setInput(e.target.value)}
-        />
+           <div className="card-body">
+             <input
+               type="text"
+               className="form-control"
+               style={{width:"240px"}}
+               placeholder="Search"
+               onChange={this.setInput}
+          />
+
              <div class="table-responsive">
                     <table id="datatablesSimple" className="table table-bordered table-striped">
                       <thead>
@@ -66,8 +89,8 @@ axios.get('/update/DashboardRefresh/').then(function (response) {
                   })}            
                       </tbody>
                     </table>
-                  </div>
-                </div>
+                   </div>
+                 </div>
     );
   }
 }
