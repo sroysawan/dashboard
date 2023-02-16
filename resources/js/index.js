@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Home from './components/Home';
 import Operation from './components/Operation';
+import NewTask from './components/NewTask';
 import { DataTable } from 'simple-datatables-classic';
 
 
@@ -11,6 +12,10 @@ if (document.getElementById('dashboard')) {
 
 if (document.getElementById('operation')) {
     ReactDOM.render(<Operation />, document.getElementById('operation'));
+}
+
+if (document.getElementById('newtask')) {
+    ReactDOM.render(<NewTask />, document.getElementById('newtask'));
 }
 
 // window.addEventListener('DOMContentLoaded', event => {

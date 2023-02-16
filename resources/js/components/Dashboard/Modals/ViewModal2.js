@@ -35,6 +35,10 @@ class ViewModal2 extends Component{
                                         <td>{this.props.sumResult.currentDashboardDatedue}</td>
                             </tr>
                             <tr>
+                                        <td>Qty per tray:</td>
+                                        <td>{this.props.sumResult.currentDashboardQtypertray}</td>    
+                            </tr> 
+                            <tr>
                                         <td>Qty accum:</td>
                                         <td>{this.props.sumResult.currentDashboardQtyaccum}</td>    
                             </tr>   
@@ -66,19 +70,19 @@ class ViewModal2 extends Component{
                             <div class="form-check">
                                 <input class="form-check-input radioNextTask" type="radio" name="radioNextTask" id="radioNextChangeOp" value="1"></input>
                                 <label class="form-check-label" for="radioNextChangeOp">
-                                    Change operation
+                                Change operation (เปลี่ยน Operation)
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input radioNextTask" type="radio" name="radioNextTask" id="radioNextRemove" value="4"></input>
                                 <label class="form-check-label" for="radioNextRemove">
-                                    Remove this task
+                                Remove this task (เอางานออก)
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input radioNextTask" type="radio" name="radioNextTask" id="radioNextNewTask" value="6"></input>
                                 <label class="form-check-label" for="radioNextNewTask">
-                                    Select a new task
+                                Select a new task (เพิ่มงานถัดไป)
                                 </label>
                             </div>
                         </div>

@@ -4,7 +4,9 @@ class ViewModal extends Component{
 
     constructor(props){
         super(props);
+        
     }
+    
 
     goToOperation = () => {
         location.href = '/operation'
@@ -38,10 +40,10 @@ class ViewModal extends Component{
                                         <td>Date due:</td>
                                         <td>{this.props.sumResult.currentDashboardDatedue}</td>
                             </tr>
-                            {/* <tr>
+                            <tr>
                                         <td>Qty per tray:</td>
                                         <td>{this.props.sumResult.currentDashboardQtypertray}</td>    
-                            </tr>   */}
+                            </tr>  
                             <tr>
                                         <td>Qty accum:</td>
                                         <td>{this.props.sumResult.currentDashboardQtyaccum}</td>    
@@ -58,10 +60,6 @@ class ViewModal extends Component{
                                         <td>Task ID:</td>
                                         <td>{this.props.sumResult.currentDashboardIdtask}</td>    
                             </tr>
-                            {/* <tr>
-                                        <td>Job ID:</td>
-                                        <td>{this.props.sumResult.currentDashboardIdjob}</td>    
-                            </tr> */}
                             <tr>
                                         <td>Last update:</td>
                                         <td>{this.props.sumResult.currentDashboardDtupdate}</td>    
@@ -78,25 +76,25 @@ class ViewModal extends Component{
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input radioCurrentTask" type="radio" name="radioCurrentTask" id="radioRemove" value="4"></input>
+                                <input class="form-check-input radioCurrentTask" type="radio" name="radioCurrentTask" id="radioRemove" value="2"></input>
                                 <label class="form-check-label" for="radioRemove">
                                     Remove this task (เอางานออก)
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input radioCurrentTask" type="radio" name="radioCurrentTask" id="radioNextQueue" value="5"></input>
+                                <input class="form-check-input radioCurrentTask" type="radio" name="radioCurrentTask" id="radioNextQueue" value="3"></input>
                                 <label class="form-check-label" for="radioNextQueue">
                                     Feed task from next queue (ดึงงานจากคิวถัดไป)
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input radioCurrentTask" type="radio" name="radioCurrentTask" id="radioNewTask" value="6"></input>
+                                <input class="form-check-input radioCurrentTask" type="radio" name="radioCurrentTask" id="radioNewTask" value="4"></input>
                                 <label class="form-check-label" for="radioNewTask">
                                     Select a new task (เพิ่มงานใหม่)
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input radioCurrentTask" type="radio" name="radioCurrentTask" id="radioResetActivity" value="7"></input>
+                                <input class="form-check-input radioCurrentTask" type="radio" name="radioCurrentTask" id="radioResetActivity" value="5"></input>
                                 <label class="form-check-label" for="radioResetActivity">
                                     Reset activity (รีเซ็ตงาน)
                                 </label>

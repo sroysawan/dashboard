@@ -23,6 +23,8 @@ class DashboardRow extends Component {
     }
 
     componentDidMount=() =>{
+        //console.log(this.props.data.run_time_std);
+        //console.log(this.props.data.qty_per_pulse2);
         this.getRuntimecolor(this.props.data.run_time_actual,this.props.data.run_time_std,this.props.data.status_work);
     }
 
@@ -46,6 +48,12 @@ class DashboardRow extends Component {
         if ((id_code_downtime !== "-") && !(status_work === 0 || status_work==3 || status_work==5 || status_work==6)) return this.props.data.id_code_downtime;
         else return '';
     }
+
+    // getDowntime = (status_work) =>{    
+    //     if (status_work==4) return this.props.data.id_code_downtime;
+    //     else return '';
+    // }
+    
     // getNAruntime = (status_work,run_time_actual) =>{
     //     if (status_work === 0 || status_work==3 || status_work==5 || status_work==6) 
     //     return run_time_actual = 'N/A';
@@ -63,14 +71,24 @@ class DashboardRow extends Component {
     //Qty accum/Qty order
     getAccum = (qty_complete,qty_process,divider,qty_repeat) =>{           
         qty_accum = qty_complete + Math.floor(qty_process*divider);
-        qty_accum = qty_accum-qty_repeat;
-        return qty_accum;
+        //qty_accum = qty_accum-qty_repeat;  //ไม่มี repeat ใน new db ********
+        if (divider == '' ){
+            return '';
+        }else{
+            //console.log(qty_accum);
+            return qty_accum;
+        }
     }
 
     //Progress
     getPercent = (qty_order) =>{ 
         percent = Math.round(qty_accum/qty_order*100);
-        return percent;
+        if (qty_order == '' ){
+            return '';
+        }else{
+            //console.log(percent);
+            return percent;
+        }
     }
     getBlinkProgress = (qty_order) =>{
         if (qty_order - qty_accum <= 500){
@@ -118,6 +136,7 @@ class DashboardRow extends Component {
 
     //Total Open Run Time
     getTotal = (qty_order,run_time_std) =>{
+    run_time_std = parseInt(run_time_std);
     run_time_open = ((qty_order-qty_accum)*run_time_std);
     const seconds_of_a_day = 86400;
     var run_time_open_temp;
@@ -142,7 +161,8 @@ class DashboardRow extends Component {
     }
 
     //Estimated finish
-    getEsDateTime = (qty_order,run_time_std) =>{
+    getEsDateTime = (qty_order,run_time_std,run_time_actual) =>{
+        run_time_std = parseInt(run_time_std);
         run_time_open = ((qty_order-qty_accum)*run_time_std);
         const seconds_of_a_day = 86400;
         var run_time_open_temp;
@@ -271,16 +291,17 @@ class DashboardRow extends Component {
                 <td><DashboardButton eachRowId= {this.props.data.id_machine}/>{ this.props.data.item_no }</td>                
                 <td>{ this.props.data.operation }</td>  
                 <td>{ this.props.data.op_color }</td>
-                <td>{ this.props.data.op_side }</td>                                        
-                <td>{ this.getformatDate(this.props.data.date_due) }</td>
-                <td>{ this.props.data.qty_per_tray }</td>
-                <td>{ this.getAccum(this.props.data.qty_complete,this.props.data.qty_process,this.props.data.divider,this.props.data.qty_repeat) } / { this.props.data.qty_order }</td> 
+                <td>{ this.props.data.op_side }</td>          
+                <td>{ this.props.data.date_due }</td>                              
+                {/* <td>{ this.getformatDate(this.props.data.date_due) }</td> */}
+                <td>{ this.props.data.qty_per_pulse2 }</td>
+                <td>{ this.getAccum(this.props.data.qty_complete,this.props.data.qty_process,this.props.data.divider) } / { this.props.data.qty_order }</td> 
                 <td>{this.getBlinkProgress(this.props.data.qty_order)}</td>
                 {/* <td>{ this.getFlagcolor(this.props.data.run_time_actual,this.props.data.run_time_std)}{this.getRuntime(this.props.data.run_time_actual,this.props.data.run_time_std)} </td>  */}
                 <td style={{ color: this.state.ColorRuntime}}>{ this.getFlagcolor(this.props.data.run_time_actual,this.props.data.run_time_std,this.props.data.status_work)}{this.getRuntime(this.props.data.run_time_actual,this.props.data.run_time_std,this.props.data.status_work)} </td>                  
-                <td>{ this.getTotal(this.props.data.qty_order,this.props.data.run_time_std) }</td>    
-                <td>{ this.getEsDateTime(this.props.data.qty_order,this.props.data.run_time_std)[0] }</td>  
-                <td>{ this.getEsDateTime(this.props.data.qty_order,this.props.data.run_time_std)[1] }</td> 
+                <td>{ this.getTotal(this.props.data['qty_order'],this.props.data['run_time_std']) }</td>    
+                <td>{ this.getEsDateTime(this.props.data['qty_order'],this.props.data['run_time_std'])[0] }</td>  
+                <td>{ this.getEsDateTime(this.props.data['qty_order'],this.props.data['run_time_std'])[1] }</td> 
                 <td><DashboardButton2 eachRowId= {this.props.data.id_machine}/>{ this.getItem_2(this.props.data.item_no_2) }</td> 
                 <td>{ this.getOp_2(this.props.data.operation_2) }</td>           
             </tr>

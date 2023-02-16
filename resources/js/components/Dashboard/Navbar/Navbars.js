@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Container} from 'react-bootstrap';
+//import LogoImg from './resources/js/assets/logo.png';
 
 class Navbars extends Component{
 
@@ -9,9 +10,11 @@ class Navbars extends Component{
 }
     render(){  
       return(
-<Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+<Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" >
   <Container fluid>
-    <Navbar.Brand href="/dashboard"><a class="navbar-brand ps-lg-2">Marjorette</a></Navbar.Brand>
+    <Navbar.Brand href="/dashboard"><a class="navbar-brand ps-lg-2">Marjorette
+    {/* <Logo src={LogoImg}></Logo> */}
+    </a></Navbar.Brand>
     <Navbar.Toggle aria-controls="basic-navbar-nav" />
     <Navbar.Collapse id="basic-navbar-nav">
       <Nav className="me-auto">

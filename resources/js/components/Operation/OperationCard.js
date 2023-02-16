@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Clock from "react-digital-clock";
-import DataOperation from "./DataOperation";
+import ChangeOperation from "./ChangeOperation";
 
 
 function OperationCard() {
@@ -19,7 +19,7 @@ function OperationCard() {
 
                         <div className="card-header text-black">
                             <div className="d-flex justify-content-start">
-                             <DataOperation />
+                             <ChangeOperation />
                             </div>
                         </div>
 

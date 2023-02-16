@@ -5,6 +5,7 @@ import { Pagination } from 'react-bootstrap';
 import { DataTable } from 'simple-datatables-classic';
 
 var tempData =[];
+var dataOnDashboard;
 class DataDashboard extends Component{
   constructor(props) { //รับค่า props
     super(props); //ส่งค่า props
@@ -16,17 +17,19 @@ class DataDashboard extends Component{
 }
 
 componentDidMount = () => {
- this.getDashboardRefresh();
+  this.getDashboardRefresh();
 }
 
 getDashboardRefresh = () => {
-let self = Object.entries.this;
+let self = this;
 axios.get('/update/DashboardRefresh/').then(function (response) {
   console.log(response.data);
     self.setState({                                                                                                                                                                                                                                                                                                                       
-      DashboardRefresh: response.data,
-      TempDashboardRefresh:response.data
+      DashboardRefresh: Object.values(response.data),
+      TempDashboardRefresh:Object.values(response.data)
     });
+    console.log(Object.values(response.data));
+    //console.log(response.data);
 });
 }
 
@@ -48,12 +51,13 @@ setInput = (event) => {
   
     render() {
         return(
+          
            <div className="card-body">
              <input
                type="text"
                className="form-control"
                style={{width:"240px"}}
-               placeholder="Search"
+               placeholder="Search M/C ItemNo Op Color Side"
                onChange={this.setInput}
           />
 
