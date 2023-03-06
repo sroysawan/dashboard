@@ -9,7 +9,6 @@ import Dash from "./Dash";
 import DashboardNow from "./DashboardNow";
 
 function DashboardCard() {
-   
         return (
             <div>
                 <header className="page-header page-header-dark pb-5"></header>

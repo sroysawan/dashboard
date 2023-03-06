@@ -1,16 +1,66 @@
 import React, { Component } from 'react';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel  from '@material-ui/core/FormControlLabel';
+import UpdateModal from './UpdateModal';
 
 class ViewModal extends Component{
 
     constructor(props){
         super(props);
-        
+        this.state = {
+            currentDashboardIdmc: null,
+            currentDashboardItemno: null,
+            currentDashboardOp: null,
+            currentDashboardDatedue: null,
+            currentDashboardQtypertray: null,
+            currentDashboardQtyaccum: null,
+            currentDashboardQtyorder: null,
+            currentDashboardQtypercent: null,
+            currentDashboardIdtask: null,
+            currentDashboardDtupdate: null,
+            radioCurrentTask: '',
+            radioChecked: '',
+        }
     }
-    
 
+    getDashboardDetailsNewDB = (id_machine) => {
+        console.log(id_machine);
+        axios.get('/get/indivvidual/dashboard/detailsNew',{ params: { dashboardID: id_machine } }
+        ).then((response) => {
+        console.log(response.data);
+        this.setState({
+            currentDashboardIdmc: response.data.id_machine,
+            currentDashboardItemno: response.data.item_no,
+            currentDashboardOp: response.data.operation,
+            currentDashboardDatedue: response.data.date_due,
+            currentDashboardQtypertray: response.data.qty_per_pulse2,
+            currentDashboardQtyaccum: response.data.qty_accum,
+            currentDashboardQtyorder: response.data.qty_order,
+            currentDashboardQtypercent: response.data.qty_percent,
+            currentDashboardIdtask: response.data.id_task,
+            currentDashboardDtupdate: response.data.datetime_update
+        })
+    })
+}
+
+  
     goToOperation = () => {
         location.href = '/operation'
     }
+
+    radioCurrentTask = (e) =>{
+        console.log(e.target.value);
+        
+    }
+
+    radioChecked = (e) =>{
+        if(this.radioCurrentTask == 1)
+        return location.href = '/operation'
+        //console.log(e.target.value);
+        console.log(this.radioChecked);
+    }
+
 
     render(){  
         return(    
@@ -68,7 +118,7 @@ class ViewModal extends Component{
                     </table>
                     <br/>
                     <h5>Action: </h5>
-                    <div class="mb-3">
+                    <div class="mb-3" onChange={this.radioCurrentTask}>
                             <div class="form-check">
                                 <input class="form-check-input radioCurrentTask" type="radio" name="radioCurrentTask" id="radioChangeOp" value="1"></input>
                                 <label class="form-check-label" for="radioChangeOp">
@@ -103,15 +153,23 @@ class ViewModal extends Component{
                 </div>
                 
                 <div className="modal-footer">
-                    <button type="button" 
+                <button type="button" 
+                className="btn btn-primary"
+                data-bs-toggle="modal" 
+                data-bs-target={'#updateModal'+this.props.eachRowId}
+                onClick={ () => { this.getDashboardDetailsNewDB(this.props.eachRowId)}}
+                >Edit</button>
+                {/* <UpdateModal modalId={this.props.eachRowId} sumResult= {this.state}/> */}
+
+                    {/* <button type="button" 
                     className="btn btn-primary"
-                    onClick={''}
-                    >Edit
-                    </button>
+                    onClick={this.goToOperation}
+                    >Go!
+                    </button> */}
 
                     <button type="button" 
                     className="btn btn-primary"
-                    onClick={this.goToOperation}
+                    onClick={ () => {this.radioChecked(this.props.radioCurrentTask)} }
                     >Go!
                     </button>
                 </div>

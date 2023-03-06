@@ -42,7 +42,7 @@ class OperationRow extends Component {
                 <td>{ this.props.data.machine }</td>  
                 <td>{ this.props.data.operation }</td>  
                 <td>{ this.props.data.op_color }</td>  
-                <td>{ this.props.data.op_side }</td>  
+                <td>{ this.props.data.op_side }</td> 
                 <td>{ this.getQtyComp(this.props.data.qty_complete,this.props.data.qty_process,this.props.data.divider) } / { this.props.data.qty_order }</td>  
                 <td>{ this.props.data.qty_open }</td>  
                 <td>{ this.props.data.date_due }</td>  

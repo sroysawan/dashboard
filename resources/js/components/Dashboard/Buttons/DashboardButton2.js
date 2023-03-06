@@ -27,11 +27,12 @@ class DashboardButton2 extends Component{
     //Getting Indivvidual Dashboard data
     getDashboardDetails = (id_machine) => {
         console.log(id_machine);
-        axios.get('/update/DashboardRefreshQueue2/',{
-            dashboardID: id_machine
-        }).then((response) => {
+        axios.get('/update/DashboardRefreshQueue2/',{ params: { dashboardID: id_machine } }
+        ).then((response) => {
+            console.log(response.data);
             for(var i=0 ; i<response.data.length ; i++){
                 if(response.data[i].id_machine == id_machine){
+                    console.log("123");
                     this.setState({
                         currentDashboardIdmc: response.data[i].id_machine,
                         currentDashboardItemno: response.data[i].item_no,

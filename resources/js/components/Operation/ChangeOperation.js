@@ -1,4 +1,4 @@
-import React, { Component, forEach } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import OperationRow from './OperationRow';
 import { Pagination } from 'react-bootstrap';

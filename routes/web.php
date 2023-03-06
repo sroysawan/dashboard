@@ -25,6 +25,9 @@ Route::get('/update/DashboardRefreshold/',
 Route::post('/get/indivvidual/dashboard/details',
 [dashboardRefreshController::class, 'getDashboardDetails'])->name('dashboard.details');
 
+Route::post('/update/dashboard/data/update',
+       [dashboardRefreshController::class, 'updateDashboardData'])->name('dashboard.update'); 
+
 Route::get('/get/indivvidual/dashboard/detailsNew',
 [dashboardRefreshController::class, 'getDashboardDetailsNewDB'])->name('dashboard.detailsNew');
 

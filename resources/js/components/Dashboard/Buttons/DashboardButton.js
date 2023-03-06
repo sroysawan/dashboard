@@ -30,25 +30,24 @@ class DashboardButton extends Component{
     //         dashboardID: id_machine
         getDashboardDetailsNewDB = (id_machine) => {
             console.log(id_machine);
-            axios.get('/get/indivvidual/dashboard/detailsNew',{
-                dashboardID: id_machine
-        }).then((response) => {
+            axios.get('/get/indivvidual/dashboard/detailsNew',{ params: { dashboardID: id_machine } }
+            ).then((response) => {
+            console.log(response.data);
             this.setState({
                 currentDashboardIdmc: response.data.id_machine,
                 currentDashboardItemno: response.data.item_no,
                 currentDashboardOp: response.data.operation,
                 currentDashboardDatedue: response.data.date_due,
-                currentDashboardQtypertray: response.data.qty_per_tray,
+                currentDashboardQtypertray: response.data.qty_per_pulse2,
                 currentDashboardQtyaccum: response.data.qty_accum,
                 currentDashboardQtyorder: response.data.qty_order,
                 currentDashboardQtypercent: response.data.qty_percent,
                 currentDashboardIdtask: response.data.id_task,
                 currentDashboardDtupdate: response.data.datetime_update
             })
-           console.log(response.data);
+          
           //console.log(this.getDashboardDetailsNewDB);
            //console.log(Object.values(response.data));
-             //console.log(response.data[1]);
         })
     }
     

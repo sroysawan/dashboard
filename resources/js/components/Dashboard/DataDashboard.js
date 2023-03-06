@@ -1,8 +1,10 @@
 import React, { Component, forEach } from 'react';
 import axios from 'axios';
 import DashboardRow from './DashboardRow';
+import { Draggable }  from "react-drag-reorder";
 import { Pagination } from 'react-bootstrap';
 import { DataTable } from 'simple-datatables-classic';
+import ReactSearchBox from "react-search-box";
 
 var tempData =[];
 var dataOnDashboard;
@@ -34,30 +36,38 @@ axios.get('/update/DashboardRefresh/').then(function (response) {
 }
 
 setInput = (event) => {
-  this.state.TempDashboardRefresh.map((x, index) => {
+  this.state.TempDashboardRefresh.map((x) => {
     // console.log(x.operation);
-    if(x.operation.toLowerCase().includes(event.target.value.toLowerCase())|| x.id_machine.toLowerCase().includes(event.target.value.toLowerCase()) ||x.item_no.toLowerCase().includes(event.target.value.toLowerCase())){
-      tempData.push(x);
-      this.setState({searchValue:event.target.value,
+    if(x.operation.toLowerCase().includes(event.target.value.toLowerCase())
+    || x.id_machine.toLowerCase().includes(event.target.value.toLowerCase()) 
+    || x.item_no.toLowerCase().includes(event.target.value.toLowerCase())){
+        tempData.push(x);
+        this.setState({searchValue:event.target.value,
         DashboardRefresh:tempData});
+        console.log(event.target.value);
+        console.log(tempData);
     }
     else if(event.target.value === "" ){
       this.setState({DashboardRefresh:TempDashboardRefresh,
         searchValue:event.target.value,});
     }
-    })
+    else if(this.setState({searchValue:event.target.value,
+      DashboardRefresh:tempData}) === -1 ){
+      }
+  })
   tempData=[];
 }
-  
+
     render() {
+
         return(
-          
            <div className="card-body">
              <input
                type="text"
                className="form-control"
                style={{width:"240px"}}
                placeholder="Search M/C ItemNo Op Color Side"
+              //  value={this.state.searchValue}
                onChange={this.setInput}
           />
 
@@ -66,6 +76,7 @@ setInput = (event) => {
                       <thead>
                         <tr class="bg-warning">
                         {/* <tr className = {styles.trd}> */}
+                        {/* <Draggable > */}
                           <th rowSpan="2" className="text-center" scope="col">Status</th>
                           <th rowSpan="2" className="text-center" scope="col">M/C</th>
                           <th rowSpan="2" className="text-center" scope="col">Item number</th>
@@ -81,16 +92,19 @@ setInput = (event) => {
                           <th colSpan="2" className="text-center" scope="col">Estimated finish</th>
                           <th rowSpan="2" className="text-center" scope="col">Next item number</th>
                           <th rowSpan="2" className="text-center" scope="col">Next Op.</th>
+                          {/* </Draggable> */}
                         </tr>
                         <tr className="fw-bold second-row bg-warning">
+                        {/* <Draggable > */}
                           <th className="text-center" scope="col">Date</th>
                           <th className="text-center" scope="col">Time</th>
+                          {/* </Draggable> */}
                         </tr>
-                      </thead>
+                      </thead> 
                       <tbody>
                       {this.state.DashboardRefresh.map(function (x, i) {
                     return <DashboardRow key={i} data={x} /> 
-                  })}            
+                  })}        
                       </tbody>
                     </table>
                    </div>
