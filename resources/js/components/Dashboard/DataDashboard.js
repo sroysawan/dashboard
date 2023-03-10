@@ -15,8 +15,8 @@ class DataDashboard extends Component{
       searchValue : "",
       DashboardRefresh : [],
       TempDashboardRefresh : [],
-    }
-}
+    };
+  }
 
 componentDidMount = () => {
   this.getDashboardRefresh();
@@ -59,7 +59,6 @@ setInput = (event) => {
 }
 
     render() {
-
         return(
            <div className="card-body">
              <input
@@ -70,13 +69,11 @@ setInput = (event) => {
               //  value={this.state.searchValue}
                onChange={this.setInput}
           />
-
              <div class="table-responsive">
-                    <table id="datatablesSimple" className="table table-bordered table-striped">
+                    <table id="datatablesSimple" className="table table-bordered table-striped text-left">
                       <thead>
                         <tr class="bg-warning">
                         {/* <tr className = {styles.trd}> */}
-                        {/* <Draggable > */}
                           <th rowSpan="2" className="text-center" scope="col">Status</th>
                           <th rowSpan="2" className="text-center" scope="col">M/C</th>
                           <th rowSpan="2" className="text-center" scope="col">Item number</th>
@@ -92,7 +89,7 @@ setInput = (event) => {
                           <th colSpan="2" className="text-center" scope="col">Estimated finish</th>
                           <th rowSpan="2" className="text-center" scope="col">Next item number</th>
                           <th rowSpan="2" className="text-center" scope="col">Next Op.</th>
-                          {/* </Draggable> */}
+                         
                         </tr>
                         <tr className="fw-bold second-row bg-warning">
                         {/* <Draggable > */}
@@ -103,7 +100,7 @@ setInput = (event) => {
                       </thead> 
                       <tbody>
                       {this.state.DashboardRefresh.map(function (x, i) {
-                    return <DashboardRow key={i} data={x} /> 
+                    return <DashboardRow key={i} data={x} />
                   })}        
                       </tbody>
                     </table>

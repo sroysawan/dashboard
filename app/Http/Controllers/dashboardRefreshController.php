@@ -1135,6 +1135,7 @@ class dashboardRefreshController extends Controller
                     // return response() -> json($data_machine_queue);
                     $sumResult[$i] = array(
                         "id_machine"=>$id_mc[$i],
+                        "status_work"=> '',
                         "operation" => '',
                         "date_due" =>'',
                         "qty_per_pulse2"=> '',
@@ -1283,6 +1284,7 @@ class dashboardRefreshController extends Controller
                     else{
                         $sumResult[$i] = array(
                             "id_machine"=>$id_mc[$i],
+                            "status_work"=> $data_activity['status_work'],
                             "item_no" => $data_planning[0]->item_no,
                             "operation" => $data_planning[0]->operation,
                             "date_due" =>$due_date,
@@ -1305,6 +1307,7 @@ class dashboardRefreshController extends Controller
             }
             return response() -> json(array(
                 "id_machine"=>$request->input('dashboardID'),
+                "status_work"=> '',
                 "item_no" => '-',
                 "operation" => '-',
                 "date_due" =>'-',

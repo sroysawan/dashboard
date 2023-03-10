@@ -30,23 +30,33 @@ axios.get('/update/OperationRefresh/').then(function (response) {
     });
 });
 }
+
 setInput = (event) => {
-  this.state.TempOperationRefresh.map((x, index) => {
+  this.state.TempOperationRefresh.map((x) => {
     // console.log(x.operation);
-    if(x.operation.toLowerCase().includes(event.target.value.toLowerCase())|| x.id_job.toLowerCase().includes(event.target.value.toLowerCase()) ||x.item_no.toLowerCase().includes(event.target.value.toLowerCase())){
-      tempData.push(x);
-      this.setState({searchValue:event.target.value,
+    if(x.operation.toLowerCase().includes(event.target.value.toLowerCase())
+    || x.id_job.toLowerCase().includes(event.target.value.toLowerCase()) 
+    || x.item_no.toLowerCase().includes(event.target.value.toLowerCase())
+    || x.work_order.toLowerCase().includes(event.target.value.toLowerCase())){
+        tempData.push(x);
+        this.setState({searchValue:event.target.value,
         OperationRefresh:tempData});
+        console.log(event.target.value);
+        console.log(tempData);
     }
     else if(event.target.value === "" ){
       this.setState({OperationRefresh:TempOperationRefresh,
         searchValue:event.target.value,});
     }
-    })
+    else if(this.setState({searchValue:event.target.value,
+      OperationRefresh:tempData}) === -1 ){
+      }
+  })
   tempData=[];
 }
   
     render() {
+      
         return(
            <div className="card-body">
              <input

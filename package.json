@@ -52,9 +52,9 @@
         "react-radio": "^2.1.2",
         "react-radio-buttons": "^1.2.2",
         "react-reorder": "^3.0.0-alpha.7",
-        "react-router-dom": "^6.3.0",
+        "react-router-dom": "^6.8.2",
         "react-search-box": "^3.0.0",
-        "reactstrap": "^9.1.1",
+        "reactstrap": "^9.1.6",
         "simple-datatables-classic": "^2.1.14",
         "startbootstrap-simple-sidebar": "^6.0.5",
         "styled-components": "^5.3.6"
