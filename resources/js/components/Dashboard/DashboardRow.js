@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ProgressBar from 'react-bootstrap/ProgressBar';
-import { FaCommentsDollar, FaFlag } from "react-icons/Fa";
+import { FaFlag } from "react-icons/Fa";
 import Blink from 'react-blink-text';
 import DashboardButton from './Buttons/DashboardButton';
 import DashboardButton2 from './Buttons/DashboardButton2';
@@ -115,7 +115,7 @@ class DashboardRow extends Component {
     getFlagcolor =(run_time_actual,run_time_std,status_work) =>{
     if (status_work === 0 || status_work==3 || status_work==5 || status_work==6) return <FaFlag color="black"/>;
     if(run_time_actual>run_time_std){
-        return  <Blink className="text-runtime" text={<FaFlag/>} color="red" fontSize='5'></Blink>;
+        return  <Blink className="text-runtime text-center" text={<FaFlag/>} color="red" fontSize='5'></Blink>;
     }
     else {
         return  <FaFlag color="black"/>;
@@ -282,28 +282,28 @@ class DashboardRow extends Component {
         return (           
             <tr>
                 <td style={{ backgroundColor: this.getStatusColor(this.props.data.status_work) }}>
-                <td style={{ color: 'white' }}>
+                <td style={{color: 'white' }}>
                     {(this.getIdstaff(this.props.data.status_work) )} <br/>
                     {(this.getDowntime(this.props.data.id_code_downtime,this.props.data.status_work) )} 
                     </td>
                 </td>
-                <td>{ this.props.data.id_machine }</td>       
-                <td><DashboardButton eachRowId= {this.props.data.id_machine}/>{ this.props.data.item_no }</td>                
-                <td>{ this.props.data.operation }</td>  
-                <td>{ this.props.data.op_color }</td>
-                <td>{ this.props.data.op_side }</td>          
-                <td>{ this.props.data.date_due }</td>                              
+                <td className="text-db-center">{ this.props.data.id_machine }</td>       
+                <td className="text-db-left"><DashboardButton eachRowId= {this.props.data.id_machine}/>{ this.props.data.item_no }</td>                
+                <td className="text-db-center">{ this.props.data.operation }</td>  
+                <td className="text-db-center">{ this.props.data.op_color }</td>
+                <td className="text-db-center">{ this.props.data.op_side }</td>          
+                <td className="text-db-center">{ this.props.data.date_due }</td>                              
                 {/* <td>{ this.getformatDate(this.props.data.date_due) }</td> */}
-                <td>{ this.props.data.qty_per_pulse2 }</td>
-                <td>{ this.getAccum(this.props.data.qty_complete,this.props.data.qty_process,this.props.data.divider) } / { this.props.data.qty_order }</td> 
-                <td>{this.getBlinkProgress(this.props.data.qty_order)}</td>
+                <td className="text-db-center">{ this.props.data.qty_per_pulse2 }</td>
+                <td className="text-db-left">{ this.getAccum(this.props.data.qty_complete,this.props.data.qty_process,this.props.data.divider) } / { this.props.data.qty_order }</td> 
+                <td className="text-db-center">{this.getBlinkProgress(this.props.data.qty_order)}</td>
                 {/* <td>{ this.getFlagcolor(this.props.data.run_time_actual,this.props.data.run_time_std)}{this.getRuntime(this.props.data.run_time_actual,this.props.data.run_time_std)} </td>  */}
                 <td style={{ color: this.state.ColorRuntime}}>{ this.getFlagcolor(this.props.data.run_time_actual,this.props.data.run_time_std,this.props.data.status_work)}{this.getRuntime(this.props.data.run_time_actual,this.props.data.run_time_std,this.props.data.status_work)} </td>                  
-                <td>{ this.getTotal(this.props.data['qty_order'],this.props.data['run_time_std']) }</td>    
-                <td>{ this.getEsDateTime(this.props.data['qty_order'],this.props.data['run_time_std'])[0] }</td>  
-                <td>{ this.getEsDateTime(this.props.data['qty_order'],this.props.data['run_time_std'])[1] }</td> 
+                <td className="text-db-left">{ this.getTotal(this.props.data['qty_order'],this.props.data['run_time_std']) }</td>    
+                <td className="text-db-left">{ this.getEsDateTime(this.props.data['qty_order'],this.props.data['run_time_std'])[0] }</td>  
+                <td className="text-db-left">{ this.getEsDateTime(this.props.data['qty_order'],this.props.data['run_time_std'])[1] }</td> 
                 <td><DashboardButton2 eachRowId= {this.props.data.id_machine}/>{ this.getItem_2(this.props.data.item_no_2) }</td> 
-                <td>{ this.getOp_2(this.props.data.operation_2) }</td>           
+                <td className="text-db-center">{ this.getOp_2(this.props.data.operation_2) }</td>           
             </tr>
         );
     }

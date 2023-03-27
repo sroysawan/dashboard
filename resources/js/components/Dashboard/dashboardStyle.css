@@ -1,0 +1,115 @@
+.custom-div {
+    width: 33.33%;
+    vertical-align: middle;
+}
+.input-wrapper {
+    background-color: white;
+    width: 100%;
+    border-radius: 10px;
+    height:  2.5rem;
+    padding: 0 15px;
+    box-shadow: 0px 0px 8px #ddd;
+    display: flex;
+    align-items: center;
+}
+input:focus {
+    outline: none;
+}
+#search-icon {
+    color: royalblue;
+}
+
+.hide-bt{
+    border: none;
+    align-items: center;
+    display: "inline-block";
+    vertical-align: middle;
+    height: 60%;
+}
+
+/* .table {
+    width: 100%;
+    border-collapse: collapse;
+} */
+
+.text-db-center{
+    text-align: center;
+    vertical-align: middle;
+}
+.text-db-left{
+    text-align: left;
+    vertical-align: middle;
+} 
+.status-box{
+    width: 4.5%;
+    text-align: center;
+}
+.mc-box{
+    width: 2%;
+    text-align: center;
+}
+.itemno-box{
+    width: 7.5%;
+    text-align: center;
+}
+.op-box{
+    width: 2%;
+    text-align: center;
+}
+.color-box{
+    width: 1%;
+    text-align: center;
+}
+.side-box{
+    width: 1%;
+    text-align: center;
+}
+.duedate-box{
+    width: 4%;
+    text-align: center;
+}
+.qtypt-box{
+    width: 3%;
+    text-align: center;
+}
+.qtyac-ord-box{
+    width: 6.4%;
+    text-align: center;
+}
+.progress-box{
+    width: 5%;
+    text-align: center;
+}
+.runt-box{
+    width: 1%;
+    text-align: center;
+}
+.total-box{
+    width: 8%;
+    text-align: center;
+}
+.est-box{
+    width: 8%;
+    text-align: center;
+}
+.date-box{
+    width: 4%;
+    text-align: center;
+}
+.time-box{
+    width: 4%;
+    text-align: center;
+}
+.nextitemno-box{
+    width: 7.5%;
+    text-align: center;
+}
+.nextop-box{
+    width: 4%;
+    text-align: center;
+}
+
+
+
+  
+  

@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import Navbars from "./Dashboard/Navbar/Navbars";
-import DashboardCard from "./Dashboard/DashboardCard";
-import Search from "./Dashboard/Bars/Search";
+import DataDashboard from "./Dashboard/DataDashboard";
 
 class Home extends Component {
     render(){
@@ -9,8 +8,7 @@ class Home extends Component {
             <>
                 <div>
                     <Navbars />
-                    <DashboardCard />
-                    {/* <Search /> */}
+                    <DataDashboard />
                 </div>
             </>
         );

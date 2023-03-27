@@ -31,7 +31,7 @@ axios.get('/update/OperationRefresh/').then(function (response) {
 });
 }
 
-setInput = (event) => {
+searchData = (event) => {
   this.state.TempOperationRefresh.map((x) => {
     // console.log(x.operation);
     if(x.operation.toLowerCase().includes(event.target.value.toLowerCase())
@@ -64,7 +64,7 @@ setInput = (event) => {
                className="form-control"
                style={{width:"240px"}}
                placeholder="Search"
-               onChange={this.setInput}
+               onChange={this.searchData}
           />
 
              <div class="table-responsive">

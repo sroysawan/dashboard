@@ -1,5 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import * as ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import Home from './components/Home';
 import Operation from './components/Operation';
 import NewTask from './components/NewTask';
