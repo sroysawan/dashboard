@@ -1308,15 +1308,15 @@ class dashboardRefreshController extends Controller
             return response() -> json(array(
                 "id_machine"=>$request->input('dashboardID'),
                 "status_work"=> '',
-                "item_no" => '-',
-                "operation" => '-',
-                "date_due" =>'-',
-                "qty_per_pulse2"=> '-',
-                "qty_accum"=> '-',
-                "qty_order"=> '-',
-                "qty_percent" => '-',
-                "id_task"=>'-',
-                "datetime_update" => '-',
+                "item_no" => '',
+                "operation" => '',
+                "date_due" =>'',
+                "qty_per_pulse2"=> '',
+                "qty_accum"=> '',
+                "qty_order"=> '',
+                "qty_percent" => '',
+                "id_task"=>'',
+                "datetime_update" => '',
                            
                  
             ));

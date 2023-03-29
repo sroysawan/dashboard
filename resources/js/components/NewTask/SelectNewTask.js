@@ -57,7 +57,7 @@ setInput = (event) => {
                onChange={this.setInput}
           />
 
-             <div class="table-responsive">
+             <div className="table-responsive">
                     <table id="datatablesSimple" className="table table-bordered table-striped">
                       <thead>
                         <tr class="text-white bg-dark">

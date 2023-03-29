@@ -42,6 +42,55 @@ class DataDashboard extends Component {
                 'Next item number', 
                 'Next Op.',
             ],
+            // columnOrder: [
+            //     {
+            //         title: 'Status',
+            //     },
+            //     {
+            //         title: 'M/C',
+            //     },
+            //     {
+            //         title: 'Item Number',
+            //     },
+            //     {
+            //         title: 'Op.',
+            //     },
+            //     {
+            //         title: 'Color',
+            //     },
+            //     {
+            //         title: 'Side',
+            //     },
+            //     {
+            //         title: 'Due Date',
+            //     },
+            //     {
+            //         title: 'Qty per tray',
+            //     },
+            //     {
+            //         title: 'Qty accum/Qty order',
+            //     },
+            //     {
+            //         title: 'Progress (%)',
+            //     },
+            //     {
+            //         title: 'Run time Actual/Std(Second)',
+            //     },
+            //     {
+            //         title: 'Total open run time(Hr)',
+            //     },
+            //     {
+            //         title: 'Estimated finish',
+            //         date: '',
+            //         time: ''
+            //     },
+            //     {
+            //         title: 'Next item number',
+            //     },
+            //     {
+            //         title: 'Next Op.',
+            //     },
+            // ],
             hiddenRows: new Set(),
             isRowHidden: false,    
     };
@@ -50,7 +99,7 @@ class DataDashboard extends Component {
 
     componentDidMount = () => {
         this.getDashboardRefresh();
-        this.getRuntimecolor(this.props.run_time_actual,this.props.run_time_std,this.props.status_work);
+        // this.getRuntimecolor(this.props.run_time_actual,this.props.run_time_std,this.props.status_work);
     };
 
     getDashboardRefresh = () => {
@@ -106,6 +155,25 @@ class DataDashboard extends Component {
         this.setState({ columnOrder });
     };
 
+    //hide-bt
+    toggleRowVisibility() {
+        if (this.state.isRowHidden) {
+            // หากแถวถูกซ่อนอยู่แล้ว ให้แสดงแถวทั้งหมด
+            this.setState({ hiddenRows: new Set(), isRowHidden: false });
+          } else {
+            // หากแถวไม่ถูกซ่อน ให้ซ่อนแถวตามเงื่อนไข
+        const hiddenRows = new Set();
+        this.state.DashboardRefresh.forEach((item, index) => {
+            const status_work = item.status_work;
+            // const nextQueue = item.item_no_2;
+            if (status_work  === '') {
+                hiddenRows.add(index);
+            }
+        });
+        this.setState({ hiddenRows, isRowHidden: true });
+      }
+    }
+
     //Data in Table on Dashboard
     //Status
     getStatusColor = (status_work) =>{    
@@ -114,16 +182,16 @@ class DataDashboard extends Component {
       if (status_work === 2 ) return 'orange';
       if (status_work === 4 ) return 'red';     
   }
-  getIdstaff = (status_work) =>{    
+  getIdstaff = (status_work,id_staff) =>{    
       if (status_work === 0 || status_work==3 || status_work==5 || status_work==6) return '';
-      if (status_work === 1 ) return this.props.id_staff;
-      if (status_work === 2 ) return this.props.id_staff;
-      if (status_work === 4 ) return this.props.id_staff;
-      if (status_work === 7 ) return this.props.id_staff + '\n' + 'RW';
+      if (status_work === 1 ) return id_staff;
+      if (status_work === 2 ) return id_staff;
+      if (status_work === 4 ) return id_staff;
+      if (status_work === 7 ) return id_staff + '\n' + 'RW';
       return '';
   }
   getDowntime = (id_code_downtime,status_work) =>{    
-      if ((id_code_downtime !== "-") && !(status_work === 0 || status_work==3 || status_work==5 || status_work==6)) return this.props.id_code_downtime;
+      if ((id_code_downtime !== "-") && !(status_work === 0 || status_work==3 || status_work==5 || status_work==6)) return id_code_downtime;
       else return '';
   }
 
@@ -137,14 +205,14 @@ class DataDashboard extends Component {
   }
 
   //Qty accum/Qty order
-  getAccum = (qty_complete,qty_process,divider,qty_repeat) =>{           
+  getAccum = (qty_complete,qty_process,divider,qty_order) =>{           
       qty_accum = qty_complete + Math.floor(qty_process*divider);
       //qty_accum = qty_accum-qty_repeat;  //ไม่มี repeat ใน new db ********
       if (divider == '' ){
           return '';
       }else{
           //console.log(qty_accum);
-          return qty_accum;
+          return qty_accum + ' / ' + qty_order;
       }
   }
 
@@ -158,13 +226,15 @@ class DataDashboard extends Component {
           return percent;
       }
   }
-  getBlinkProgress = (qty_order) =>{
-      if (qty_order - qty_accum <= 500){
-          return  <Blink text={<ProgressBar /*className='progress-bar-color'*/ variant='warning' min={0} max={100} now={this.getPercent(this.props.qty_order)} label={`${this.getPercent(this.props.qty_order)}%` }/>} ></Blink>
-      }else {
-          return <ProgressBar min={0} max={100} now={this.getPercent(this.props.qty_order)} label={`${this.getPercent(this.props.qty_order)}%` }/>;
-      }
+  getBlinkProgress = (qty_order,status_work) =>{
+    if (status_work === '') {
+        return null;
+    }else if (qty_order - qty_accum <= 500){
+          return  <Blink text={<ProgressBar /*className='progress-bar-color'*/ variant='warning' min={0} max={100} now={this.getPercent(qty_order)} label={`${this.getPercent(qty_order)}%` }/>} ></Blink>
+      }else if(qty_order - qty_accum > 500) {
+          return <ProgressBar min={0} max={100} now={this.getPercent(qty_order)} label={`${this.getPercent(qty_order)}%` }/>;
   }
+}
 
   //RunTime
   getRuntime = (run_time_actual,run_time_std,status_work) =>{
@@ -175,13 +245,20 @@ class DataDashboard extends Component {
 
       //if (status_work === 0 || status_work==3 || status_work==5 || status_work==6) return run_time_actual= 'N/A';
       //if (status_work === 0 || status_work==3 || status_work==5 || status_work==6) return run_time_actual = 0;
-      runtimes = run_time_actual.toLocaleString('en-US', options) + ' / ' + run_time_std.toLocaleString('en-US', options);
+      if (status_work === '') {
+        return null;
+    } else if
+      (runtimes = run_time_actual.toLocaleString('en-US', options) + ' / ' + run_time_std.toLocaleString('en-US', options)){
       // if(run_time_actual === 0 ) return "N/A"
       // runtimes = run_time_actual + ' / ' + run_time_std;
       return runtimes;
+      }
   }
   getFlagcolor =(run_time_actual,run_time_std,status_work) =>{
-  if (status_work === 0 || status_work==3 || status_work==5 || status_work==6) return <FaFlag color="black"/>;
+    if (status_work === '') {
+        return null;
+    }
+    else if (status_work === 0 || status_work==3 || status_work==5 || status_work==6) return <FaFlag color="black"/>;
   if(run_time_actual>run_time_std){
       return  <Blink className="text-runtime text-center" text={<FaFlag/>} color="red" fontSize='5'></Blink>;
   }
@@ -203,7 +280,7 @@ class DataDashboard extends Component {
 }
 
   //Total Open Run Time
-  getTotal = (qty_order,run_time_std) =>{
+  getTotal = (qty_order,run_time_std,status_work) =>{
   run_time_std = parseInt(run_time_std);
   run_time_open = ((qty_order-qty_accum)*run_time_std);
   const seconds_of_a_day = 86400;
@@ -222,14 +299,16 @@ class DataDashboard extends Component {
       useGrouping: false
   }
   var total_time = run_time_day + " days\n" + run_time_hr.toLocaleString('en-US', options_run_time_open) + ":" + run_time_min.toLocaleString('en-US', options_run_time_open) + ":" + run_time_sec.toLocaleString('en-US', options_run_time_open);
-  // var total_time = run_time_day + " days\n" + run_time_hr + ":" + run_time_min + ":" + run_time_sec;
+  if (status_work === '') {
+    return null;
+}
   if (run_time_hr<0 || run_time_min<0 || run_time_sec<0) return 'N/A';
   else 
   return total_time;       
   }
 
   //Estimated finish
-  getEsDateTime = (qty_order,run_time_std,run_time_actual) =>{
+  getEsDateTime = (qty_order,run_time_std,run_time_actual,status_work) =>{
       run_time_std = parseInt(run_time_std);
       run_time_open = ((qty_order-qty_accum)*run_time_std);
       const seconds_of_a_day = 86400;
@@ -307,10 +386,10 @@ class DataDashboard extends Component {
           }
       }
 
-      if(this.props.run_time_actual == '0' || this.props.run_time_actual == 'N/A'){
+      if(run_time_actual === '' || status_work === ''){
           est_time = new Date(time_now + (run_time_open*1000));
-          var est_date = ('0');
-          var est_times = ('0');
+          var est_date = ('');
+          var est_times = ('');
           var ar_est = [est_date,est_times];
           return ar_est;
       }
@@ -340,7 +419,7 @@ class DataDashboard extends Component {
             return (
                 <td style={{ backgroundColor: this.getStatusColor(item.status_work) }}>
                                         <td style={{color: 'white' }}>
-                                            {(this.getIdstaff(item.status_work,item.id_staff) )} <br/>
+                                            {(this.getIdstaff(item.status_work,item.id_staff) )}
                                             {(this.getDowntime(item.id_code_downtime,item.status_work,item.id_staff) )} 
                                             </td>
                 </td>
@@ -360,27 +439,27 @@ class DataDashboard extends Component {
         case 'Qty per tray':
             return <td className="text-db-center">{ item.qty_per_pulse2 }</td>;
         case 'Qty accum/Qty order':
-            return <td className="text-db-left">{ this.getAccum(item.qty_complete,item.qty_process,item.divider) } / { item.qty_order }</td>;
+            return <td className="text-db-left">{ this.getAccum(item.qty_complete,item.qty_process,item.divider,item.qty_order) }</td>;
         case 'Progress (%)':
-            return <td className="text-db-center">{this.getBlinkProgress(item.qty_order)}</td>;
+            return <td className="text-db-center">{this.getBlinkProgress(item.qty_order,item.status_work)}</td>;
         case 'Run time Actual/Std(Second)':
             return  (
                 <td style={{ color: this.state.ColorRuntime}}>{ this.getFlagcolor(item.run_time_actual,item.run_time_std,item.status_work)}{this.getRuntime(item.run_time_actual,item.run_time_std,item.status_work)} 
                 </td>
                 );
         case 'Total open run time(Hr)':
-            return <td className="text-db-left">{ this.getTotal(item['qty_order'],item['run_time_std']) }</td>;
+            return <td className="text-db-left">{ this.getTotal(item['qty_order'],item['run_time_std'],item.status_work) }</td>;
         case 'Estimated finish':
             return (
-                <th>
-                    <td className="text-db-left">
-                    {this.getEsDateTime(item['qty_order'], item['run_time_std'])[0]}
-                    </td>
-                    <td className="text-db-left">
-                    {this.getEsDateTime(item['qty_order'], item['run_time_std'])[1]}
-                    </td>
-                </th>
+                <td className="text-db-left">
+                    {this.getEsDateTime(item['qty_order'], item['run_time_std'], item.status_work)[0]} &nbsp;
+                    {this.getEsDateTime(item['qty_order'], item['run_time_std'], item.status_work)[1]}
+                </td>
             );
+        // case 'Date':
+        //     return null;
+        // case 'Time':
+        //     return null;
         case 'Next item number':
             return <td className="text-db-left"><DashboardButton2 eachRowId= {item.id_machine}/>{ this.getItem_2(item.item_no_2) }</td>;
         case 'Next Op.':
@@ -389,25 +468,6 @@ class DataDashboard extends Component {
             return null;
     }
 }
-
-        toggleRowVisibility() {
-            if (this.state.isRowHidden) {
-                // หากแถวถูกซ่อนอยู่แล้ว ให้แสดงแถวทั้งหมด
-                this.setState({ hiddenRows: new Set(), isRowHidden: false });
-              } else {
-                // หากแถวไม่ถูกซ่อน ให้ซ่อนแถวตามเงื่อนไข
-            const hiddenRows = new Set();
-            this.state.DashboardRefresh.forEach((item, index) => {
-                const status_work = item.status_work;
-                // const nextQueue = item.item_no_2;
-                if (status_work  === '') {
-                    hiddenRows.add(index);
-                }
-            });
-            this.setState({ hiddenRows, isRowHidden: true });
-          }
-        }
-
 
     render() {
         return (
@@ -428,10 +488,12 @@ class DataDashboard extends Component {
                                         style={{ margin: "5px" }}
                                         onClick={this.toggleRowVisibility}
                                     />
+                                    <label className="hide-label">
                                     Hide unassigned machines
-                                    (ซ่อนเครื่องไม่มีงาน)
+                                    (ซ่อนเครื่องไม่มีงาน) 
+                                    </label>
                                 </div>
-                                <div className="p-2 ">
+                                <div className="p-2-left ">
                                     <div
                                         style={{
                                             display: "inline-block",
@@ -443,7 +505,7 @@ class DataDashboard extends Component {
                                             verticalAlign: "middle",
                                         }}
                                     />
-                                    เครื่องว่าง
+                                    Machine not working (เครื่องว่าง)
                                     <div
                                         style={{
                                             display: "inline-block",
@@ -455,7 +517,7 @@ class DataDashboard extends Component {
                                             verticalAlign: "middle",
                                         }}
                                     />
-                                    เครื่องทำงาน
+                                    Machine working (เครื่องทำงาน)
                                     <div
                                         style={{
                                             display: "inline-block",
@@ -467,7 +529,7 @@ class DataDashboard extends Component {
                                             verticalAlign: "middle",
                                         }}
                                     />
-                                    เครื่องเบรก
+                                    Idle machine (เครื่องเบรก)
                                     <div
                                         style={{
                                             display: "inline-block",
@@ -479,12 +541,13 @@ class DataDashboard extends Component {
                                             verticalAlign: "middle",
                                         }}
                                     />
-                                    เครื่องเสีย
+                                    Malfunctioning machine (เครื่องเสีย)
                                 </div>
                                 <div className="ms-auto p-2"> 
                                 <div className="input-wrapper">
                                     <FaSearch id="search-icon"/>
                                     <input
+                                        className="search-input"
                                         placeholder= "Search"
                                         onChange={this.searchData}
                                     />
@@ -493,7 +556,7 @@ class DataDashboard extends Component {
                             </div>
                         </div>
                         <div className="card-body">
-                            <div class="table-responsive">
+                            <div className="table-responsive">
                             <DndProvider backend={HTML5Backend}>
                                 <table className="table table-bordered table-striped text-left">
                                     <thead>

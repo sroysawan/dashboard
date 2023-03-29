@@ -19,8 +19,20 @@ class ViewModal extends Component {
             currentDashboardIdtask: null,
             currentDashboardDtupdate: null,
             selectedOption: null,
+            isConditionMet: true,
         };
     }
+
+    // componentDidMount() {
+    //     // ตรวจสอบเงื่อนไขที่ต้องการตรงกัน
+    //     // ถ้าเงื่อนไขตรงกัน ให้เปลี่ยนค่าของ isConditionMet เป็น true
+    //     // ตัวอย่าง: ให้ isConditionMet เป็น true เมื่อตัวแปร value มีค่าเท่ากับ 10
+    //     //const value = 10; // สมมุติว่าเป็นค่าที่ได้จากข้อมูลที่คุณต้องการตรวจสอบ
+    //     if (this.props.status_work === ' ') {
+    //         console.log(this.props.status_work);
+    //         this.setState({ isChangeOpDisabled: false });
+    //     }
+    // }
 
     getDashboardDetailsNewDB = (id_machine) => {
         console.log(id_machine);
@@ -67,6 +79,13 @@ class ViewModal extends Component {
         }
     };
 
+    // handleButton = (currentDashboardStatus) => {
+    // if (currentDashboardStatus === '') {
+    //           this.setState({ isConditionMet: false });
+    //         }
+    // }
+    
+
     render() {
         return (
             <div
@@ -98,68 +117,48 @@ class ViewModal extends Component {
                                 <tbody>
                                     <tr>
                                         <td>Machine ID:</td>
-                                        <td>
-                                            {this.props.sumResult.currentDashboardIdmc}
-                                        </td>
+                                        <td>{this.props.sumResult.currentDashboardIdmc}</td>
                                     </tr>
                                     <tr>
                                         <td>Item NO:</td>
-                                        <td>
-                                            {this.props.sumResult.currentDashboardItemno}
-                                        </td>
+                                        <td>{this.props.sumResult.currentDashboardItemno}</td>
                                     </tr>
                                     <tr>
                                         <td>Operation:</td>
-                                        <td>
-                                            {this.props.sumResult.currentDashboardOp}
-                                        </td>
+                                        <td>{this.props.sumResult.currentDashboardOp}</td>
                                     </tr>
                                     <tr>
                                         <td>Date due:</td>
-                                        <td>
-                                            {this.props.sumResult.currentDashboardDatedue}
-                                        </td>
+                                        <td>{this.props.sumResult.currentDashboardDatedue}</td>
                                     </tr>
                                     <tr>
                                         <td>Qty per tray:</td>
-                                        <td>
-                                            {this.props.sumResult.currentDashboardQtypertray}
-                                        </td>
+                                        <td>{this.props.sumResult.currentDashboardQtypertray}</td>
                                     </tr>
                                     <tr>
                                         <td>Qty accum:</td>
-                                        <td>
-                                            {this.props.sumResult.currentDashboardQtyaccum}
-                                        </td>
+                                        <td>{this.props.sumResult.currentDashboardQtyaccum}</td>
                                     </tr>
                                     <tr>
                                         <td>Qty order:</td>
-                                        <td>
-                                            {this.props.sumResult.currentDashboardQtyorder}
-                                        </td>
+                                        <td>{this.props.sumResult.currentDashboardQtyorder}</td>
                                     </tr>
                                     <tr>
                                         <td>Qty percent:</td>
-                                        <td>
-                                            {this.props.sumResult.currentDashboardQtypercent}
-                                        </td>
+                                        <td>{this.props.sumResult.currentDashboardQtypercent}</td>
                                     </tr>
                                     <tr>
                                         <td>Task ID:</td>
-                                        <td>
-                                            {this.props.sumResult.currentDashboardIdtask}
-                                        </td>
+                                        <td>{this.props.sumResult.currentDashboardIdtask}</td>
                                     </tr>
                                     <tr>
                                         <td>Last update:</td>
-                                        <td>
-                                            {this.props.sumResult.currentDashboardDtupdate}
-                                        </td>
+                                        <td>{this.props.sumResult.currentDashboardDtupdate}</td>
                                     </tr>
                                 </tbody>
                             </table>
                             <br />
-                            <h5>Action: </h5>
+                            <h5> Action: </h5>
                             <div class="mb-3">
                                 <form onSubmit={this.handleFormSubmit}>
                                     <div class="form-check">
@@ -170,6 +169,7 @@ class ViewModal extends Component {
                                             value="radioChangeOp"
                                             checked={this.state.selectedOption === "radioChangeOp"}
                                             onChange={this.handleOptionChange}
+                                            disabled={this.props.sumResult.currentDashboardItemno === ''}
                                         />
                                         <label class="form-check-label">
                                             Change operation (เปลี่ยน Operation)
@@ -183,11 +183,9 @@ class ViewModal extends Component {
                                             value="radioRemove"
                                             checked={this.state.selectedOption === "radioRemove"}
                                             onChange={this.handleOptionChange}
+                                            disabled={this.props.sumResult.currentDashboardItemno === ''}
                                         />
-                                        <label
-                                            class="form-check-label"
-                                            for="radioRemove"
-                                        >
+                                        <label className="form-check-label" for="radioRemove">
                                             Remove this task (เอางานออก)
                                         </label>
                                     </div>
@@ -199,11 +197,9 @@ class ViewModal extends Component {
                                             value="radioNextQueue"
                                             checked={this.state.selectedOption === "radioNextQueue"}
                                             onChange={this.handleOptionChange}
+                                            disabled={this.props.sumResult.currentDashboardItemno != ''}
                                         />
-                                        <label
-                                            class="form-check-label"
-                                            for="radioNextQueue"
-                                        >
+                                        <label className="form-check-label" for="radioNextQueue">
                                             Feed task from next queue
                                             (ดึงงานจากคิวถัดไป)
                                         </label>
@@ -216,11 +212,9 @@ class ViewModal extends Component {
                                             value="radioNewTask"
                                             checked={this.state.selectedOption === "radioNewTask"}
                                             onChange={this.handleOptionChange}
+                                            disabled={this.props.sumResult.currentDashboardItemno != ''}
                                         />
-                                        <label
-                                            class="form-check-label"
-                                            for="radioNewTask"
-                                        >
+                                        <label class="form-check-label" for="radioNewTask">
                                             Select a new task (เพิ่มงานใหม่)
                                         </label>
                                     </div>
@@ -232,11 +226,9 @@ class ViewModal extends Component {
                                             value="radioResetActivity"
                                             checked={this.state.selectedOption === "radioResetActivity"}
                                             onChange={this.handleOptionChange}
+                                            disabled={this.props.sumResult.currentDashboardItemno === ''}
                                         />
-                                        <label
-                                            class="form-check-label"
-                                            for="radioResetActivity"
-                                        >
+                                        <label class="form-check-label" for="radioResetActivity">
                                             Reset activity (รีเซ็ตงาน)
                                         </label>
                                     </div>
