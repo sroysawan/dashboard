@@ -24,83 +24,23 @@ class DataDashboard extends Component {
             DashboardRefresh: [],
             TempDashboardRefresh: [],
             ColorRuntime: 'black',       
-            columnOrder: [
-                'Status', 
-                'M/C', 
-                'Item number', 
-                'Op.', 'Color', 
-                'Side', 
-                'Due Date', 
-                'Qty per tray', 
-                'Qty accum/Qty order', 
-                'Progress (%)', 
-                'Run time Actual/Std(Second)', 
-                'Total open run time(Hr)',              
-                'Estimated finish',
-                // 'Date',
-                // 'Time',
-                'Next item number', 
-                'Next Op.',
-            ],
-            // columnOrder: [
-            //     {
-            //         title: 'Status',
-            //     },
-            //     {
-            //         title: 'M/C',
-            //     },
-            //     {
-            //         title: 'Item Number',
-            //     },
-            //     {
-            //         title: 'Op.',
-            //     },
-            //     {
-            //         title: 'Color',
-            //     },
-            //     {
-            //         title: 'Side',
-            //     },
-            //     {
-            //         title: 'Due Date',
-            //     },
-            //     {
-            //         title: 'Qty per tray',
-            //     },
-            //     {
-            //         title: 'Qty accum/Qty order',
-            //     },
-            //     {
-            //         title: 'Progress (%)',
-            //     },
-            //     {
-            //         title: 'Run time Actual/Std(Second)',
-            //     },
-            //     {
-            //         title: 'Total open run time(Hr)',
-            //     },
-            //     {
-            //         title: 'Estimated finish',
-            //         date: '',
-            //         time: ''
-            //     },
-            //     {
-            //         title: 'Next item number',
-            //     },
-            //     {
-            //         title: 'Next Op.',
-            //     },
-            // ],
             hiddenRows: new Set(),
             isRowHidden: false,    
+            warningValue:500,
+            sortConfig: { key: 'id_machine',key:'qty_accum', direction: 'asc' },
     };
     this.toggleRowVisibility = this.toggleRowVisibility.bind(this);
 }
 
     componentDidMount = () => {
         this.getDashboardRefresh();
+        // this.interval = setInterval(this.getDashboardRefresh, 10000);
         // this.getRuntimecolor(this.props.run_time_actual,this.props.run_time_std,this.props.status_work);
     };
+
+    // componentWillUnmount() {
+    //     clearInterval(this.interval);
+    // }
 
     getDashboardRefresh = () => {
         let self = this;
@@ -110,11 +50,17 @@ class DataDashboard extends Component {
                 DashboardRefresh: Object.values(response.data),
                 TempDashboardRefresh: Object.values(response.data),
             });
-            console.log(Object.values(response.data));
+            // console.log(Object.values(response.data));
         });
     };
 
     searchData = (event) => {
+        // if(event.target.value != ""){
+        //     clearInterval(this.interval);
+        // }
+        // else{
+        //     this.interval = setInterval(this.getDashboardRefresh, 10000);
+        // }
         this.state.TempDashboardRefresh.map((x) => {
             if (
                 x.operation.toLowerCase().includes(event.target.value.toLowerCase()) ||
@@ -128,8 +74,6 @@ class DataDashboard extends Component {
                     searchValue: event.target.value,
                     DashboardRefresh: tempData,
                 });
-                console.log(event.target.value);
-                console.log(tempData);
             } else if (event.target.value === "") {
                 this.setState({
                     DashboardRefresh: TempDashboardRefresh,
@@ -158,14 +102,11 @@ class DataDashboard extends Component {
     //hide-bt
     toggleRowVisibility() {
         if (this.state.isRowHidden) {
-            // หากแถวถูกซ่อนอยู่แล้ว ให้แสดงแถวทั้งหมด
             this.setState({ hiddenRows: new Set(), isRowHidden: false });
           } else {
-            // หากแถวไม่ถูกซ่อน ให้ซ่อนแถวตามเงื่อนไข
         const hiddenRows = new Set();
         this.state.DashboardRefresh.forEach((item, index) => {
             const status_work = item.status_work;
-            // const nextQueue = item.item_no_2;
             if (status_work  === '') {
                 hiddenRows.add(index);
             }
@@ -173,6 +114,35 @@ class DataDashboard extends Component {
         this.setState({ hiddenRows, isRowHidden: true });
       }
     }
+
+    //sort
+    sortBy(key) {
+        let direction = 'asc';
+        if (
+          this.state.sortConfig &&
+          this.state.sortConfig.key === key &&
+          this.state.sortConfig.direction === 'asc'
+        ) {
+          direction = 'desc';
+        }
+        this.setState({ sortConfig: { key, direction } });
+      }
+    
+      compare(a, b, direction) {
+        if (a === b) {
+          return 0;
+        } else if (a < b) {
+          return direction === 'asc' ? -1 : 1;
+        } else {
+          return direction === 'asc' ? 1 : -1;
+        }
+      }
+      renderSortingArrow(columnKey) {
+        if (this.state.sortConfig.key === columnKey) {
+          return this.state.sortConfig.direction === 'asc' ? '🔼' : '🔽';
+        }
+        return '🔼';
+      }
 
     //Data in Table on Dashboard
     //Status
@@ -207,11 +177,10 @@ class DataDashboard extends Component {
   //Qty accum/Qty order
   getAccum = (qty_complete,qty_process,divider,qty_order) =>{           
       qty_accum = qty_complete + Math.floor(qty_process*divider);
-      //qty_accum = qty_accum-qty_repeat;  //ไม่มี repeat ใน new db ********
       if (divider == '' ){
           return '';
       }else{
-          //console.log(qty_accum);
+        //   console.log(qty_accum);
           return qty_accum + ' / ' + qty_order;
       }
   }
@@ -229,9 +198,9 @@ class DataDashboard extends Component {
   getBlinkProgress = (qty_order,status_work) =>{
     if (status_work === '') {
         return null;
-    }else if (qty_order - qty_accum <= 500){
+    }else if (qty_order - qty_accum <= this.state.warningValue){
           return  <Blink text={<ProgressBar /*className='progress-bar-color'*/ variant='warning' min={0} max={100} now={this.getPercent(qty_order)} label={`${this.getPercent(qty_order)}%` }/>} ></Blink>
-      }else if(qty_order - qty_accum > 500) {
+      }else if(qty_order - qty_accum > this.state.warningValue) {
           return <ProgressBar min={0} max={100} now={this.getPercent(qty_order)} label={`${this.getPercent(qty_order)}%` }/>;
   }
 }
@@ -268,13 +237,12 @@ class DataDashboard extends Component {
   }
   getRuntimecolor =(run_time_actual,run_time_std) =>{ 
   if(run_time_actual>run_time_std){
-          this.setState({
-              ColorRuntime:'red'
+        this.setState({
+            ColorRuntime:'red'
           })
-      }
-  else {
-      this.setState({
-          ColorRuntime:'black'
+      } else {
+        this.setState({
+            ColorRuntime:'black'
       })
   }
 }
@@ -302,7 +270,7 @@ class DataDashboard extends Component {
   if (status_work === '') {
     return null;
 }
-  if (run_time_hr<0 || run_time_min<0 || run_time_sec<0) return 'N/A';
+  if (run_time_hr<0 || run_time_min<0 || run_time_sec<0) return '0';
   else 
   return total_time;       
   }
@@ -413,63 +381,24 @@ class DataDashboard extends Component {
       else return '';
   }
 
-  renderCell(item, columnName) {
-    switch (columnName) {
-        case 'Status':
-            return (
-                <td style={{ backgroundColor: this.getStatusColor(item.status_work) }}>
-                                        <td style={{color: 'white' }}>
-                                            {(this.getIdstaff(item.status_work,item.id_staff) )}
-                                            {(this.getDowntime(item.id_code_downtime,item.status_work,item.id_staff) )} 
-                                            </td>
-                </td>
-            );
-        case 'M/C':
-            return <td className="text-db-center">{item.id_machine}</td>;
-        case 'Item number':
-            return <td className="text-db-left"><DashboardButton eachRowId= {item.id_machine}/>{ item.item_no }</td>;  
-        case 'Op.':
-            return <td className="text-db-center">{ item.operation }</td>;
-        case 'Color':
-            return <td className="text-db-center">{ item.op_color }</td>;
-        case 'Side':
-            return <td className="text-db-center">{ item.op_side }</td>;
-        case 'Due Date':
-            return <td className="text-db-center">{ item.date_due }</td>;
-        case 'Qty per tray':
-            return <td className="text-db-center">{ item.qty_per_pulse2 }</td>;
-        case 'Qty accum/Qty order':
-            return <td className="text-db-left">{ this.getAccum(item.qty_complete,item.qty_process,item.divider,item.qty_order) }</td>;
-        case 'Progress (%)':
-            return <td className="text-db-center">{this.getBlinkProgress(item.qty_order,item.status_work)}</td>;
-        case 'Run time Actual/Std(Second)':
-            return  (
-                <td style={{ color: this.state.ColorRuntime}}>{ this.getFlagcolor(item.run_time_actual,item.run_time_std,item.status_work)}{this.getRuntime(item.run_time_actual,item.run_time_std,item.status_work)} 
-                </td>
-                );
-        case 'Total open run time(Hr)':
-            return <td className="text-db-left">{ this.getTotal(item['qty_order'],item['run_time_std'],item.status_work) }</td>;
-        case 'Estimated finish':
-            return (
-                <td className="text-db-left">
-                    {this.getEsDateTime(item['qty_order'], item['run_time_std'], item.status_work)[0]} &nbsp;
-                    {this.getEsDateTime(item['qty_order'], item['run_time_std'], item.status_work)[1]}
-                </td>
-            );
-        // case 'Date':
-        //     return null;
-        // case 'Time':
-        //     return null;
-        case 'Next item number':
-            return <td className="text-db-left"><DashboardButton2 eachRowId= {item.id_machine}/>{ this.getItem_2(item.item_no_2) }</td>;
-        case 'Next Op.':
-            return <td className="text-db-center">{ this.getOp_2(item.operation_2) }</td>;
-        default:
-            return null;
-    }
-}
+  handleWarning = (event) => {
+    let result = event.target.value==null ? 0 : event.target.value;
+    this.setState({
+        warningValue : result,
+    });
+  }
 
     render() {
+        const sortedData = [...this.state.DashboardRefresh];
+        if (this.state.sortConfig.key) {
+          sortedData.sort((a, b) =>
+            this.compare(
+              a[this.state.sortConfig.key],
+              b[this.state.sortConfig.key],
+              this.state.sortConfig.direction
+            )
+          );
+        }
         return (
             <div>
                 <header className="page-header page-header-dark pb-5"></header>
@@ -490,10 +419,9 @@ class DataDashboard extends Component {
                                     />
                                     <label className="hide-label">
                                     Hide unassigned machines
-                                    (ซ่อนเครื่องไม่มีงาน) 
                                     </label>
                                 </div>
-                                <div className="p-2-left ">
+                                <div className="p-2">
                                     <div
                                         style={{
                                             display: "inline-block",
@@ -505,7 +433,7 @@ class DataDashboard extends Component {
                                             verticalAlign: "middle",
                                         }}
                                     />
-                                    Machine not working (เครื่องว่าง)
+                                    Machine is not working
                                     <div
                                         style={{
                                             display: "inline-block",
@@ -517,7 +445,7 @@ class DataDashboard extends Component {
                                             verticalAlign: "middle",
                                         }}
                                     />
-                                    Machine working (เครื่องทำงาน)
+                                    Machine is working 
                                     <div
                                         style={{
                                             display: "inline-block",
@@ -529,7 +457,7 @@ class DataDashboard extends Component {
                                             verticalAlign: "middle",
                                         }}
                                     />
-                                    Idle machine (เครื่องเบรก)
+                                    Idle machine
                                     <div
                                         style={{
                                             display: "inline-block",
@@ -541,10 +469,16 @@ class DataDashboard extends Component {
                                             verticalAlign: "middle",
                                         }}
                                     />
-                                    Malfunctioning machine (เครื่องเสีย)
+                                    Malfunctioning machine 
                                 </div>
-                                <div className="ms-auto p-2"> 
+                                <div className="ms-auto p-2">
                                 <div className="input-wrapper">
+                                    <input
+                                        className="warning"
+                                        placeholder= "Warning"
+                                        onChange={this.handleWarning}
+                                        value={this.state.warningValue}
+                                    />
                                     <FaSearch id="search-icon"/>
                                     <input
                                         className="search-input"
@@ -559,22 +493,67 @@ class DataDashboard extends Component {
                             <div className="table-responsive">
                             <DndProvider backend={HTML5Backend}>
                                 <table className="table table-bordered table-striped text-left">
-                                    <thead>
-                                    <tr className="bg-warning">
-                                        {this.state.columnOrder.map((header, index) => (
-                                            <DraggableHeader key={header} columnName={header} index={index} moveHeader={this.moveHeader} />
-                                        ))}
-                                    </tr>
+                                <thead>
+                                        <tr className="bg-warning">
+                                            <th rowSpan="2" className="status-box" scope="col">Status</th>
+                                            <th rowSpan="2" className="mc-box" scope="col">
+                                                M/C
+                                                <span className="mc-box sortable-header" onClick={() => this.sortBy('id_machine')}>{this.renderSortingArrow('id_machine')}</span>
+                                            </th>
+                                            <th rowSpan="2" className="itemno-box" scope="col">Item number</th>
+                                            <th rowSpan="2" className="op-box" scope="col">Op.</th>
+                                            <th rowSpan="2" className="color-box" scope="col">Color</th>
+                                            <th rowSpan="2" className="side-box" scope="col">Side</th>
+                                            <th rowSpan="2" className="duedate-box" scope="col">Due Date</th>
+                                            <th rowSpan="2" className="qtypt-box" scope="col">Qty per tray</th>
+                                            <th rowSpan="2" className="qtyac-ord-box" scope="col">
+                                                Qty accum/Qty order
+                                                <span className="mc-box sortable-header" onClick={() => this.sortBy('qty_accum')}>{this.renderSortingArrow('qty_accum')}</span>
+                                            </th>
+                                            <th rowSpan="2" className="progress-box" scope="col">Progress (%)</th>
+                                            <th rowSpan="2" className="runt-box" scope="col">Run time Actual/Std(Second)</th>
+                                            <th rowSpan="2" className="total-box" scope="col">Total open run time(Hr)</th>
+                                            <th colSpan="2" className="est-box" scope="col">Estimated finish</th>
+                                            <th rowSpan="2" className="nextitemno-box" scope="col">Next item number</th>
+                                            <th rowSpan="2" className="nextop-box" scope="col">Next Op.</th>
+                                        </tr>
+                                        <tr className="fw-bold second-row bg-warning">
+                                            <th className="date-box" scope="col"> Date </th>
+                                            <th className="time-box" scope="col"> Time </th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                        {this.state.DashboardRefresh.map((item, index) => (
-                                            !this.state.hiddenRows.has(index) && (
-                                                <tr key={index}>
-                                                    {this.state.columnOrder.map((columnName) => this.renderCell(item, columnName))}
-                                                </tr>
-                                            )
+                                        {sortedData.map((item, index) => (
+                                             !this.state.hiddenRows.has(index) && (
+                                            <tr key={index}>
+                                            <td style={{ backgroundColor: this.getStatusColor(item.status_work) }}>
+                                                <td style={{color: 'white' }}>
+                                                {(this.getIdstaff(item.status_work,item.id_staff) )}
+                                                {(this.getDowntime(item.id_code_downtime,item.status_work,item.id_staff) )} 
+                                                </td>
+                                            </td>
+                                            <td className="text-db-center">{item.id_machine}</td>
+                                            <td className="text-db-left"><DashboardButton eachRowId= {item.id_machine}/>{ item.item_no }</td>
+                                            <td className="text-db-center">{ item.operation }</td>
+                                            <td className="text-db-center">{ item.op_color }</td>
+                                            <td className="text-db-center">{ item.op_side }</td>
+                                            <td className="text-db-center">{ item.date_due }</td>
+                                            <td className="text-db-center">{ item.qty_per_pulse2 }</td>
+                                            <td className="text-db-center">{ this.getAccum(item.qty_complete,item.qty_process,item.divider,item.qty_order) }</td>
+                                            <td className="text-db-center">{this.getBlinkProgress(item.qty_order,item.status_work)}</td>
+                                            <td style={{ color: this.state.ColorRuntime}}>
+                                                { this.getFlagcolor(item.run_time_actual,item.run_time_std,item.status_work)}
+                                                { this.getRuntime(item.run_time_actual,item.run_time_std,item.status_work)} 
+                                            </td>
+                                            <td className="text-db-left">{ this.getTotal(item['qty_order'],item['run_time_std'],item.status_work) }</td>
+                                            <td className="text-db-center">{this.getEsDateTime(item['qty_order'], item['run_time_std'], item.status_work)[0]}</td> 
+                                            <td className="text-db-center">{this.getEsDateTime(item['qty_order'], item['run_time_std'], item.status_work)[1]}</td> 
+                                            <td className="text-db-left"><DashboardButton2 eachRowId= {item.id_machine}/>{ this.getItem_2(item.item_no_2) }</td>
+                                            <td className="text-db-center">{ this.getOp_2(item.operation_2) }</td>
+                                            </tr>
+                                             )
                                         ))}
-                                    </tbody>
+                                        </tbody>
                                 </table>
                                 </DndProvider>
                             </div>
