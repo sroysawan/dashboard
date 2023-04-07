@@ -7,6 +7,7 @@ use App\Models\Activity;
 use App\Models\ActivityRework;
 use App\Models\ActivityDowntime;
 use App\Models\Machine;
+use App\Models\Planning;    
 use App\Models\CodeDowntime;
 use Illuminate\Support\Facades\Log;
 use Exception;
@@ -755,6 +756,7 @@ class dashboardRefreshController extends Controller
                             "id_staff"=> $data_activity['id_staff'],
                             "status_work"=> $data_activity['status_work'],
                             "qty_process"=> $data_activity_sum[0]->qty_process,
+                            "qty_accum"=> $data_planning[0]->qty_complete + $data_activity_sum[0]->qty_process,
                             //"qty_repeat"=> $data_activity_sum[0]->qty_repeat,
                             "task_complete"=> $data_planning[0]->task_complete,
                             "status_backup"=> $data_planning[0]->status_backup,
@@ -1269,7 +1271,6 @@ class dashboardRefreshController extends Controller
                         $data_planning_queue_2 = DB::select('SELECT operation, item_no FROM planning where id_task=' . $data_machine_queue_2[0]->id_task);
                         $item_no_2 = $data_planning_queue_2[0]->item_no;
                         $operation_2 = $data_planning_queue_2[0]->operation;
-                        //print_r($data_planning);
                     }
                 }
         
@@ -1301,9 +1302,7 @@ class dashboardRefreshController extends Controller
                     if($request->input('dashboardID')==$id_mc[$i]){
                         return response() -> json($sumResult[$i]);
                         
-                    } 
-                //    print_r($request->dashboardID==$id_mc[$i]);   
-                   //print_r(response() -> json($sumResult[$i]));               
+                    }              
             }
             return response() -> json(array(
                 "id_machine"=>$request->input('dashboardID'),
@@ -1316,12 +1315,8 @@ class dashboardRefreshController extends Controller
                 "qty_order"=> '',
                 "qty_percent" => '',
                 "id_task"=>'',
-                "datetime_update" => '',
-                           
-                 
+                "datetime_update" => '',  
             ));
-            // print_r(response() -> json($sumResult));   
-            
         }
         
         catch(Exception $error){
@@ -1333,14 +1328,14 @@ class dashboardRefreshController extends Controller
 
  
 
-    public function dashboardRefreshQueue2(){
+    public function dashboardRefreshQueue2(Request $request){
         // return response() -> json($sumResult);
         try{
             $machineId = MachineQueue::where('queue_number' ,'1')->get();
             $machineId_queue_2 = MachineQueue::where('queue_number' ,'2')->get();
             $id_mc = array();
             $id_mc_queue_2 =array();
-            $sumResult = array();
+            // $sumResult = array();
             $count = $machineId->count();
             $count2 = $machineId_queue_2->count();
             for ($i=0;$i<$count;$i++){
@@ -1353,17 +1348,20 @@ class dashboardRefreshController extends Controller
             // return response() -> json($id_mc_queue_2);
             // print_r($count);
             $check = 0;
+            // if($request->input('dashboardID')==$id_mc[$i]){
+            //     return response() -> json($sumResult[$i]);
+                
+            // }
             // return response() -> json($id_mc_queue_2);
-            for($i = 0 ; $i<$count ; $i++){
+            // for($i = 0 ; $i<$count ; $i++){
                 foreach($id_mc_queue_2 as $values){
-                    if($values == $id_mc[$i]){
-                        $data_machine_queue = MachineQueue::where('id_machine',$id_mc_queue_2[$i])->where('queue_number','2')->get();
-                        
+                    if($values == $request->input('dashboardID')){
+                        $data_machine_queue = MachineQueue::where('id_machine',$values)->where('queue_number','2')->get();
                         $data_activity_sum = DB::select('SELECT SUM(no_pulse1) AS qty_process FROM activity WHERE status_work<6 AND id_task='.$data_machine_queue[0]->id_task);
                         // return response() -> json($data_activity_sum);
                         $data_planning = DB::select('SELECT task_complete, status_backup, qty_order, p.datetime_update, p.operation,
                         qty_comp AS qty_complete, qty_open, run_time_std, divider.divider as divider,
-                        p.op_color, p.op_side, p.op_des, p.item_no, p.date_due, p.id_job
+                        p.op_color, p.op_side, p.op_des, p.item_no, p.date_due, p.id_job , p.qty_per_pulse2
                         FROM planning as p, divider
                         where p.op_color=divider.op_color
                         AND p.op_side=divider.op_side
@@ -1371,16 +1369,16 @@ class dashboardRefreshController extends Controller
                         
                         $data_planning[0]->run_time_std = number_format((floatval($data_planning[0]->run_time_std)*3600)-2, 2);
                         $check = 1;
-                        $sumResult[$i] = array(
-                            "id_machine"=>$id_mc_queue_2[$i],
+                        $sumResult = array(
+                            "id_machine"=>$request->input('dashboardID'),
                             "id_task"=>$data_machine_queue[0]->id_task,
                             "date_due" =>$data_planning[0]->date_due,
                             "qty_accum"=> $data_planning[0]->qty_complete + $data_activity_sum[0]->qty_process,
                             "id_job"=>$data_planning[0]->id_job,
                             "qty_percent" => round(($data_planning[0]->qty_complete + $data_activity_sum[0]->qty_process / $data_planning[0]->qty_order) * 100,0),
-                            "operation" => $data_planning[0]->datetime_update,
+                            "operation" => $data_planning[0]->operation,
                             "qty_process"=> $data_activity_sum[0]->qty_process,
-                            // "qty_repeat"=> $data_activity_sum[0]->qty_repeat,
+                            "qty_per_pulse2"=> $data_planning[0]->qty_per_pulse2,
                             "task_complete"=> $data_planning[0]->task_complete,
                             "status_backup"=> $data_planning[0]->status_backup,
                             "qty_order"=> $data_planning[0]->qty_order,
@@ -1401,47 +1399,24 @@ class dashboardRefreshController extends Controller
                             "des_downtime_thai"=> '-',
                             "datetime_update" => $data_planning[0]->datetime_update,
                         );
-                        // return response() -> json($sumResult[$i]);
+                        return response() -> json($sumResult);
                         
                     }
                 }
-                if($check == 1){
-                    $check = 0;
-                    continue;
-                }
-                else{
-                    $sumResult[$i] = array(
-                        "id_machine"=>$id_mc[$i],
-                        "id_task"=>'-',
-                        "operation" => '-',
-                        "date_due" =>'-',
-                        "qty_accum"=> '-',
-                        "id_job"=> '-',
-                        "qty_percent" => '-',
-                        "qty_process"=> '-',
-                        // "qty_repeat"=> '-',
-                        "task_complete"=> '-',
-                        "status_backup"=> '-',
-                        "qty_order"=> '-',
-                        "qty_complete"=> '-',
-                        "qty_open"=> '-',
-                        "run_time_std"=> '-',
-                        "divider"=> '-',
-                        "op_color" => '-',
-                        "op_side" => '-',
-                        "op_des" => '-',
-                        "item_no" => '-',
-                        "status_work"=> '-',
-                        "id_staff"=> '-',
-                        "run_time_actual"=> '-',
-                        "id_code_downtime"=> '-',
-                        "code_downtime"=> '-',
-                        "des_downtime"=> '-',
-                        "des_downtime_thai"=> '-',
-                        "datetime_update" => '-',
-                    );
-                }
-            }
+                $sumResult = array(
+                    "id_machine"=>$request->input('dashboardID'),
+                    "status_work"=> '',
+                    "item_no" => '',
+                    "operation" => '',
+                    "date_due" =>'',
+                    "qty_per_pulse2"=> '',
+                    "qty_accum"=> '',
+                    "qty_order"=> '',
+                    "qty_percent" => '',
+                    "id_task"=>'',
+                    "datetime_update" => '',  
+                );
+            // }
             return response() -> json($sumResult);
         }
         catch(Exception $error){
@@ -1450,7 +1425,7 @@ class dashboardRefreshController extends Controller
     }
 
 
-    public function dashboardRefreshQueue2New(){
+    public function dashboardRefreshQueue2New(Request $request){
         try{
             $machineId = Machine::all();
             $machineId_queue_1 = MachineQueue::where('queue_number' ,'1')->get();
@@ -1635,7 +1610,8 @@ class dashboardRefreshController extends Controller
                     continue;
                 }
 
-                    if($data_activity['status_work'] == 0 || $data_activity['status_work']==3 || $data_activity['status_work']==4 || $data_activity['status_work']==5 || $data_activity['status_work']==6){
+                $data_planning[0]->run_time_std = number_format((floatval($data_planning[0]->run_time_std)*3600)-2, 2);
+                $check = 1;
                         $sumResult[$i] = array(
                             "id_machine"=>$id_mc[$i],
                             "id_task"=>$data_machine_queue[0]->id_task,
@@ -1667,48 +1643,47 @@ class dashboardRefreshController extends Controller
                             "operation_2" => $operation_2
                          );
                          
-                    }
+                         if($check == 1){
+                            $check = 0;
+                            continue;
+                        }
                     else{
                         $sumResult[$i] = array(
                             "id_machine"=>$id_mc[$i],
-                            "id_task"=>$data_machine_queue[0]->id_task,
-                            "id_staff"=> $data_activity['id_staff'],
                             "status_work"=> $data_activity['status_work'],
-                            "qty_process"=> $data_activity_sum[0]->qty_process,
-                            //"qty_repeat"=> $data_activity_sum[0]->qty_repeat,
-                            "task_complete"=> $data_planning[0]->task_complete,
-                            "status_backup"=> $data_planning[0]->status_backup,
-                            "qty_order"=> $data_planning[0]->qty_order,
-                            "qty_complete"=> $data_planning[0]->qty_complete,
-                            "qty_open"=> $data_planning[0]->qty_open,
-                            "divider"=> $data_planning[0]->divider,
-                            "item_no" => $data_planning[0]->item_no,
-                            "operation" => $data_planning[0]->operation,
-                            "op_color" => $data_planning[0]->op_color,
-                            "op_side" => $data_planning[0]->op_side,
-                            "op_des" => $data_planning[0]->op_des,
-                            "date_due" =>$data_planning[0]->date_due,
-                            "run_time_actual"=> $data_activity['run_time_actual'],
-                            "run_time_std"=> $data_planning[0]->run_time_std,
-                            "datetime_update" => $data_planning[0]->datetime_update,
-                            "id_code_downtime"=> $id_code_downtime,
-                            "code_downtime"=> $code_downtime,
-                            "des_downtime"=> $des_downtime,
-                            "des_downtime_thai"=> $des_downtime_thai,
                             "item_no_2" => $item_no_2,
-                            "operation_2" => $operation_2
+                            "operation_2" => $operation_2,
+                            "date_due" =>$due_date,
+                            "qty_per_pulse2"=> $data_planning[0]->qty_per_pulse2,
+                            "qty_accum"=> $data_planning[0]->qty_complete + $data_activity_sum[0]->qty_process,
+                            "qty_order"=> $data_planning[0]->qty_order,
+                            "qty_percent" => round(($data_planning[0]->qty_complete + $data_activity_sum[0]->qty_process / $data_planning[0]->qty_order) * 100,0),
+                            "id_task"=>$data_machine_queue[0]->id_task,
+                            "datetime_update" => $data_planning[0]->datetime_update,
+
                          );
                          
                     }
-                    // if($i==7){
+                    if($request->input('dashboardID')==$id_mc[$i]){
+                        return response() -> json($sumResult[$i]);
                         
-                    //     return response() -> json($sumResult[$i]);
-                    // }
-                    
-                
+                    }              
             }
-            return response() -> json($sumResult);
+            return response() -> json(array(
+                "id_machine"=>$request->input('dashboardID'),
+                "status_work"=> '',
+                "item_no_2" =>  '',
+                "operation_2" => '',
+                "date_due" =>'',
+                "qty_per_pulse2"=> '',
+                "qty_accum"=> '',
+                "qty_order"=> '',
+                "qty_percent" => '',
+                "id_task"=>'',
+                "datetime_update" => '',  
+            ));
         }
+        
         catch(Exception $error){
             Log::error($error);
         }
@@ -1996,152 +1971,34 @@ class dashboardRefreshController extends Controller
         }
     }
 
-    public function updateDashboardData(Request $request)
+    //Modal Edit 
+    public function updateModalDashboard(Request $request)
     {
-        $machineId = Machine::all();
-        $machineId_queue_1 = MachineQueue::where('queue_number' ,'1')->get();
-        $machineId_queue_2 = MachineQueue::where('queue_number' ,'2')->get();
-        $id_mc = array();
-        $id_mc_queue_1 =array();
-        $id_mc_queue_2 =array();
-        $sumResult = array();
-        $count = $machineId->count();
-        $count2 = $machineId_queue_2->count();
-        for ($i=0;$i<$count;$i++){
-            array_push($id_mc,$machineId[$i]->id_mc);
-            }
-        for ($i=0;$i< $machineId_queue_1->count();$i++){
-            array_push($id_mc_queue_1,$machineId_queue_1[$i]->id_machine);
-            }
-        for ($i=0;$i<$count2;$i++){
-            array_push($id_mc_queue_2,$machineId_queue_2[$i]->id_machine);
-            }
-        sort($id_mc);
-        sort($id_mc_queue_1);
-        sort($id_mc_queue_2);
-        // print_r($id_mc);
+        try
+        {
+        $dashboardIdModal = $request->get('dashboardId');
+        $currentDashboardQtypertray =$request->get('dashboardQtypertray');
+        $currentDashboardQtyaccum =$request->get('dashboardQtyaccum'); 
+        $currentDashboardQtyaccumTemp =$request->get('accumTemp'); 
+        $resultAccum = $currentDashboardQtyaccum - $currentDashboardQtyaccumTemp;    
+        $data_planning = Planning::select('qty_comp')->where('id_task',$dashboardIdModal)->first();
+        // return response()-> json($data_planning->qty_comp + $resultAccum);
         
-        // $data_activity = DB::select('SELECT * FROM (select max(id_activity) as id_activity_max FROM activity GROUP by id_machine) as max_activity , activity as a where a.id_activity = max_activity.id_activity_max');
+        Planning::where('id_task',$dashboardIdModal)->update([
+            'qty_per_pulse2' => $currentDashboardQtypertray,
+            'qty_comp' => $data_planning->qty_comp + $resultAccum,
+        ]);
         
-        for($i = 0 ; $i<$machineId->count() ; $i++){
-            $item_no_2 = '-';
-            $operation_2 = '-';
-            foreach($id_mc_queue_2 as $values){
-                if($values == $id_mc[$i]){
-                    // print_r($id_mc_queue_2);
-                    $data_machine_queue_2 = MachineQueue::where('id_machine',$id_mc[$i])->where('queue_number','2')->get();
-                    // print_r($data_machine_queue_2);
-                    $data_planning_queue_2 = DB::select('SELECT operation, item_no FROM planning where id_task=' . $data_machine_queue_2[0]->id_task);
-                    // print_r($data_planning_queue_2);
-                    $item_no_2 = $data_planning_queue_2[0]->item_no;
-                    $operation_2 = $data_planning_queue_2[0]->operation;
-                }
-            }
-            $data_machine_queue = MachineQueue::where('id_machine',$id_mc[$i])->where('queue_number','1')->get();
-            $data_activity_sum = DB::select('SELECT SUM(no_pulse1) AS qty_process FROM activity WHERE status_work<6 AND id_task='.$data_machine_queue[0]->id_task);
-                
-                if($data_activity_sum[0]->qty_process == null){
-                    $data_activity_sum[0]->qty_process = 0;
-                    //echo $data_activity_sum[0]->qty_process;
-                }
-                //if($data_activity_sum[0]->qty_repeat == null){
-                //    $data_activity_sum[0]->qty_repeat = 0;
-                    //echo $data_activity_sum[0]->qty_repeat;
-                //}
-                $data_planning = DB::select('SELECT task_complete, status_backup, qty_order, p.datetime_update, p.operation, p.run_time_actual,
-                qty_comp AS qty_complete, qty_open, run_time_std, divider.divider as divider,
-                p.op_color, p.op_side, p.op_des, p.item_no, p.operation, p.date_due, p.qty_per_pulse2, p.id_job, p.work_order, p.machine
-                FROM planning as p, divider
-                where p.op_color=divider.op_color
-                AND p.op_side=divider.op_side
-                and id_task=' . $data_machine_queue[0]->id_task);
-                $due_date = date('d-m-Y', strtotime($data_planning[0]->date_due));
-                $data_planning[0]->run_time_std = number_format((floatval($data_planning[0]->run_time_std)*3600)-2, 2);
-                $number_count = 0;
-                $id_code_downtime = '-';
-                $code_downtime = '-';
-                $des_downtime = '-';
-                $des_downtime_thai = '-';
-               
-                
-                $data_activity_backflush = Activity::where('id_task',$data_machine_queue[0]->id_task)->orderBy('time_start','desc')->first();
-                $data_activity_downtime = ActivityDowntime::where('id_task',$data_machine_queue[0]->id_task)->orderBy('time_start','desc')->first();
-                $data_activity_rework = ActivityRework::where('id_task',$data_machine_queue[0]->id_task)->orderBy('time_start','desc')->first();
-                
-                if($data_activity_backflush != null){
-                    $date_backflush = strtotime($data_activity_backflush['time_start']);
-                    $data_activity = $data_activity_backflush;
-                }
-                else{
-                    $date_backflush = 0;
-                    $number_count++;
-                }
-
-                if($data_activity_rework != null){
-                    $date_rework = strtotime($data_activity_rework['time_start']);
-                    if($date_backflush < $date_rework){
-                        $data_activity = $data_activity_rework;
-                    }
-                }
-                else{
-                    $date_rework = 0;
-                    $number_count++;
-                }
-                
-                if($data_activity_downtime != null){
-                    $date_downtime = strtotime($data_activity_downtime['time_start']);
-                    if(($date_backflush < $date_downtime) && ($date_rework < $date_downtime)){
-                        $data_activity = $data_activity_downtime;
-                        
-                        $data_activity['status_work']=$data_activity['status_downtime'];
-                    if ($data_activity['run_time_actual'] == null) {
-                        $data_activity['run_time_actual'] = 0;
-                    }
-                    
-                    $data_code_downtime = CodeDowntime::where('id_code_downtime',$data_activity['id_code_downtime'])->get();
-                    
-                    $id_code_downtime = $data_code_downtime[0]->id_code_downtime;
-                    $code_downtime = $data_code_downtime[0]->code_downtime;
-                    $des_downtime = $data_code_downtime[0]->des_downtime;
-                    $des_downtime_thai = $data_code_downtime[0]->des_downtime_thai;
-                    }
-                }
-                else{
-                    $number_count++;
-                }
-
-         $currentDashboardIdmc = $request->get('id_machine');
-         $currentDashboardQtypertray  =$request->get('qty_per_pulse2');
-         $currentDashboardQtyaccum =$request->get('qty_accum');
-         MachineQueue::where('id_machine',$id_mc[$i])->where('queue_number','1')->update([
-            "qty_per_pulse2"=> $data_planning[0]->qty_per_pulse2,
-            "qty_accum"=> $data_planning[0]->qty_complete + $data_activity_sum[0]->qty_process,
-            //  'id_staff' => $dashboardStaff,
-            //  'id_rfid' => $dashboardRfid,
-            //  'prefix' => $dashboardPrefix,
-            //  'name_first' => $dashboardFirst,
-            //  'name_last' => $dashboardLast,
-            //  // 'site' => $dashboardsite,
-            //  'id_role' => $dashboardRole,
-            //  'id_shif' => $dashboardShif
-         ]);
- 
-         // $data = Staff::where('id_staff','0997')->get();
-         // 'staff_img' => $dashboardimg
          return response()-> json([
-            "qty_per_pulse2"=> $data_planning[0]->qty_per_pulse2,
-            "qty_accum"=> $data_planning[0]->qty_complete + $data_activity_sum[0]->qty_process,
-            //  'id_staff' => $dashboardStaff,
-            //  'id_rfid' => $dashboardRfid,
-            //  'prefix' => $dashboardPrefix,
-            //  'name_first' => $dashboardFirst,
-            //  'name_last' => $dashboardLast,
-            //  // 'site' => $dashboardsite,
-            //  'id_role' => $dashboardRole,
-            //  'id_shif' => $dashboardShif
-            //  // 'staff_img' => $dashboardimg
+            'qty_per_pulse2' => $currentDashboardQtypertray,
+            'qty_comp' => $currentDashboardQtyaccum
          ]);
+        }
+        catch(Exception $e)
+         {
+            Log::error($e);
+         }
     }
 }
-}
+
 
