@@ -19,6 +19,7 @@ var runtimes;
 class DataDashboard extends Component {
     constructor(props) { 
         super(props); 
+        const savedWarningValue = parseFloat(localStorage.getItem('warningValue')) || 500;
         this.state = {
             searchValue: "",
             DashboardRefresh: [],
@@ -26,21 +27,24 @@ class DataDashboard extends Component {
             ColorRuntime: 'black',       
             hiddenRows: new Set(),
             isRowHidden: false,    
-            warningValue:500,
-            sortConfig: { key: 'id_machine',key:'qty_accum', direction: 'asc' },
+            warningValue:savedWarningValue,
+            inputWarning: '',
+            sortConfig: { key: 'id_machine', direction: 'asc' },
     };
     this.toggleRowVisibility = this.toggleRowVisibility.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.updateWarning = this.updateWarning.bind(this);
 }
 
     componentDidMount = () => {
         this.getDashboardRefresh();
-        // this.interval = setInterval(this.getDashboardRefresh, 10000);
+        this.interval = setInterval(this.getDashboardRefresh, 10000);
         // this.getRuntimecolor(this.props.run_time_actual,this.props.run_time_std,this.props.status_work);
     };
 
-    // componentWillUnmount() {
-    //     clearInterval(this.interval);
-    // }
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
 
     getDashboardRefresh = () => {
         let self = this;
@@ -50,17 +54,16 @@ class DataDashboard extends Component {
                 DashboardRefresh: Object.values(response.data),
                 TempDashboardRefresh: Object.values(response.data),
             });
-            // console.log(Object.values(response.data));
         });
     };
 
     searchData = (event) => {
-        // if(event.target.value != ""){
-        //     clearInterval(this.interval);
-        // }
-        // else{
-        //     this.interval = setInterval(this.getDashboardRefresh, 10000);
-        // }
+        if(event.target.value != ""){
+            clearInterval(this.interval);
+        }
+        else{
+            this.interval = setInterval(this.getDashboardRefresh, 10000);
+        }
         this.state.TempDashboardRefresh.map((x) => {
             if (
                 x.operation.toLowerCase().includes(event.target.value.toLowerCase()) ||
@@ -127,7 +130,7 @@ class DataDashboard extends Component {
         }
         this.setState({ sortConfig: { key, direction } });
       }
-    
+
       compare(a, b, direction) {
         if (a === b) {
           return 0;
@@ -137,11 +140,12 @@ class DataDashboard extends Component {
           return direction === 'asc' ? 1 : -1;
         }
       }
+      
       renderSortingArrow(columnKey) {
         if (this.state.sortConfig.key === columnKey) {
-          return this.state.sortConfig.direction === 'asc' ? '🔼' : '🔽';
+          return this.state.sortConfig.direction === 'asc' ? '▴' : '▾';
         }
-        return '🔼';
+        return '▴';
       }
 
     //Data in Table on Dashboard
@@ -381,10 +385,30 @@ class DataDashboard extends Component {
       else return '';
   }
 
-  handleWarning = (event) => {
-    let result = event.target.value==null ? 0 : event.target.value;
+//   handleWarning = (event) => {
+//     let result = event.target.value==null ? 0 : event.target.value;
+//     this.setState({
+//         warningValue : result,
+//     });
+//   }
+
+  handleChange = (event) => {
     this.setState({
-        warningValue : result,
+      inputWarning: event.target.value,
+    });
+  }
+  updateWarning = () => {
+    this.setState(prevState => {
+        const newWarning = parseFloat(prevState.inputWarning);
+    //   warningValue: parseFloat(prevState.inputWarning),
+    // if (newWarning < 0) {
+    //     alert('warningValue cannot be a negative value');
+    //     return prevState;
+    // }
+    localStorage.setItem('warningValue', newWarning);
+      return {
+        warningValue: newWarning,
+      };
     });
   }
 
@@ -420,8 +444,19 @@ class DataDashboard extends Component {
                                     <label className="hide-label">
                                     Hide unassigned machines
                                     </label>
-                                </div>
-                                <div className="p-2">
+                                    </div>
+                                <div className="p-2 warning-left">
+                                    <label>Current waning value: {this.state.warningValue}</label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        value={this.state.inputWarning}
+                                        onChange={this.handleChange}
+                                        placeholder="Enter New Value"
+                                    />
+                                    <button onClick={this.updateWarning}>Update</button>
+                                </div> 
+                                <div className="p-2 color-left">
                                     <div
                                         style={{
                                             display: "inline-block",
@@ -473,12 +508,12 @@ class DataDashboard extends Component {
                                 </div>
                                 <div className="ms-auto p-2">
                                 <div className="input-wrapper">
-                                    <input
+                                    {/* <input
                                         className="warning"
                                         placeholder= "Warning"
                                         onChange={this.handleWarning}
                                         value={this.state.warningValue}
-                                    />
+                                    /> */}
                                     <FaSearch id="search-icon"/>
                                     <input
                                         className="search-input"
@@ -508,7 +543,7 @@ class DataDashboard extends Component {
                                             <th rowSpan="2" className="qtypt-box" scope="col">Qty per tray</th>
                                             <th rowSpan="2" className="qtyac-ord-box" scope="col">
                                                 Qty accum/Qty order
-                                                <span className="mc-box sortable-header" onClick={() => this.sortBy('qty_accum')}>{this.renderSortingArrow('qty_accum')}</span>
+                                                <span className="mc-box sortable-header" onClick={() => this.sortBy('qty_order')}>{this.renderSortingArrow('qty_order')}</span>
                                             </th>
                                             <th rowSpan="2" className="progress-box" scope="col">Progress (%)</th>
                                             <th rowSpan="2" className="runt-box" scope="col">Run time Actual/Std(Second)</th>

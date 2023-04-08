@@ -1,0 +1,15 @@
+.dataTable-table th,
+.dataTable-table td {
+  border-left: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+}
+
+.dataTable-table th:first-child,
+.dataTable-table td:first-child {
+  border-left: none;
+}
+
+.dataTable-table th:last-child,
+.dataTable-table td:last-child {
+  border-right: none;
+}

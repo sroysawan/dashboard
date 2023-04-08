@@ -30,25 +30,21 @@ class DashboardButton2 extends Component{
         axios.get('/update/DashboardRefreshQueue2/',{ params: { dashboardID: id_machine } }
         ).then((response) => {
             console.log(response.data);
-            for(var i=0 ; i<response.data.length ; i++){
-                if(response.data[i].id_machine == id_machine){
                     console.log("123");
                     this.setState({
-                        currentDashboardIdmc: response.data[i].id_machine,
-                        currentDashboardItemno: response.data[i].item_no,
-                        currentDashboardOp: response.data[i].operation,
-                        currentDashboardDatedue: response.data[i].date_due,
-                        currentDashboardQtypertray: response.data[i].qty_per_tray,
-                        currentDashboardQtyaccum: response.data[i].qty_accum,
-                        currentDashboardQtyorder: response.data[i].qty_order,
-                        currentDashboardQtypercent: response.data[i].qty_percent,
-                        currentDashboardIdtask: response.data[i].id_task,
-                        currentDashboardIdjob: response.data[i].id_job,
-                        currentDashboardDtupdate: response.data[i].datetime_update
+                        currentDashboardIdmc: response.data.id_machine,
+                        currentDashboardItemno: response.data.item_no,
+                        currentDashboardOp: response.data.operation,
+                        currentDashboardDatedue: response.data.date_due,
+                        currentDashboardQtypertray: response.data.qty_per_pulse2,
+                        currentDashboardQtyaccum: response.data.qty_accum,
+                        currentDashboardQtyorder: response.data.qty_order,
+                        currentDashboardQtypercent: response.data.qty_percent,
+                        currentDashboardIdtask: response.data.id_task,
+                        currentDashboardDtupdate: response.data.datetime_update
                     })
-                    break;
-                }
-            }
+                
+            
             // console.log(response.data[1]);
         })
 
@@ -67,7 +63,7 @@ class DashboardButton2 extends Component{
   
                 <FaRegEdit/>
                 </button>  
-                <ViewModal2 modalId={this.props.eachRowId} sumResult= {this.state}/>
+                <ViewModal2 modalId={this.props.eachRowId} dashboardData= {this.state}/>
                 </div>          
         );
     }

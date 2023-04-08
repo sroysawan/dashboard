@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 
-const DraggableHeader = ({ columnName, index, moveHeader }) => {
+const DraggableHeader = ({ columnName, index, moveHeader,  handleSort}) => {
     const ref = useRef(null);
 
     const [, drop] = useDrop({
@@ -50,5 +50,6 @@ const DraggableHeader = ({ columnName, index, moveHeader }) => {
         </th>
     );
 };
+
 
 export default DraggableHeader;

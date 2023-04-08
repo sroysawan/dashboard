@@ -60,9 +60,10 @@
         "react-reorder": "^3.0.0-alpha.7",
         "react-router-dom": "^6.8.2",
         "react-search-box": "^3.0.0",
+        "react-toastify": "^9.1.2",
         "reactstrap": "^9.1.6",
         "simple-datatables-classic": "^2.1.14",
         "startbootstrap-simple-sidebar": "^6.0.5",
-        "styled-components": "^5.3.6"
+        "styled-components": "^5.3.9"
     }
 }

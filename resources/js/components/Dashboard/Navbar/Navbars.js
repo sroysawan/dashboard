@@ -9,7 +9,7 @@ class Navbars extends Component {
             <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
                 <Container fluid>
                     <Navbar.Brand href="/dashboard">
-                        <a class="navbar-brand ps-lg-2">
+                        <a className="navbar-brand ps-lg-2">
                             <img src={iconImage} alt="Icon" className="navbar-logo" />
                         </a>
                     </Navbar.Brand>

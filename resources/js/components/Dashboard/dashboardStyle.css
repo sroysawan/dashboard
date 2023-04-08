@@ -1,9 +1,28 @@
 .custom-div {
-    width: 33.33%;
+    /* width: 33.33%; */
+    width: 25%;
     vertical-align: middle;
+    font-size: 17px;
 }
-.p-2-left{
-    transform:translate(-150px,10px);
+  
+.centerHeader {
+    text-align: center !important;
+  }
+  
+.cellLeftAlign {
+    align-items: left;
+    text-align: left;
+}
+  
+.warning-left{
+    font-size: 17px;
+    width: 600px;
+    transform:translate(-120px,5px);
+}
+.color-left{
+    font-size: 17px;
+    transform:translate(-50px,5px);
+    width: 1000px;
 }
 .input-wrapper {
     /* background-color: #353b48; */
@@ -44,11 +63,10 @@ input:focus {
     transform:translate(0px,5px);
 }
 
-/* .table {
-    width: 100%;
-    border-collapse: collapse;
-} */
-
+.sortable-header {
+    cursor: pointer;
+  }
+  
 .text-db-center{
     text-align: center;
     vertical-align: middle;
@@ -86,11 +104,11 @@ input:focus {
     text-align: center;
 }
 .qtypt-box{
-    width: 3%;
+    width: 4%;
     text-align: center;
 }
 .qtyac-ord-box{
-    width: 6.4%;
+    width: 8%;
     text-align: center;
 }
 .progress-box{
@@ -126,7 +144,4 @@ input:focus {
     text-align: center;
 }
 
-
-
-  
-  
+/* //////////////////////////////////////////////////////////////// */

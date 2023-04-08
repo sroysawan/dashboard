@@ -16,27 +16,30 @@ Route::get('/update/DashboardRefresh/',
     [dashboardRefreshController::class, 'dashboardRefreshV5']
 );
 
-
 //Dashboard old DB
 Route::get('/update/DashboardRefreshold/',
     [dashboardRefreshController::class, 'dashboardRefreshV5old']
 );
 
-Route::post('/get/indivvidual/dashboard/details',
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Route::get('/get/indivvidual/dashboard/details',
 [dashboardRefreshController::class, 'getDashboardDetails'])->name('dashboard.details');
 
-Route::post('/update/dashboard/data/update',
-       [dashboardRefreshController::class, 'updateDashboardData'])->name('dashboard.update'); 
+Route::get('/update/dashboard/modal',
+       [dashboardRefreshController::class, 'updateModalDashboard'])->name('dashboard.update'); 
 
 Route::get('/get/indivvidual/dashboard/detailsNew',
 [dashboardRefreshController::class, 'getDashboardDetailsNewDB'])->name('dashboard.detailsNew');
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //Modal old DB
 Route::get('/update/DashboardRefreshQueue2/',
     [dashboardRefreshController::class, 'dashboardRefreshQueue2']
 );
 
-//Modal New DB
+//Next Modal New DB 
 Route::get('/update/DashboardRefreshQueue2New/',
     [dashboardRefreshController::class, 'dashboardRefreshQueue2New']
 );
