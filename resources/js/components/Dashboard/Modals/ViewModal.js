@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import UpdateModal from "./UpdateModal";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter, Route, Link } from "react-router-dom";
 
@@ -158,6 +158,37 @@ class ViewModal extends Component {
         return dashboardUpdate;
     }
 
+    // updateModalDashboard = () => {
+    //     const { dashboardData, modalId } = this.props;
+    //     const { dashboardQtypertray, dashboardQtyaccum, accumTemp } = this.state;
+    
+    //     console.log(modalId);
+    //     console.log(dashboardQtypertray);
+    //     console.log(dashboardQtyaccum);
+    
+    //     axios
+    //       .get('/update/dashboard/modal', {
+    //         params: {
+    //           dashboardId: dashboardData.currentDashboardIdtask,
+    //           dashboardQtypertray,
+    //           dashboardQtyaccum,
+    //           accumTemp,
+    //         },
+    //       })
+    //       .then((response) => {
+    //         console.log(response.data);
+    //         console.log('Update Success');
+    
+    //         // Instead of reloading the page, update the state with the new data
+    //         this.setState({
+    //           dashboardQtypertray: response.data.dashboardQtypertray,
+    //           dashboardQtyaccum: response.data.dashboardQtyaccum,
+    //           accumTemp: response.data.accumTemp,
+    //           // ... other updated properties
+    //         });
+    //       });
+    //   };
+
     updateModalDashboard = () => {
         console.log(this.props.modalId);
         console.log(this.state.dashboardQtypertray);
@@ -167,7 +198,7 @@ class ViewModal extends Component {
             .get("/update/dashboard/modal", {
                 params: {
                     dashboardId:
-                        this.props.dashboardData.currentDashboardIdtask,
+                    this.props.dashboardData.currentDashboardIdtask,
                     dashboardQtypertray: this.state.dashboardQtypertray,
                     dashboardQtyaccum: this.state.dashboardQtyaccum,
                     accumTemp: this.state.accumTemp,
@@ -176,10 +207,11 @@ class ViewModal extends Component {
             .then((response) => {
                 console.log(response.data);
                 console.log("Update Success");
-                //  toast.success("Dashboard Updated Successully");
-                //  setTimeout(() => {
-                //      location.reload();
-                // },500)
+                toast.success("Update Success");
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+                // this.getDashboardDetailsNewDB();
             });
     };
 
@@ -432,7 +464,7 @@ class ViewModal extends Component {
                                             <td>Qty per tray:</td>
                                             <div className="form-group">
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="currentDashboardQtypertray"
                                                     className="form-control mb3 bg"
                                                     value={this.state.dashboardQtypertray ?? ""}
@@ -444,7 +476,7 @@ class ViewModal extends Component {
                                             <td>Qty accum:</td>
                                             <div className="form-group">
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="currentDashboardQtyaccum"
                                                     className="form-control mb3 bg"
                                                     value={this.state.dashboardQtyaccum ?? ""}
@@ -486,7 +518,9 @@ class ViewModal extends Component {
                                     value="Update"
                                     onClick={this.updateModalDashboard}
                                 />
-
+                                <ToastContainer
+                                    autoClose={400}
+                                />
                                 <button
                                     type="button"
                                     className="btn btn-secondary"
