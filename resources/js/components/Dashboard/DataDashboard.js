@@ -103,15 +103,16 @@ class DataDashboard extends Component {
     };
 
     //hide-bt
-    toggleRowVisibility() {
+    toggleRowVisibility =()=> {
         if (this.state.isRowHidden) {
             this.setState({ hiddenRows: new Set(), isRowHidden: false });
           } else {
         const hiddenRows = new Set();
-        this.state.DashboardRefresh.forEach((item, index) => {
+        this.state.DashboardRefresh.forEach((item) => {
             const status_work = item.status_work;
+            const id_machine = item.id_machine;
             if (status_work  === '') {
-                hiddenRows.add(index);
+                hiddenRows.add(id_machine);
             }
         });
         this.setState({ hiddenRows, isRowHidden: true });
@@ -119,7 +120,7 @@ class DataDashboard extends Component {
     }
 
     //sort
-    sortBy(key) {
+    sortBy =(key) =>{
         let direction = 'asc';
         if (
           this.state.sortConfig &&
@@ -131,7 +132,7 @@ class DataDashboard extends Component {
         this.setState({ sortConfig: { key, direction } });
       }
 
-      compare(a, b, direction) {
+      compare =(a, b, direction) =>{
         if (a === b) {
           return 0;
         } else if (a < b) {
@@ -141,7 +142,7 @@ class DataDashboard extends Component {
         }
       }
       
-      renderSortingArrow(columnKey) {
+      renderSortingArrow = (columnKey) =>{
         if (this.state.sortConfig.key === columnKey) {
           return this.state.sortConfig.direction === 'asc' ? '▴' : '▾';
         }
@@ -203,7 +204,7 @@ class DataDashboard extends Component {
     if (status_work === '') {
         return null;
     }else if (qty_order - qty_accum <= this.state.warningValue){
-          return  <Blink text={<ProgressBar /*className='progress-bar-color'*/ variant='warning' min={0} max={100} now={this.getPercent(qty_order)} label={`${this.getPercent(qty_order)}%` }/>} ></Blink>
+          return  <Blink text={<ProgressBar variant='warning' min={0} max={100} now={this.getPercent(qty_order)} label={`${this.getPercent(qty_order)}%` }/>} ></Blink>
       }else if(qty_order - qty_accum > this.state.warningValue) {
           return <ProgressBar min={0} max={100} now={this.getPercent(qty_order)} label={`${this.getPercent(qty_order)}%` }/>;
   }
@@ -434,7 +435,7 @@ class DataDashboard extends Component {
                         </div>
                         <div className="card-header text-black">
                             <div className="d-flex">
-                                <div className="p-2 custom-div">
+                                <div className="p-2 custom-header">
                                     <input
                                         className="hide-bt"
                                         type="checkbox"
@@ -446,15 +447,16 @@ class DataDashboard extends Component {
                                     </label>
                                     </div>
                                 <div className="p-2 warning-left">
-                                    <label>Current waning value: {this.state.warningValue}</label>
+                                    <label className="hide-label">Current waning value: {this.state.warningValue}</label>&nbsp;
                                     <input
+                                        className="input-warning hide-label"
                                         type="number"
                                         min="0"
                                         value={this.state.inputWarning}
                                         onChange={this.handleChange}
                                         placeholder="Enter New Value"
-                                    />
-                                    <button onClick={this.updateWarning}>Update</button>
+                                    />&nbsp;
+                                    <button type="button" className="input-warning hide-label" onClick={this.updateWarning}>Update</button>
                                 </div> 
                                 <div className="p-2 color-left">
                                     <div
@@ -466,9 +468,12 @@ class DataDashboard extends Component {
                                             width: "40px",
                                             height: "25px",
                                             verticalAlign: "middle",
+                                            transform: "translate(0px,5px)",
                                         }}
                                     />
+                                    <label className="hide-label">
                                     Machine is not working
+                                    </label>
                                     <div
                                         style={{
                                             display: "inline-block",
@@ -478,9 +483,12 @@ class DataDashboard extends Component {
                                             width: "40px",
                                             height: "25px",
                                             verticalAlign: "middle",
+                                            transform: "translate(0px,5px)",
                                         }}
                                     />
+                                    <label className="hide-label">
                                     Machine is working 
+                                    </label>
                                     <div
                                         style={{
                                             display: "inline-block",
@@ -490,9 +498,12 @@ class DataDashboard extends Component {
                                             width: "40px",
                                             height: "25px",
                                             verticalAlign: "middle",
+                                            transform: "translate(0px,5px)",
                                         }}
                                     />
+                                    <label className="hide-label">
                                     Idle machine
+                                    </label>
                                     <div
                                         style={{
                                             display: "inline-block",
@@ -502,11 +513,14 @@ class DataDashboard extends Component {
                                             width: "40px",
                                             height: "25px",
                                             verticalAlign: "middle",
+                                            transform: "translate(0px,5px)",
                                         }}
                                     />
+                                    <label className="hide-label">
                                     Malfunctioning machine 
+                                    </label>
                                 </div>
-                                <div className="ms-auto p-2">
+                                <div className="p-2 ms-auto">
                                 <div className="input-wrapper">
                                     {/* <input
                                         className="warning"
@@ -559,7 +573,7 @@ class DataDashboard extends Component {
                                     </thead>
                                     <tbody>
                                         {sortedData.map((item, index) => (
-                                             !this.state.hiddenRows.has(index) && (
+                                             !this.state.hiddenRows.has(item.id_machine) && (
                                             <tr key={index}>
                                             <td style={{ backgroundColor: this.getStatusColor(item.status_work) }}>
                                                 <td style={{color: 'white' }}>
