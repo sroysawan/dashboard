@@ -447,7 +447,7 @@ class DataDashboard extends Component {
                                     </label>
                                     </div>
                                 <div className="p-2 warning-left">
-                                    <label className="hide-label">Current waning value: {this.state.warningValue}</label>&nbsp;
+                                    <label className="hide-label">Current warning value: {this.state.warningValue}</label>&nbsp;
                                     <input
                                         className="input-warning hide-label"
                                         type="number"
