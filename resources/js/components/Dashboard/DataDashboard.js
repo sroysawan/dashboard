@@ -57,6 +57,46 @@ class DataDashboard extends Component {
         });
     };
 
+        //hide-bt
+        toggleRowVisibility =()=> {
+            if (this.state.isRowHidden) {
+                this.setState({ hiddenRows: new Set(), isRowHidden: false });
+              } else {
+            const hiddenRows = new Set();
+            this.state.DashboardRefresh.forEach((item) => {
+                const status_work = item.status_work;
+                const id_machine = item.id_machine;
+                if (status_work  === '') {
+                    hiddenRows.add(id_machine);
+                }
+            });
+            this.setState({ hiddenRows, isRowHidden: true });
+          }
+        }
+    
+        // update warning progress
+        handleChange = (event) => {
+            const inputValue = event.target.value;
+            const isNumber = /^\d+$/.test(inputValue);
+          
+            if (isNumber || inputValue === "") {
+              this.setState({
+                inputWarning: inputValue,
+              });
+            } 
+          }
+          updateWarning = () => {
+            this.setState(prevState => {
+                const newWarning = parseFloat(prevState.inputWarning);
+            localStorage.setItem('warningValue', newWarning);
+              return {
+                warningValue: newWarning,
+                inputWarning: '',
+              };
+            });
+          }
+
+          //search
     searchData = (event) => {
         if(event.target.value != ""){
             clearInterval(this.interval);
@@ -102,22 +142,7 @@ class DataDashboard extends Component {
         this.setState({ columnOrder });
     };
 
-    //hide-bt
-    toggleRowVisibility =()=> {
-        if (this.state.isRowHidden) {
-            this.setState({ hiddenRows: new Set(), isRowHidden: false });
-          } else {
-        const hiddenRows = new Set();
-        this.state.DashboardRefresh.forEach((item) => {
-            const status_work = item.status_work;
-            const id_machine = item.id_machine;
-            if (status_work  === '') {
-                hiddenRows.add(id_machine);
-            }
-        });
-        this.setState({ hiddenRows, isRowHidden: true });
-      }
-    }
+
 
     //sort
     sortBy =(key) =>{
@@ -386,33 +411,6 @@ class DataDashboard extends Component {
       else return '';
   }
 
-//   handleWarning = (event) => {
-//     let result = event.target.value==null ? 0 : event.target.value;
-//     this.setState({
-//         warningValue : result,
-//     });
-//   }
-
-  handleChange = (event) => {
-    this.setState({
-      inputWarning: event.target.value,
-    });
-  }
-  updateWarning = () => {
-    this.setState(prevState => {
-        const newWarning = parseFloat(prevState.inputWarning);
-    //   warningValue: parseFloat(prevState.inputWarning),
-    // if (newWarning < 0) {
-    //     alert('warningValue cannot be a negative value');
-    //     return prevState;
-    // }
-    localStorage.setItem('warningValue', newWarning);
-      return {
-        warningValue: newWarning,
-      };
-    });
-  }
-
     render() {
         const sortedData = [...this.state.DashboardRefresh];
         if (this.state.sortConfig.key) {
@@ -456,7 +454,8 @@ class DataDashboard extends Component {
                                         onChange={this.handleChange}
                                         placeholder="Enter New Value"
                                     />&nbsp;
-                                    <button type="button" className="input-warning hide-label" onClick={this.updateWarning}>Update</button>
+                                    <button type="button" className="input-warning hide-label" onClick={this.updateWarning} 
+                                        disabled={this.state.inputWarning === ""}>Update</button>
                                 </div> 
                                 <div className="p-2 color-left">
                                     <div
