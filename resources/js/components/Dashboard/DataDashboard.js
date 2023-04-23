@@ -10,6 +10,8 @@ import DashboardButton2 from './Buttons/DashboardButton2';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import DraggableHeader from "./DraggableHeader";
+import Navbars from "./Navbar/Navbars";
+import ReactPaginate from "react-paginate";
 
 var tempData = [];
 var qty_accum;
@@ -30,6 +32,8 @@ class DataDashboard extends Component {
             warningValue:savedWarningValue,
             inputWarning: '',
             sortConfig: { key: 'id_machine', direction: 'asc' },
+            currentPage: 0,
+            itemsPerPage: 10,
     };
     this.toggleRowVisibility = this.toggleRowVisibility.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -57,46 +61,55 @@ class DataDashboard extends Component {
         });
     };
 
-        //hide-bt
-        toggleRowVisibility =()=> {
-            if (this.state.isRowHidden) {
-                this.setState({ hiddenRows: new Set(), isRowHidden: false });
-              } else {
+    //Pagination
+    handlePageClick = (data) => {
+        this.setState({ currentPage: data.selected });
+    };
+    handleItemsPerPageChange = (event) => {
+        const itemsPerPage = parseInt(event.target.value);
+        this.setState({ itemsPerPage, currentPage: 0 });
+    };
+
+
+    //hide-bt
+    toggleRowVisibility =()=> {
+        if (this.state.isRowHidden) {
+            this.setState({ hiddenRows: new Set(), isRowHidden: false });
+        } else {
             const hiddenRows = new Set();
             this.state.DashboardRefresh.forEach((item) => {
-                const status_work = item.status_work;
-                const id_machine = item.id_machine;
-                if (status_work  === '') {
-                    hiddenRows.add(id_machine);
-                }
-            });
-            this.setState({ hiddenRows, isRowHidden: true });
-          }
+            const status_work = item.status_work;
+            const id_machine = item.id_machine;
+            if (status_work  === '') {
+                hiddenRows.add(id_machine);
+            }
+        });
+        this.setState({ hiddenRows, isRowHidden: true });
         }
+    }
     
-        // update warning progress
-        handleChange = (event) => {
-            const inputValue = event.target.value;
-            const isNumber = /^\d+$/.test(inputValue);
-          
-            if (isNumber || inputValue === "") {
-              this.setState({
+    // update warning progress
+    handleChange = (event) => {
+        const inputValue = event.target.value;
+        const isNumber = /^\d+$/.test(inputValue);
+        if (isNumber || inputValue === "") {
+            this.setState({
                 inputWarning: inputValue,
-              });
-            } 
-          }
-          updateWarning = () => {
-            this.setState(prevState => {
-                const newWarning = parseFloat(prevState.inputWarning);
+            });
+        } 
+    }
+    updateWarning = () => {
+        this.setState(prevState => {
+            const newWarning = parseFloat(prevState.inputWarning);
             localStorage.setItem('warningValue', newWarning);
-              return {
+            return {
                 warningValue: newWarning,
                 inputWarning: '',
-              };
-            });
-          }
+            };
+        });
+    }
 
-          //search
+    //search
     searchData = (event) => {
         if(event.target.value != ""){
             clearInterval(this.interval);
@@ -422,8 +435,18 @@ class DataDashboard extends Component {
             )
           );
         }
+        const { currentPage, itemsPerPage } = this.state;
+        
+    
+        // Logic for displaying current items
+        const indexOfLastItem = (currentPage + 1) * itemsPerPage;
+        const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+        const currentItems = sortedData.slice(indexOfFirstItem, indexOfLastItem);
+        const pageCount = Math.ceil(sortedData.length / itemsPerPage);
         return (
+            
             <div>
+                <Navbars/>
                 <header className="page-header page-header-dark pb-5"></header>
                 <div className="container-fluid px-4 mt-n10">
                     <div className="card mb-4 w-100">
@@ -454,7 +477,7 @@ class DataDashboard extends Component {
                                         onChange={this.handleChange}
                                         placeholder="Enter New Value"
                                     />&nbsp;
-                                    <button type="button" className="input-warning hide-label" onClick={this.updateWarning} 
+                                    <button type="button" className="warning-bt hide-label" onClick={this.updateWarning} 
                                         disabled={this.state.inputWarning === ""}>Update</button>
                                 </div> 
                                 <div className="p-2 color-left">
@@ -521,12 +544,6 @@ class DataDashboard extends Component {
                                 </div>
                                 <div className="p-2 ms-auto">
                                 <div className="input-wrapper">
-                                    {/* <input
-                                        className="warning"
-                                        placeholder= "Warning"
-                                        onChange={this.handleWarning}
-                                        value={this.state.warningValue}
-                                    /> */}
                                     <FaSearch id="search-icon"/>
                                     <input
                                         className="search-input"
@@ -554,13 +571,16 @@ class DataDashboard extends Component {
                                             <th rowSpan="2" className="side-box" scope="col">Side</th>
                                             <th rowSpan="2" className="duedate-box" scope="col">Due Date</th>
                                             <th rowSpan="2" className="qtypt-box" scope="col">Qty per tray</th>
-                                            <th rowSpan="2" className="qtyac-ord-box" scope="col">
-                                                Qty accum/Qty order
+                                            <th rowSpan="2" className="qtyac-ord-box" scope="col">Qty accum/Qty order</th>
+                                            <th rowSpan="2" className="progress-box" scope="col">
+                                                Progress (%)
                                                 <span className="mc-box sortable-header" onClick={() => this.sortBy('qty_order')}>{this.renderSortingArrow('qty_order')}</span>
                                             </th>
-                                            <th rowSpan="2" className="progress-box" scope="col">Progress (%)</th>
                                             <th rowSpan="2" className="runt-box" scope="col">Run time Actual/Std(Second)</th>
-                                            <th rowSpan="2" className="total-box" scope="col">Total open run time(Hr)</th>
+                                            <th rowSpan="2" className="total-box" scope="col">
+                                                Total open run time(Hr)
+                                                <span className="mc-box sortable-header" onClick={() => this.sortBy('qty_order')}>{this.renderSortingArrow('qty_order')}</span>
+                                            </th>
                                             <th colSpan="2" className="est-box" scope="col">Estimated finish</th>
                                             <th rowSpan="2" className="nextitemno-box" scope="col">Next item number</th>
                                             <th rowSpan="2" className="nextop-box" scope="col">Next Op.</th>
@@ -571,7 +591,7 @@ class DataDashboard extends Component {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {sortedData.map((item, index) => (
+                                        {currentItems.map((item, index) => (
                                              !this.state.hiddenRows.has(item.id_machine) && (
                                             <tr key={index}>
                                             <td style={{ backgroundColor: this.getStatusColor(item.status_work) }}>
@@ -604,6 +624,32 @@ class DataDashboard extends Component {
                                         </tbody>
                                 </table>
                                 </DndProvider>
+                            </div>
+                            <div className="d-flex justify-content-center mt-3 pagination">
+                            <div>
+                                <label>Row per page: </label>
+                                <select value={itemsPerPage} onChange={this.handleItemsPerPageChange}>
+                                <option value={5}>5</option>
+                                <option value={10}>10</option>
+                                <option value={20}>20</option>
+                                <option value={25}>25</option>
+                                </select>
+                            </div>
+                            <div className="dataTables_paginate">
+                            <ReactPaginate
+                                previousLabel={"<"}
+                                nextLabel={">"}
+                                breakLabel={"..."}
+                                breakClassName={"break-me"}
+                                pageCount={pageCount}
+                                marginPagesDisplayed={2}
+                                pageRangeDisplayed={5}
+                                onPageChange={this.handlePageClick}
+                                containerClassName={"pagination"}
+                                subContainerClassName={"pages pagination"}
+                                activeClassName={"active"}
+                            />
+                            </div>
                             </div>
                         </div>
                     </div>

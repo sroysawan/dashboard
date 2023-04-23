@@ -1,28 +1,51 @@
-.custom-div {
+.custom-header {
     /* width: 33.33%; */
-    width: 25%;
+    width: 15%;
     vertical-align: middle;
     font-size: 17px;
+    /* border: 1px solid black; */
 }
-  
-.centerHeader {
-    text-align: center !important;
-  }
-  
-.cellLeftAlign {
-    align-items: left;
-    text-align: left;
-}
-  
 .warning-left{
     font-size: 17px;
-    width: 600px;
-    transform:translate(-120px,5px);
+    width: 25%;
+    vertical-align: middle;
+    /* transform:translate(-00px,5px); */
+    /* border: 1px solid black; */
+}
+.input-warning{
+    border:1px solid #000000;
+    border-radius:3px;
+    outline:none;
+    box-sizing:border-box;
+    width: 150px;
+  }
+  .warning-bt{
+    border:1px solid #000000;
+    border-radius:3px;
+    outline:none;
+    box-sizing:border-box;
+    width: 70px;
+  }
+.button-warning {
+  background-color: darkblue; /* Green */
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 17px;
+  border-radius: 10px;
 }
 .color-left{
     font-size: 17px;
-    transform:translate(-50px,5px);
-    width: 1000px;
+    vertical-align: middle;
+    /* transform:translate(70px,5px); */
+    width: 45%;
+    /* width: 45% min-content; */
+    /* border: 1px solid black; */
+}
+.search-left{
+    width: min-content;
 }
 .input-wrapper {
     /* background-color: #353b48; */
@@ -62,7 +85,40 @@ input:focus {
 .hide-label{
     transform:translate(0px,5px);
 }
-
+/* ////////////////////////////////////////////////////// */
+.pagination {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin-top: 15px;
+  }
+  
+  .pagination li {
+    display: inline-block;
+    margin: 0 5px;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .pagination li.active {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  .pagination li a {
+    display: block;
+    color: #007bff;
+  }
+  
+  .pagination li.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+/* ////////////////////////////////////////////////////// */
+  
 .sortable-header {
     cursor: pointer;
   }
