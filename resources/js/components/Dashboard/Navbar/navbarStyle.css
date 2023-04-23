@@ -2,10 +2,23 @@
     width: 80px;
     height: 80px;
   } */
+  body {
+    padding-top: 50px; /* ระยะห่างของเนื้อหาจาก Navbar ที่ติด fixed */
+  }
+  
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030; /* ต้องมากกว่า z-index ของ dropdown */
+  }
   .navbar-logo {
     display: inline-block;
     vertical-align: middle;
     height: 30px; /* set height to the desired value */
   }
+
+
 
   
