@@ -10,14 +10,18 @@ class DashboardButton extends Component {
         this.state = {
             currentDashboardIdmc: null,
             currentDashboardItemno: null,
+            currentDashboardIdjob: null,
             currentDashboardOp: null,
             currentDashboardDatedue: null,
             currentDashboardQtypertray: null,
+            currentDashboardQtyactivity: null,
             currentDashboardQtyaccum: null,
+            currentDashboardQtyaccumsum: null,
             currentDashboardQtyorder: null,
             currentDashboardQtypercent: null,
             currentDashboardIdtask: null,
             currentDashboardDtupdate: null,
+            currentDashboardIdactivity: null,
         };
     }
     // componentDidMount = () =>{
@@ -40,14 +44,18 @@ class DashboardButton extends Component {
                 this.setState({
                     currentDashboardIdmc: response.data.id_machine,
                     currentDashboardItemno: response.data.item_no,
+                    currentDashboardIdjob: response.data.id_job,
                     currentDashboardOp: response.data.operation,
                     currentDashboardDatedue: response.data.date_due,
                     currentDashboardQtypertray: response.data.qty_per_pulse2,
+                    currentDashboardQtyactivity:response.data.no_pulse1,
                     currentDashboardQtyaccum: response.data.qty_accum,
+                    currentDashboardQtyaccumsum: response.data.qty_accum_sum,
                     currentDashboardQtyorder: response.data.qty_order,
                     currentDashboardQtypercent: response.data.qty_percent,
                     currentDashboardIdtask: response.data.id_task,
                     currentDashboardDtupdate: response.data.datetime_update,
+                    currentDashboardIdactivity: response.data.id_activity,
                 });
 
                 //console.log(this.getDashboardDetailsNewDB);
