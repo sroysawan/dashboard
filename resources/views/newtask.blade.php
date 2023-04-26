@@ -24,7 +24,8 @@
         </style>
     </head>
     <body class="antialiased">
-    <div id="newtask">
+    <!-- <div id="newtask"> -->
+    <div id="root">
 
 </div>
 </body>
