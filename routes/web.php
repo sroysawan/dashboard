@@ -5,9 +5,10 @@ use App\Http\Controllers\countController;
 use App\Http\Controllers\repeatController;
 use App\Http\Controllers\dashboardController;
 use App\Http\Controllers\dashboardRefreshController;
+use App\Http\Controllers\operationController;
 use Illuminate\Support\Facades\Redirect;
 
-Route::get('/dashboard', function () {
+Route::get('/', function () {
     return view('dashboard');
 });
 
@@ -26,7 +27,8 @@ Route::get('/update/DashboardRefreshold/',
 Route::get('/get/indivvidual/dashboard/details',
 [dashboardRefreshController::class, 'getDashboardDetails'])->name('dashboard.details');
 
-Route::get('/update/dashboard/modal',
+//edit modal
+Route::post('/update/dashboard/modal',
        [dashboardRefreshController::class, 'updateModalDashboard'])->name('dashboard.update'); 
 
 Route::get('/get/indivvidual/dashboard/detailsNew',
@@ -47,19 +49,35 @@ Route::get('/update/DashboardRefreshQueue2New/',
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Route::get('/operation', function () {
-    return view('operation');
+    return view('operation'); //ชื่อไฟล์ blade
 });
+
 
 //Operation
 Route::get('/update/OperationRefresh/',
     [dashboardRefreshController::class, 'OperationRefreshV5']
 );
 
+// Route::post('/change/Operation',
+// [operationController::class, 'ChangeOperation']
+// );
+
+// Route::middleware(['cors'])->group(function () {
+//     Route::post('/change/Operation', [operationController::class, 'ChangeOperation']);
+// });
+Route::post('/change/Operation', [operationController::class, 'ChangeOperation']);
+
+Route::post('/update-operation/{id_mc}', [operationController::class, 'updateOperation']);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Route::get('/newtask', function () {
     return view('newtask');
 });
+
+Route::post('/api/planning', [dashboardRefreshController::class, 'getPlanning']);
+Route::post('/api/planning2', [dashboardRefreshController::class, 'fetch']);
+
 
 
 

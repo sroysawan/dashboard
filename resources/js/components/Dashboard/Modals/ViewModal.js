@@ -4,7 +4,12 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import UpdateModal from "./UpdateModal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { BrowserRouter, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Switch, Routes, redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import "./modalStyle.css";
+import DataOperation from "../../Operation/DataOperation";
+import * as bootstrap from 'bootstrap';
+
 
 class ViewModal extends Component {
     constructor(props) {
@@ -13,21 +18,29 @@ class ViewModal extends Component {
             currentDashboardStatus: null,
             currentDashboardIdmc: null,
             currentDashboardItemno: null,
+            currentDashboardIdjob: null,
             currentDashboardOp: null,
             currentDashboardDatedue: null,
             currentDashboardQtypertray: null,
+            currentDashboardQtyactivity: null,
             currentDashboardQtyaccum: null,
+            currentDashboardQtyaccumsum: null,
             currentDashboardQtyorder: null,
             currentDashboardQtypercent: null,
             currentDashboardIdtask: null,
             currentDashboardDtupdate: null,
+            currentDashboardIdactivity: null,
             selectedOption: null,
             isConditionMet: true,
             dashboardQtypertray: null,
+            dashboardQtyactivity: null,
             dashboardQtyaccum: null,
+            activityTemp: null,
             accumTemp: null,
         };
         this.handleOptionChange = this.handleOptionChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        // this.handleSelectedOptionChange = this.handleSelectedOptionChange.bind(this);
         this.resetRadioButtons = this.resetRadioButtons.bind(this);
     }
 
@@ -35,7 +48,7 @@ class ViewModal extends Component {
         console.log(id_machine);
         axios
             .get("/get/indivvidual/dashboard/detailsNew", {
-                params: { dashboardID: id_machine },
+                params: { dashboardID: id_machine},
             })
             .then((response) => {
                 console.log(response.data);
@@ -43,33 +56,104 @@ class ViewModal extends Component {
                     currentDashboardStatus: response.data.status_work,
                     currentDashboardIdmc: response.data.id_machine,
                     currentDashboardItemno: response.data.item_no,
+                    currentDashboardIdjob: response.data.id_job,
                     currentDashboardOp: response.data.operation,
                     currentDashboardDatedue: response.data.date_due,
                     currentDashboardQtypertray: response.data.qty_per_pulse2,
+                    currentDashboardQtyactivity:response.data.no_pulse1,
                     currentDashboardQtyaccum: response.data.qty_accum,
+                    currentDashboardQtyaccumsum: response.data.qty_accum_sum,
                     currentDashboardQtyorder: response.data.qty_order,
                     currentDashboardQtypercent: response.data.qty_percent,
                     currentDashboardIdtask: response.data.id_task,
                     currentDashboardDtupdate: response.data.datetime_update,
+                    currentDashboardIdactivity: response.data.id_activity,
+
                 });
             });
     };
+    handleSubmit(event) {
+        event.preventDefault();
+    
+        // ใช้ axios หรือ fetch สำหรับส่งค่าไปยัง Laravel
+        axios.post('/change/Operation', { 
+            selectedOption: this.state.selectedOption,
+            modalId: this.props.modalId,
+            Idjob: this.props.dashboardData.currentDashboardIdjob
+        })
+            .then(response => {
+                // นำข้อมูลที่ได้จาก Laravel มาโชว์แยกหน้ากับหน้าที่มี radio button อยู่
+                console.log('Data received from Laravel:', response.data);
+    
+                this.handleCloseModal(); // ปิด modal ก่อนเปลี่ยนเส้นทาง
+    
+                this.props.history.push({
+                    pathname: '/operation',
+                    state: { data: response.data }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+// handleSubmit = async (submitEvent) => {
+//   submitEvent.preventDefault();
+//   try {
+//     const { selectedOption } = this.state;
+//     if (selectedOption === "radioChangeOp") {
+//       const response = await axios.post("/change/Operation", {
+//         selectedOption,
+//       });
+//       const data_planning = response.data;
+//       // จัดเก็บ data_planning ใน state
+//       this.setState({ data_planning });
+//     } else if (selectedOption === "radioRemove") {
+//       window.location.href = "/operation";
+//     }
+//     // ...
+//   } catch (error) {
+//     console.error("Error in handleSubmit:", error);
+//   }
+// };
+////////////////////////////////////////
+// handleSubmit = async (submitEvent) => {
+//     submitEvent.preventDefault();
+//     if (this.state.selectedOption === "radioChangeOp") {
+//         try {
+//         const response = await axios.post("/change/Operation", {
+//             selectedOption: this.state.selectedOption,
+//             dashboardId: this.props.dashboardData.currentDashboardIdtask,
+//             dashboardIdjob: this.props.dashboardData.currentDashboardIdjob
+//         });
+//         const data = JSON.stringify(response.data);
+//         const encodedData = encodeURIComponent(data);
+//         window.location.href = `/operation?data=${encodedData}`;
+//         } catch (error) {
+//         console.error("Error in handleSubmit:", error);
+//         }
+//     }else if  (this.state.selectedOption === "radioRemove"){
+//         window.location.href = `/operation`;
+//     }else if  (this.state.selectedOption === "radioResetActivity"){
+//         axios.post('/reset/activity', { selectedOption: this.state.selectedOption })
+//         .then((response) => {
+//           window.location.reload();
+//         })
+//         .catch((error) => {
+//           console.error(error);
+//         });
+//     }
+// }
 
-    handleFormSubmit = (submitEvent) => {
-        submitEvent.preventDefault();
-        if (this.state.selectedOption === "radioChangeOp") {
-            window.location.href = "/operation";
-        } else if (this.state.selectedOption === "radioRemove") {
-            window.location.href = "/operation";
-        } else if (this.state.selectedOption === "radioNextQueue") {
-            window.location.href = "/operation";
-        } else if (this.state.selectedOption === "radioNewTask") {
-            window.location.href = "/newtask";
-        } else if (this.state.selectedOption === "radioResetActivity") {
-            window.location.href = "/operation";
-        }
-    };
+handleCloseModal = () => {
+    const modalElement = document.getElementById(`viewModal${this.props.modalId}`);
+    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+    modalInstance.hide();
+    console.log(this.props.modalId);
+};
 
+  
+  
+  
     handleModalClick = (e) => {
         if (e.target.className === "modal fade") {
             this.resetRadioButtons();
@@ -93,21 +177,27 @@ class ViewModal extends Component {
             selectedOption: event.target.value,
         });
     }
-
+      
     showTestData = () => {
         console.log(
             "#updateModal" + this.props.modalId + " with data : " + this.state
         );
     };
 
-    //update
+   
     inputDashboardQtypertray = (event) => {
         this.setState({
             dashboardQtypertray: event.target.value,
         });
     };
 
-    //update
+    inputDashboardQtyactivity = (event) => {
+        this.setState({
+            dashboardQtyactivity: event.target.value,
+        });
+    };
+
+    
     inputDashboardQtyaccum = (event) => {
         this.setState({
             dashboardQtyaccum: event.target.value,
@@ -117,13 +207,22 @@ class ViewModal extends Component {
     static getDerivedStateFromProps(props, current_state) {
         let dashboardUpdate = {
             dashboardQtypertray: null,
+            dashboardQtyactivity: null,
             dashboardQtyaccum: null,
+            activityTemp: null,
             accumTemp: null,
         };
         if (
             current_state.dashboardQtypertray &&
             current_state.dashboardQtypertray !==
                 props.dashboardData.currentDashboardQtypertray
+        ) {
+            return null;
+        }
+        if (
+            current_state.dashboardQtyactivity &&
+            current_state.dashboardQtyactivity !==
+                props.dashboardData.currentDashboardQtyactivity
         ) {
             return null;
         }
@@ -145,6 +244,17 @@ class ViewModal extends Component {
                 props.dashboardData.currentDashboardQtypertray;
         }
         if (
+            current_state.dashboardQtyactivity !==
+                props.dashboardData.currentDashboardQtyactivity ||
+            current_state.dashboardQtyactivity ===
+                props.dashboardData.currentDashboardQtyactivity
+        ) {
+            dashboardUpdate.dashboardQtyactivity =
+                props.dashboardData.currentDashboardQtyactivity;
+            dashboardUpdate.activityTemp =
+                props.dashboardData.currentDashboardQtyactivity;
+        }
+        if (
             current_state.dashboardQtyaccum !==
                 props.dashboardData.currentDashboardQtyaccum ||
             current_state.dashboardQtyaccum ===
@@ -159,50 +269,54 @@ class ViewModal extends Component {
     }
 
     // updateModalDashboard = () => {
-    //     const { dashboardData, modalId } = this.props;
-    //     const { dashboardQtypertray, dashboardQtyaccum, accumTemp } = this.state;
-    
-    //     console.log(modalId);
-    //     console.log(dashboardQtypertray);
-    //     console.log(dashboardQtyaccum);
-    
+    //     console.log(this.props.modalId);
+    //     console.log(this.state.dashboardQtypertray);
+    //     console.log(this.state.dashboardQtyactivity);
+    //     console.log(this.state.dashboardQtyaccum);
+
     //     axios
-    //       .get('/update/dashboard/modal', {
-    //         params: {
-    //           dashboardId: dashboardData.currentDashboardIdtask,
-    //           dashboardQtypertray,
-    //           dashboardQtyaccum,
-    //           accumTemp,
-    //         },
-    //       })
-    //       .then((response) => {
-    //         console.log(response.data);
-    //         console.log('Update Success');
-    
-    //         // Instead of reloading the page, update the state with the new data
-    //         this.setState({
-    //           dashboardQtypertray: response.data.dashboardQtypertray,
-    //           dashboardQtyaccum: response.data.dashboardQtyaccum,
-    //           accumTemp: response.data.accumTemp,
-    //           // ... other updated properties
+    //         .get("/update/dashboard/modal", {
+    //             params: {
+    //                 dashboardId:
+    //                 this.props.dashboardData.currentDashboardIdtask,
+    //                 dashboardQtypertray: this.state.dashboardQtypertray,
+    //                 dashboardQtyactivity: this.state.dashboardQtyactivity,
+    //                 dashboardQtyaccum: this.state.dashboardQtyaccum,
+    //                 activityTemp: this.state.activityTemp,
+    //                 accumTemp: this.state.accumTemp,
+    //             },
+    //         })
+    //         .then((response) => {
+    //             console.log(response.data);
+    //             console.log("Update Success");
+    //             toast.success("Update Success");
+    //             setTimeout(() => {
+    //                 location.reload();
+    //             }, 1000);
+    //             // this.getDashboardDetailsNewDB();
     //         });
-    //       });
-    //   };
+    // };
 
     updateModalDashboard = () => {
         console.log(this.props.modalId);
         console.log(this.state.dashboardQtypertray);
+        console.log(this.state.dashboardQtyactivity);
         console.log(this.state.dashboardQtyaccum);
-
+        console.log('id_activity' + this.props.dashboardData.currentDashboardIdactivity);
+        console.log('id_machine' + this.props.dashboardData.currentDashboardIdmc)
+        console.log('sum' + this.props.dashboardData.currentDashboardQtyaccumsum)
+    
         axios
-            .get("/update/dashboard/modal", {
-                params: {
-                    dashboardId:
-                    this.props.dashboardData.currentDashboardIdtask,
-                    dashboardQtypertray: this.state.dashboardQtypertray,
-                    dashboardQtyaccum: this.state.dashboardQtyaccum,
-                    accumTemp: this.state.accumTemp,
-                },
+            .post("/update/dashboard/modal", {
+                dashboardId: this.props.dashboardData.currentDashboardIdtask,
+                dashboardIdmc: this.props.dashboardData.currentDashboardIdmc,
+                dashboardIdactivity: this.props.dashboardData.currentDashboardIdactivity,
+                dashboardQtypertray: this.state.dashboardQtypertray,
+                dashboardQtyactivity: this.state.dashboardQtyactivity,
+                dashboardQtyaccum: this.state.dashboardQtyaccum,
+                dashboardQtyaccumsum: this.props.dashboardData.currentDashboardQtyaccumsum,
+                activityTemp: this.state.activityTemp,
+                accumTemp: this.state.accumTemp,
             })
             .then((response) => {
                 console.log(response.data);
@@ -211,11 +325,13 @@ class ViewModal extends Component {
                 setTimeout(() => {
                     location.reload();
                 }, 1000);
-                // this.getDashboardDetailsNewDB();
             });
     };
 
     render() {
+        // const isDisabled = !(this.state.dashboardQtypertray && this.state.dashboardQtyactivity);
+        // const { selectedOption } = this.state;
+
         return (
             <>
                 <div
@@ -275,9 +391,21 @@ class ViewModal extends Component {
                                             </td>
                                         </tr>
                                         <tr>
+                                            <td>Qty activity:</td>
+                                            <td>
+                                                {this.props.dashboardData.currentDashboardQtyactivity}
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td>Qty accum:</td>
                                             <td>
                                                 {this.props.dashboardData.currentDashboardQtyaccum}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Qty accum dashboard:</td>
+                                            <td>
+                                                {this.props.dashboardData.currentDashboardQtyaccumsum}
                                             </td>
                                         </tr>
                                         <tr>
@@ -309,7 +437,7 @@ class ViewModal extends Component {
                                 {/* <br /> */}
                                 <h5> Action: </h5>
                                 <div className="mb-3">
-                                    <form onSubmit={this.handleFormSubmit}>
+                                    <form onSubmit={this.handleSubmit}>
                                         <div className="form-check">
                                             <input
                                                 className="form-check-input"
@@ -320,7 +448,7 @@ class ViewModal extends Component {
                                                 onChange={this.handleOptionChange}
                                                 disabled={this.props.dashboardData.currentDashboardItemno === ""}
                                             />
-                                            <label className="form-check-label">
+                                            <label className="form-check-label" htmlFor="radioChangeOp">
                                                 Change operation (เปลี่ยน Operation)
                                             </label>
                                         </div>
@@ -394,17 +522,16 @@ class ViewModal extends Component {
                                             >
                                                 Edit
                                             </button>
-                                            {/* <UpdateModal modalId={this.props.modalId} dashboardData={this.props.dashboardData}/> */}
-
                                             <button
                                                 className="btn btn-primary"
-                                                type="submit"
+                                                type="submit"      
+                                                onClick={this.handleCloseModal}                                       
                                                 disabled={this.state.selectedOption === null}
-                                            >
-                                                Go
+                                                
+                                                >Go
                                             </button>
                                         </div>
-                                    </form>
+                                   </form>
                                 </div>
                             </div>
                         </div>
@@ -473,8 +600,23 @@ class ViewModal extends Component {
                                             </div>
                                         </tr>
                                         <tr>
-                                            <td>Qty accum:</td>
+                                            <td>Qty activity:</td>
                                             <div className="form-group">
+                                                <input
+                                                    type="number"
+                                                    id="currentDashboardQtyactivity"
+                                                    className="form-control mb3 bg"
+                                                    value={this.state.dashboardQtyactivity ?? ""}
+                                                    onChange={this.inputDashboardQtyactivity}
+                                                />
+                                            </div>
+                                        </tr>
+                                        <tr>
+                                            <td>Qty accum:</td>
+                                            <td>
+                                                {this.props.dashboardData.currentDashboardQtyaccum}
+                                            </td>
+                                            {/* <div className="form-group">
                                                 <input
                                                     type="number"
                                                     id="currentDashboardQtyaccum"
@@ -482,7 +624,13 @@ class ViewModal extends Component {
                                                     value={this.state.dashboardQtyaccum ?? ""}
                                                     onChange={this.inputDashboardQtyaccum}
                                                 />
-                                            </div>
+                                            </div> */}
+                                        </tr>
+                                        <tr>
+                                            <td>Qty accum dashboard:</td>
+                                            <td>
+                                                {this.props.dashboardData.currentDashboardQtyaccumsum}
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Qty order:</td>
@@ -517,6 +665,7 @@ class ViewModal extends Component {
                                     className="btn btn-primary"
                                     value="Update"
                                     onClick={this.updateModalDashboard}
+                                    // disabled={isDisabled}
                                 />
                                 <ToastContainer
                                     autoClose={400}
@@ -536,4 +685,4 @@ class ViewModal extends Component {
         );
     }
 }
-export default ViewModal;
+export default withRouter(ViewModal);
