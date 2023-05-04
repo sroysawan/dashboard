@@ -1,12 +1,16 @@
 import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Navbar, Nav, NavDropdown, Container } from "react-bootstrap";
+import { Navbar, Nav, NavDropdown, Container, Button } from "react-bootstrap";
 import iconImage from "./logo.png";
 import "./navbarStyle.css";
 import { BsEnvelope } from "react-icons/Bs";
 import { VscAccount } from "react-icons/vsc";
 
 class Navbars extends Component {
+    logout = (event) =>{
+        localStorage.clear();
+        window.location.href = '/login';
+    }
     render() {
         return (
             <Navbar className="fixed-top" collapseOnSelect expand="lg" bg="dark" variant="dark">
@@ -52,6 +56,8 @@ class Navbars extends Component {
                             </Nav.Link>
                         </ul>
                     </Navbar.Collapse>
+                    <a style={{color:'white'}}>{localStorage.getItem('token')}</a>
+                    &nbsp<Button variant="danger" onClick={event=> this.logout(event)}>Logout</Button>
                 </Container>
             </Navbar>
         );
