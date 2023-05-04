@@ -37,6 +37,8 @@ class ViewModal extends Component {
             dashboardQtyaccum: null,
             activityTemp: null,
             accumTemp: null,
+            planning_machine: [],
+            planning_others: [],
         };
         this.handleOptionChange = this.handleOptionChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -74,23 +76,93 @@ class ViewModal extends Component {
     };
     handleSubmit(event) {
         event.preventDefault();
-    
-        // ใช้ axios หรือ fetch สำหรับส่งค่าไปยัง Laravel
-        axios.post('/change/Operation', { 
+        let apiUrl ;
+        let newPath ;
+
+        if(this.state.selectedOption === 'radioChangeOp'){
+            apiUrl = '/change/Operation';
+            newPath = '/operation';
+        }else if (this.state.selectedOption === 'radioRemove'){
+            apiUrl = '/remove/Machine';
+            newPath = '/';
+        }else if (this.state.selectedOption === 'radioNextQueue'){
+            apiUrl = '/feed/Machine';
+            // newPath = '/';
+        }else if (this.state.selectedOption === 'radioNewTask'){
+            apiUrl = '/select/Newtask';
+            newPath = '/newtask';
+        }else if (this.state.selectedOption === 'radioResetActivity'){
+            apiUrl = '/';
+            newPath = '/';
+        }
+        axios.post(`${apiUrl}`, { 
             selectedOption: this.state.selectedOption,
             modalId: this.props.modalId,
-            Idjob: this.props.dashboardData.currentDashboardIdjob
+            Idjob: this.props.dashboardData.currentDashboardIdjob,
+            operation: this.props.dashboardData.currentDashboardOp,
+            Idtask: this.props.dashboardData.currentDashboardIdtask,
         })
             .then(response => {
                 // นำข้อมูลที่ได้จาก Laravel มาโชว์แยกหน้ากับหน้าที่มี radio button อยู่
                 console.log('Data received from Laravel:', response.data);
-    
+                const { data_planning, data_planning2, machine_queues, data_newtask, data_newtask2 } = response.data;
+
+                console.log('data_planning:', data_planning);
+                console.log('data_planning2:', data_planning2);
+                console.log('machine_queues:', machine_queues);
+                console.log('data_newtask:', data_newtask);
+                console.log('data_newtask2:', data_newtask2);
                 this.handleCloseModal(); // ปิด modal ก่อนเปลี่ยนเส้นทาง
-    
-                this.props.history.push({
-                    pathname: '/operation',
-                    state: { data: response.data }
+
+                if(this.state.selectedOption === 'radioChangeOp'){
+                    this.props.history.push({
+                        pathname: '/operation',
+                        state: {
+                            data: data_planning,
+                            data_planning2: data_planning2,
+                            machine_queues: machine_queues,
+                            modalId: this.props.modalId,
+                            currentOperation: this.props.dashboardData.currentDashboardOp
+                    }
                 });
+                }else if (this.state.selectedOption === 'radioRemove') {
+                    this.props.history.push({
+                        pathname: '/',
+                        state: {
+                            data: response.data,
+                            modalId: this.props.modalId,
+                        }
+                    });
+                    window.location.reload();
+                }else if (this.state.selectedOption === 'radioNextQueue') {
+                    this.props.history.push({
+                        // pathname: '/feed/Machine',
+                        state: {
+                            data: response.data,
+                            modalId: this.props.modalId,
+                        }
+                    });
+                    window.location.reload();
+                }else if (this.state.selectedOption === 'radioNewTask') {
+                    this.props.history.push({
+                        pathname: '/newtask',
+                        state: {
+                            data: data_newtask,
+                            data_newtask2: data_newtask2,
+                            machine_queues: machine_queues,
+                            modalId: this.props.modalId,
+                        }
+                    });
+                }else if (this.state.selectedOption === 'radioResetActivity') {
+                    this.props.history.push({
+                        pathname: '/',
+                        state: {
+                            data: response.data,
+                            modalId: this.props.modalId,
+                        }
+                    });
+                    window.location.reload();
+                }    
             })
             .catch(error => {
                 console.error('Error:', error);
