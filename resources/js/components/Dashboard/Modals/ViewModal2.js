@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 class ViewModal2 extends Component{
 
     constructor(props){
@@ -141,7 +140,7 @@ class ViewModal2 extends Component{
                                             value="radioRemove"
                                             checked={this.state.selectedOption === "radioRemove"}
                                             onChange={this.handleOptionChange}
-                                            disabled={this.props.dashboardData.currentDashboardItemno === ''}
+                                            disabled={this.props.dashboardData.currentDashboardItemno === '' }
                                         />
                                         <label className="form-check-label" for="radioRemove">
                                             Remove this task (เอางานออก)
@@ -166,7 +165,7 @@ class ViewModal2 extends Component{
                                         <button
                                             className="btn btn-primary"
                                             type="submit"
-                                            disabled={this.state.selectedOption === null}
+                                            disabled={this.state.selectedOption === null || this.props.level }
                                         >
                                             Go
                                         </button>

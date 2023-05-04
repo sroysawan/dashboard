@@ -105,24 +105,28 @@ class ViewModal extends Component {
             .then(response => {
                 // นำข้อมูลที่ได้จาก Laravel มาโชว์แยกหน้ากับหน้าที่มี radio button อยู่
                 console.log('Data received from Laravel:', response.data);
-                const { data_planning, data_planning2, machine_queues, data_newtask, data_newtask2 } = response.data;
+                const { data_planning, machine_queues, data_newtask,} = response.data;
 
                 console.log('data_planning:', data_planning);
-                console.log('data_planning2:', data_planning2);
                 console.log('machine_queues:', machine_queues);
                 console.log('data_newtask:', data_newtask);
-                console.log('data_newtask2:', data_newtask2);
+
+
+                if (this.state.selectedOption === 'radioChangeOp') {
+                    console.log('currentOperation:', this.props.dashboardData.currentDashboardOp);
+                  }
                 this.handleCloseModal(); // ปิด modal ก่อนเปลี่ยนเส้นทาง
 
                 if(this.state.selectedOption === 'radioChangeOp'){
                     this.props.history.push({
                         pathname: '/operation',
                         state: {
+                            // data: response.data,
                             data: data_planning,
-                            data_planning2: data_planning2,
+                            // data_planning2: data_planning2,
                             machine_queues: machine_queues,
                             modalId: this.props.modalId,
-                            currentOperation: this.props.dashboardData.currentDashboardOp
+                            currentDashboardOp: this.props.dashboardData.currentDashboardOp
                     }
                 });
                 }else if (this.state.selectedOption === 'radioRemove') {
@@ -148,9 +152,9 @@ class ViewModal extends Component {
                         pathname: '/newtask',
                         state: {
                             data: data_newtask,
-                            data_newtask2: data_newtask2,
                             machine_queues: machine_queues,
                             modalId: this.props.modalId,
+                            currentDashboardOp: this.props.dashboardData.currentDashboardOp
                         }
                     });
                 }else if (this.state.selectedOption === 'radioResetActivity') {
@@ -168,64 +172,15 @@ class ViewModal extends Component {
                 console.error('Error:', error);
             });
     }
-// handleSubmit = async (submitEvent) => {
-//   submitEvent.preventDefault();
-//   try {
-//     const { selectedOption } = this.state;
-//     if (selectedOption === "radioChangeOp") {
-//       const response = await axios.post("/change/Operation", {
-//         selectedOption,
-//       });
-//       const data_planning = response.data;
-//       // จัดเก็บ data_planning ใน state
-//       this.setState({ data_planning });
-//     } else if (selectedOption === "radioRemove") {
-//       window.location.href = "/operation";
-//     }
-//     // ...
-//   } catch (error) {
-//     console.error("Error in handleSubmit:", error);
-//   }
-// };
-////////////////////////////////////////
-// handleSubmit = async (submitEvent) => {
-//     submitEvent.preventDefault();
-//     if (this.state.selectedOption === "radioChangeOp") {
-//         try {
-//         const response = await axios.post("/change/Operation", {
-//             selectedOption: this.state.selectedOption,
-//             dashboardId: this.props.dashboardData.currentDashboardIdtask,
-//             dashboardIdjob: this.props.dashboardData.currentDashboardIdjob
-//         });
-//         const data = JSON.stringify(response.data);
-//         const encodedData = encodeURIComponent(data);
-//         window.location.href = `/operation?data=${encodedData}`;
-//         } catch (error) {
-//         console.error("Error in handleSubmit:", error);
-//         }
-//     }else if  (this.state.selectedOption === "radioRemove"){
-//         window.location.href = `/operation`;
-//     }else if  (this.state.selectedOption === "radioResetActivity"){
-//         axios.post('/reset/activity', { selectedOption: this.state.selectedOption })
-//         .then((response) => {
-//           window.location.reload();
-//         })
-//         .catch((error) => {
-//           console.error(error);
-//         });
-//     }
-// }
 
-handleCloseModal = () => {
-    const modalElement = document.getElementById(`viewModal${this.props.modalId}`);
-    const modalInstance = bootstrap.Modal.getInstance(modalElement);
-    modalInstance.hide();
-    console.log(this.props.modalId);
-};
+    handleCloseModal = () => {
+        const modalElement = document.getElementById(`viewModal${this.props.modalId}`);
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        modalInstance.hide();
+        console.log(this.props.modalId);
+    };
 
-  
-  
-  
+
     handleModalClick = (e) => {
         if (e.target.className === "modal fade") {
             this.resetRadioButtons();
@@ -590,7 +545,7 @@ handleCloseModal = () => {
                                                 data-bs-target={"#updateModal" + this.props.modalId}
                                                 // onClick={() => { this.getDashboardDetailsNewDB(this.props.eachRowId)}}
                                                 onClick={this.showTestData}
-                                                disabled={this.props.dashboardData.currentDashboardItemno === ""}
+                                                disabled={this.props.dashboardData.currentDashboardItemno === "" || this.props.level}
                                             >
                                                 Edit
                                             </button>
@@ -598,7 +553,7 @@ handleCloseModal = () => {
                                                 className="btn btn-primary"
                                                 type="submit"      
                                                 onClick={this.handleCloseModal}                                       
-                                                disabled={this.state.selectedOption === null}
+                                                disabled={this.state.selectedOption === null || this.props.level}
                                                 
                                                 >Go
                                             </button>
@@ -737,7 +692,7 @@ handleCloseModal = () => {
                                     className="btn btn-primary"
                                     value="Update"
                                     onClick={this.updateModalDashboard}
-                                    // disabled={isDisabled}
+                                    
                                 />
                                 <ToastContainer
                                     autoClose={400}
