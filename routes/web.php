@@ -6,6 +6,8 @@ use App\Http\Controllers\repeatController;
 use App\Http\Controllers\dashboardController;
 use App\Http\Controllers\dashboardRefreshController;
 use App\Http\Controllers\operationController;
+use App\Http\Controllers\newtaskController;
+use App\Http\Controllers\loginController;
 use Illuminate\Support\Facades\Redirect;
 
 Route::get('/', function () {
@@ -52,22 +54,31 @@ Route::get('/operation', function () {
     return view('operation'); //ชื่อไฟล์ blade
 });
 
-
 //Operation
-Route::get('/update/OperationRefresh/',
-    [dashboardRefreshController::class, 'OperationRefreshV5']
-);
-
-// Route::post('/change/Operation',
-// [operationController::class, 'ChangeOperation']
+// Route::get('/update/OperationRefresh/',
+//     [dashboardRefreshController::class, 'OperationRefreshV5']
 // );
 
-// Route::middleware(['cors'])->group(function () {
-//     Route::post('/change/Operation', [operationController::class, 'ChangeOperation']);
-// });
+//change operation
 Route::post('/change/Operation', [operationController::class, 'ChangeOperation']);
+//Add New Operation
+Route::post('/add/Operation', [operationController::class, 'AddNewOperation']);
 
-Route::post('/update-operation/{id_mc}', [operationController::class, 'updateOperation']);
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//reset activity
+Route::post('/reset/activity', [operationController::class, 'resetActivity']);
+
+// Route::post('/update-operation/{id_mc}', [operationController::class, 'updateOperation']);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//remove task
+Route::post('/remove/Machine', [operationController::class, 'RemoveMachine']);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//feed next q
+Route::post('/feed/Machine', [operationController::class, 'FeedMachine']);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -75,8 +86,13 @@ Route::get('/newtask', function () {
     return view('newtask');
 });
 
-Route::post('/api/planning', [dashboardRefreshController::class, 'getPlanning']);
-Route::post('/api/planning2', [dashboardRefreshController::class, 'fetch']);
+Route::get('/login', function () {
+    return view('login');
+});
+
+Route::post('/login/validate', [loginController::class, 'authLogin']);
+
+Route::post('/select/Newtask', [newtaskController::class, 'NewTask']);
 
 
 
