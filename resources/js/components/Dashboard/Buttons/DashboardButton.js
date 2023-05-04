@@ -80,6 +80,7 @@ class DashboardButton extends Component {
                 <ViewModal
                     modalId={this.props.eachRowId}
                     dashboardData={this.state}
+                    level={this.props.level}
                 />
                 {/* <UpdateModal
                     modalId={this.props.eachRowId}

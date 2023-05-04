@@ -12,6 +12,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import DraggableHeader from "./DraggableHeader";
 import Navbars from "./Navbar/Navbars";
 import ReactPaginate from "react-paginate";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 var tempData = [];
 var qty_accum;
@@ -25,7 +26,7 @@ class DataDashboard extends Component {
         this.state = {
             searchValue: "",
             DashboardRefresh: [],
-            TempDashboardRefresh: [],
+            SearchDashboard: [],
             ColorRuntime: 'black',       
             hiddenRows: new Set(),
             isRowHidden: false,    
@@ -33,7 +34,11 @@ class DataDashboard extends Component {
             inputWarning: '',
             sortConfig: { key: 'id_machine', direction: 'asc' },
             currentPage: 0,
-            itemsPerPage: 10,
+            itemsPerPage: 50,
+            isManager:false,
+            isDataEntry:false,
+            isForeman:false,
+
     };
     this.toggleRowVisibility = this.toggleRowVisibility.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -43,6 +48,25 @@ class DataDashboard extends Component {
     componentDidMount = () => {
         this.getDashboardRefresh();
         this.interval = setInterval(this.getDashboardRefresh, 10000);
+        var user = localStorage.getItem('token');
+            if(user == 'employee'){
+                this.setState({
+                    isDataEntry:true
+                })
+            }
+            else if(user == 'manager'){
+                this.setState({
+                    isManager:true
+                })
+            }
+            else if(user == 'foreman'){
+                this.setState({
+                    isForeman:true
+                })
+            }
+            else{
+                window.location.href = '/login';
+            }
         // this.getRuntimecolor(this.props.run_time_actual,this.props.run_time_std,this.props.status_work);
     };
 
@@ -56,7 +80,7 @@ class DataDashboard extends Component {
             console.log(response.data);
             self.setState({
                 DashboardRefresh: Object.values(response.data),
-                TempDashboardRefresh: Object.values(response.data),
+                SearchDashboard: Object.values(response.data),
             });
         });
     };
@@ -117,7 +141,7 @@ class DataDashboard extends Component {
         else{
             this.interval = setInterval(this.getDashboardRefresh, 10000);
         }
-        this.state.TempDashboardRefresh.map((x) => {
+        this.state.SearchDashboard.map((x) => {
             if (
                 x.operation.toLowerCase().includes(event.target.value.toLowerCase()) ||
                 x.id_machine.toLowerCase().includes(event.target.value.toLowerCase()) ||
@@ -132,7 +156,7 @@ class DataDashboard extends Component {
                 });
             } else if (event.target.value === "") {
                 this.setState({
-                    DashboardRefresh: TempDashboardRefresh,
+                    DashboardRefresh: SearchDashboard,
                     searchValue: event.target.value,
                 });
             } else if (
@@ -219,12 +243,13 @@ class DataDashboard extends Component {
 
   //Qty accum/Qty order
   getAccum = (qty_complete,qty_process,divider,qty_order) =>{           
-      qty_accum = qty_complete + Math.floor(qty_process*divider);
+      qty_accum = qty_complete + Math.round(qty_process*divider);
+    //   qty_accum = qty_complete + Math.round(qty_process);
       if (divider == '' ){
           return '';
       }else{
         //   console.log(qty_accum);
-          return qty_accum + ' / ' + qty_order;
+          return Math.round(qty_accum) + ' / ' + qty_order;
       }
   }
 
@@ -446,9 +471,9 @@ class DataDashboard extends Component {
         return (
             
             <div>
-                <Navbars/>
                 <header className="page-header page-header-dark pb-5"></header>
                 <div className="container-fluid px-4 mt-n10">
+                <Navbars/>
                     <div className="card mb-4 w-100">
                         <div className="card-header bg-red fw-bold text-white fs-4 d-flex justify-content-between bg-danger">
                             <div>Job overview by Machine</div>
@@ -601,7 +626,7 @@ class DataDashboard extends Component {
                                                 </td>
                                             </td>
                                             <td className="text-db-center">{item.id_machine}</td>
-                                            <td className="text-db-left"><DashboardButton eachRowId= {item.id_machine}/>{ item.item_no }</td>
+                                            <td className="text-db-left"><DashboardButton eachRowId= {item.id_machine} level={this.state.isDataEntry}/>{ item.item_no }</td>
                                             <td className="text-db-center">{ item.operation }</td>
                                             <td className="text-db-center">{ item.op_color }</td>
                                             <td className="text-db-center">{ item.op_side }</td>
@@ -616,7 +641,7 @@ class DataDashboard extends Component {
                                             <td className="text-db-left">{ this.getTotal(item['qty_order'],item['run_time_std'],item.status_work) }</td>
                                             <td className="text-db-center">{this.getEsDateTime(item['qty_order'], item['run_time_std'], item.status_work)[0]}</td> 
                                             <td className="text-db-center">{this.getEsDateTime(item['qty_order'], item['run_time_std'], item.status_work)[1]}</td> 
-                                            <td className="text-db-left"><DashboardButton2 eachRowId= {item.id_machine}/>{ this.getItem_2(item.item_no_2) }</td>
+                                            <td className="text-db-left"><DashboardButton2 eachRowId= {item.id_machine} level={this.state.isDataEntry}/>{ this.getItem_2(item.item_no_2) }</td>
                                             <td className="text-db-center">{ this.getOp_2(item.operation_2) }</td>
                                             </tr>
                                              )
@@ -633,6 +658,8 @@ class DataDashboard extends Component {
                                 <option value={10}>10</option>
                                 <option value={20}>20</option>
                                 <option value={25}>25</option>
+                                <option value={50}>50</option>
+                                <option value={100}>100</option>
                                 </select>
                             </div>
                             <div className="dataTables_paginate">

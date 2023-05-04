@@ -63,7 +63,7 @@ class DashboardButton2 extends Component{
   
                 <FaRegEdit/>
                 </button>  
-                <ViewModal2 modalId={this.props.eachRowId} dashboardData= {this.state}/>
+                <ViewModal2 modalId={this.props.eachRowId} dashboardData= {this.state} level={this.props.level}/>
                 </div>          
         );
     }
