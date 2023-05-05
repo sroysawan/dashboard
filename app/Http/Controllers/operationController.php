@@ -16,55 +16,8 @@ use Exception;
 class operationController extends Controller
 {
     //แสดง operation ที่ทำงานอยู่และไม่ได้ทำงาน แบบรวมกัน
-    // public function ChangeOperation(Request $request)
-    // {
-    //     try {
-    //         $selectedOption = $request->input('selectedOption');
-    //         $id_machine = $request->input('modalId');
-    //         $id_job = $request->input('Idjob');
-    //         $id_task = $request->input('Idtask');
-    //         $current_operation = $request->input('operation');
-    
-    //         if ($selectedOption == 'radioChangeOp') {
-    //             $data_planning = DB::table('planning')
-    //                 ->where([
-    //                     ['id_job', '=', $id_job],
-    //                     ['status_backup', '=', 0],
-    //                     ['task_complete', '=', 0]
-    //                 ])
-    //                 ->whereIn('id_task', function ($query) use ($id_machine) {
-    //                     $query->select('id_task')
-    //                         ->from('machine_queue')
-    //                         ->where('id_machine', '=', $id_machine);
-    //                 })
-    //                 ->unionAll(DB::table('planning')
-    //                     ->where([
-    //                         ['id_job', '=', $id_job],
-    //                         ['status_backup', '=', 0],
-    //                         ['task_complete', '=', 0]
-    //                     ])
-    //                     ->whereNotIn('id_task', function ($query) use ($id_machine) {
-    //                         $query->select('id_task')
-    //                             ->from('machine_queue')
-    //                             ->where('id_machine', '=', $id_machine);
-    //                     })
-    //                 )
-    //                 ->orderBy('date_due', 'asc')
-    //                 ->orderBy('id_job', 'asc')
-    //                 ->get();
-                    
-    //         }
- 
-    //         return response()->json($data_planning);
-            
-    //     } catch (Exception $error) {
-    //         Log::error($error);
-    //     }
-    // }
-
     public function ChangeOperation(Request $request)
     {
-    //แสดง operation ที่ทำงานอยู่และไม่ได้ทำงาน แบบแยกกัน และเงื่อนไขในการนำไปแสดงปุ่มด้วย
         try {
             $selectedOption = $request->input('selectedOption');
             $id_machine = $request->input('modalId');
@@ -85,31 +38,33 @@ class operationController extends Controller
                             ->where('id_machine', '=', $id_machine);
                     })
                     ->orderBy('date_due', 'asc')
-                    ->get();
-                $data_planning2 = DB::table('planning')
-                    ->where([
-                        ['id_job', '=', $id_job],
-                        ['status_backup', '=', 0],
-                        ['task_complete', '=', 0]
-                    ])
-                    ->whereNotIn('id_task', function ($query) use ($id_machine) {
-                        $query->select('id_task')
-                            ->from('machine_queue')
-                            ->where('id_machine', '=', $id_machine);
-                    })
+                    ->orderBy('id_job', 'asc')
+                    ->unionAll(DB::table('planning')
+                        ->where([
+                            ['id_job', '=', $id_job],
+                            ['status_backup', '=', 0],
+                            ['task_complete', '=', 0]
+                        ])
+                        ->whereNotIn('id_task', function ($query) use ($id_machine) {
+                            $query->select('id_task')
+                                ->from('machine_queue')
+                                ->where('id_machine', '=', $id_machine);
+                        })
                     ->orderBy('date_due', 'asc')
                     ->orderBy('id_job', 'asc')
-                    ->get();   
-                    $machine_queues = DB::table('machine_queue')
-                                        ->select('id_machine', 'queue_number')
-                                        ->where('id_task', $id_task)
-                                        ->orderBy('id_machine', 'asc')
-                                        ->get();    
+                    )
+                    ->get();
+
+                $machine_queues = DB::table('machine_queue')
+                    ->select('id_machine', 'queue_number')
+                    ->where('id_task', $id_task)
+                    ->orderBy('id_machine', 'asc')
+                    ->get();                      
             }
  
+            // return response()->json($data_planning);
             return response()->json([
                 'data_planning' => $data_planning,
-                'data_planning2' => $data_planning2,
                 'machine_queues' => $machine_queues
             ]);
             
@@ -118,29 +73,132 @@ class operationController extends Controller
         }
     }
 
+    // public function ChangeOperation(Request $request)
+    // {
+    // //แสดง operation ที่ทำงานอยู่และไม่ได้ทำงาน แบบแยกกัน และเงื่อนไขในการนำไปแสดงปุ่มด้วย
+    //     try {
+    //         $selectedOption = $request->input('selectedOption');
+    //         $id_machine = $request->input('modalId');
+    //         $id_job = $request->input('Idjob');
+    //         $id_task = $request->input('Idtask');
+    //         $current_operation = $request->input('operation');
+    
+    //         if ($selectedOption == 'radioChangeOp') {
+    //             $data_planning = DB::table('planning')
+    //                 ->where([
+    //                     ['id_job', '=', $id_job],
+    //                     ['status_backup', '=', 0],
+    //                     ['task_complete', '=', 0]
+    //                 ])
+    //                 ->whereIn('id_task', function ($query) use ($id_machine) {
+    //                     $query->select('id_task')
+    //                         ->from('machine_queue')
+    //                         ->where('id_machine', '=', $id_machine);
+    //                 })
+    //                 ->orderBy('date_due', 'asc')
+    //                 ->get();
+    //             $data_planning2 = DB::table('planning')
+    //                 ->where([
+    //                     ['id_job', '=', $id_job],
+    //                     ['status_backup', '=', 0],
+    //                     ['task_complete', '=', 0]
+    //                 ])
+    //                 ->whereNotIn('id_task', function ($query) use ($id_machine) {
+    //                     $query->select('id_task')
+    //                         ->from('machine_queue')
+    //                         ->where('id_machine', '=', $id_machine);
+    //                 })
+    //                 ->orderBy('date_due', 'asc')
+    //                 ->orderBy('id_job', 'asc')
+    //                 ->get();   
+                    // $machine_queues = DB::table('machine_queue')
+                    //                     ->select('id_machine', 'queue_number')
+                    //                     ->where('id_task', $id_task)
+                    //                     ->orderBy('id_machine', 'asc')
+                    //                     ->get();    
+    //         }
+ 
+    //         return response()->json([
+    //             'data_planning' => $data_planning,
+    //             'data_planning2' => $data_planning2,
+    //             'machine_queues' => $machine_queues
+    //         ]);
+            
+    //     } catch (Exception $error) {
+    //         Log::error($error);
+    //     }
+    // }
 
-    public function ButtonMachineStill(Request $request)
+    // public function AddNewOperation(Request $request)
+    // {
+    //     try {
+    //         $id_machine = $request->input('id_machine');
+    //         $id_job = $request->input('id_job');
+    //         $new_operation = $request->input('operation_new');
+    
+    //         DB::table('machine_queue')
+    //         ->where('id_machine', $id_machine)
+    //         ->where('queue_number', 1)
+    //         ->update([
+    //             'comp_date' => '0000-00-00',
+    //             'comp_time' => '00:00:00',
+    //             'id_task' => DB::table('planning')
+    //                 ->select('id_task')
+    //                 ->where('id_job', $id_job)
+    //                 ->where('operation', $new_operation)
+    //                 ->first()->id_task,
+    //         ]);
+    //         DB::table('machine_queue')
+    //         ->where('id_machine',  $id_machine)
+    //         ->where('queue_number', '>', 0)
+    //         ->decrement('queue_number', 1);
+
+    //         return response()->json(['success' => true]);
+    //     }catch (Exception $error) {
+    //             Log::error($error);
+    //             return response()->json(['success' => false, 'message' => 'An error occurred: ' . $error->getMessage()]);
+    //         }
+    // }
+
+    public function AddNewOperation(Request $request)
     {
         try {
-            $selectedOption = $request->input('selectedOption');
-            $id_machine = $request->input('modalId');
-            $id_job = $request->input('Idjob');
-            $id_task = $request->input('Idtask');
-            $current_operation = $request->input('operation');
+            $id_machine = $request->input('id_machine');
+            $id_job = $request->input('id_job');
+            $new_operation = $request->input('operation_new');
 
-            if ($selectedOption == 'radioChangeOp' || $selectedOption == 'radioNewTask') {
-            $machine_queues = DB::table('machine_queue')
-            ->select('id_machine', 'queue_number')
-            ->where('id_task', $id_task)
-            ->orderBy('id_machine', 'asc')
-            ->get();
-            }
-            return response()->json($machine_queues);
+            // dd([
+            //     'id_job' => $id_job,
+            //     'operation_new' => $new_operation,
+            //     'id_machine' => $id_machine,
+            // ]);
+            $id_task = DB::table('planning')
+            ->where('id_job', $id_job)
+            ->where('operation', $new_operation)
+            ->value('id_task');
+
+            DB::table('machine_queue')
+                ->where('id_machine', $id_machine)
+                ->where('queue_number', 1)
+                ->update([
+                    // 'comp_date' => '0000-00-00',
+                    // 'comp_time' => '00:00:00',
+                    'id_task' => $id_task
+                ]);
+
+            // ลดค่า queue_number ใน machine_queue ที่มีค่ามากกว่า 0
+            DB::table('machine_queue')
+                ->where('id_machine', $id_machine)
+                ->where('queue_number', '>', 0)
+                ->update(['queue_number'=> 1]);
+
+            return response()->json(['success' => true]);
+
         } catch (Exception $error) {
             Log::error($error);
+            return response()->json(['success' => false, 'message' => 'An error occurred' . $error->getMessage()]);
         }
     }
-
 
     public function RemoveMachine(Request $request)
     {
@@ -183,106 +241,6 @@ class operationController extends Controller
             Log::error($error);
         }
     }
-
-    // public function ChangeOperation(Request $request){
-    //     try{
-    //         // $id_machine = $request->get('dashboardID');
-    //         // $id_job = $request->get('dashboardIdjob');
-    //         // $selectedOption = 'radioChangeOp';
-    //         $selectedOption = $request->input('selectedOption');
-    //         $id_machine = $request->input('modalId');
-    //         $id_job = $request->input('Idjob');
-    //         $id_task =$request->input('Idtask');
-    //         $current_operation = $request->input('operation');     
-    //         // Log::info('selectedOption: ' . $selectedOption);
-
-    //             // CHANGE OP, SAME JOB ID
-    //             // if ($selectedOption == 'radioChangeOp') {
-    //                 // $data_planning = DB::table('planning')
-    //                 //     ->join('machine_queue', 'planning.id_task', '=', 'machine_queue.id_task')
-    //                 //     ->select('*')
-    //                 //     ->where([
-    //                 //         ['planning.id_job', '=', $id_job],
-    //                 //         ['planning.status_backup', '=', 0],
-    //                 //         ['planning.task_complete', '=', 0],
-    //                 //         ['machine_queue.id_machine', '=', $id_machine]
-    //                 //     ])
-    //                 //     ->orderBy('planning.date_due', 'asc')
-    //                 //     ->get();
-
-    //                     // $data_planning = Planning::where('id_job', $id_job)
-    //                     // ->where('status_backup', 0)
-    //                     // ->where('task_complete', 0)
-    //                     // ->whereIn('id_task', function ($query) use ($id_machine) {
-    //                     //     $query->select('id_task')
-    //                     //         ->from((new MachineQueue)->getTable())
-    //                     //         ->where('id_machine', $id_machine);
-    //                     // })
-    //                     // ->orderBy('date_due', 'asc')
-    //                     // ->get();
-    //                 //     $data_planning = DB::table('planning')
-    //                 //     ->where([
-    //                 //         ['id_job', '=',$id_job],
-    //                 //         ['status_backup', '=', 0],
-    //                 //         ['task_complete', '=', 0]
-    //                 //     ])
-    //                 //     ->whereIn('id_task', function ($query) use ($id_job,$id_machine) {
-    //                 //         $query->select('id_task')
-    //                 //             ->from('machine_queue')
-    //                 //             ->where('id_machine', '=', $id_machine);
-    //                 //     })
-    //                 //     ->orderBy('date_due', 'asc')
-    //                 //     ->get();
-    //                 // } else 
-    //                 if ($selectedOption == 'radioChangeOp') {
-    //                     // $data_planning = DB::table('planning')
-    //                     // ->where([
-    //                     //     ['id_job', '=', $id_job],
-    //                     //     ['status_backup', '=', 0],
-    //                     //     ['task_complete', '=', 0]
-    //                     // ])
-    //                     // ->whereNotIn('id_task', function ($query) use ($id_job,$id_machine) {
-    //                     //     $query->select('id_task')
-    //                     //         ->from('machine_queue')
-    //                     //         ->where('id_machine', '=', $id_machine);
-    //                     // })
-    //                     // ->orderBy('date_due', 'asc')
-    //                     // ->orderBy('id_job', 'asc')
-    //                     // ->get();
-    //                     $data_planning = DB::table('planning')
-    //                     ->where([
-    //                         ['id_job', '=', $id_job],
-    //                         ['status_backup', '=', 0],
-    //                         ['task_complete', '=', 0]
-    //                     ])
-    //                     ->whereIn('id_task', function ($query) use ($id_machine) {
-    //                         $query->select('id_task')
-    //                             ->from('machine_queue')
-    //                             ->where('id_machine', '=', $id_machine);
-    //                     })
-    //                     ->unionAll(DB::table('planning')
-    //                         ->where([
-    //                             ['id_job', '=', $id_job],
-    //                             ['status_backup', '=', 0],
-    //                             ['task_complete', '=', 0]
-    //                         ])
-    //                         ->whereNotIn('id_task', function ($query) use ($id_machine) {
-    //                             $query->select('id_task')
-    //                                 ->from('machine_queue')
-    //                                 ->where('id_machine', '=', $id_machine);
-    //                         })
-    //                     )
-    //                     ->orderBy('date_due', 'asc')
-    //                     ->orderBy('id_job', 'asc')
-    //                     ->get();
-                    
-    //                 }
-    //         return response() -> json($data_planning);
-    //     }
-    //     catch(Exception $error){
-    //         Log::error($error);
-    //     }
-    // }
    
 // public function resetActivity(Request $request){
 //     try{
