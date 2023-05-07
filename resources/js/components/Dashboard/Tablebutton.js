@@ -5,7 +5,6 @@ import axios from 'axios';
 import UpdateModal from './Modals/UpdateModal';
 import { FaEdit } from "react-icons/Fa";
 import { FaTrash } from "react-icons/Fa"
-import DetailTable from './Modals/DetailTable';
 import { BiUserCheck } from "react-icons/Bi"
 
 class Tablebutton extends Component {

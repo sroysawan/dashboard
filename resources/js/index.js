@@ -20,3 +20,6 @@ if (document.getElementById('addstaff')) {
 if (document.getElementById('import')) {
     ReactDOM.render(<Home />, document.getElementById('import'));
 }
+if (document.getElementById('addrove')) {
+    ReactDOM.render(<Home />, document.getElementById('addrove'));
+}

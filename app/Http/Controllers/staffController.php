@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Log;
 use Exception;
 use App\Models\Staff;
+use App\Models\Approve;
 use Illuminate\support\Carbon;
 use Illuminate\support\Facades\DB;
 
@@ -85,7 +86,6 @@ Log::error($error);
    //Upadting dashboard data
    public function updateDashboardData(Request $request)
    {
-        
         $dashboardIdModal = $request->get('dashboardId');
         $dashboardStaff  =$request->get('dashboardStaff');
         $dashboardRfid =$request->get('dashboardRfid');
@@ -96,16 +96,59 @@ Log::error($error);
         $dashboardRole =$request->get('dashboardRole');
         $dashboardShif =$request->get('dashboardShif');
         // $dashboardimg =$request->get('dashboardimg');
-        Staff::where('id_staff',$dashboardIdModal)->update([
-            'id_staff' => $dashboardStaff,
-            'id_rfid' => $dashboardRfid,
-            'prefix' => $dashboardPrefix,
-            'name_first' => $dashboardFirst,
-            'name_last' => $dashboardLast,
-            // 'site' => $dashboardsite,
-            'id_role' => $dashboardRole,
-            'id_shif' => $dashboardShif
+        $data="";
+        $oldData = Staff::where('id_staff',$dashboardIdModal)->first();
+        $before_prefix = DB::table('prefix')->select('prefix')->where('id_prefix',$oldData['prefix'])->first();
+        $after_prefix = DB::table('prefix')->select('prefix')->where('id_prefix',$dashboardPrefix)->first();
+        $before_role = DB::table('role')->select('role')->where('id_role',$oldData['id_role'])->first();
+        $after_role = DB::table('role')->select('role')->where('id_role',$dashboardRole)->first();
+        // return response() -> json($after_prefix);
+        if($oldData['id_staff'] != $dashboardStaff){
+            $data = $data."ID Staff : ".$oldData['id_staff']." => ".$dashboardStaff.", ";
+        }
+        if($oldData['id_rfid'] != $dashboardRfid){
+            $data = $data."ID RFID : ".$oldData['id_rfid']." => ".$dashboardRfid.", ";
+        }
+        if($oldData['prefix'] != $dashboardPrefix){
+            $data = $data."Prefix : ".$before_prefix->prefix." => ".$after_prefix->prefix.", ";
+        }
+        if(trim($oldData['name_first']," ") != $dashboardFirst){
+            $data = $data."First Name : ".$oldData['name_first']." => ".$dashboardFirst.", ";
+        }
+        if($oldData['name_last'] != $dashboardLast){
+            $data = $data."Last Name : ".$oldData['name_last']." => ".$dashboardLast.", ";
+        }
+        if($oldData['id_role'] != $dashboardRole){
+            $data = $data."Role : ".$before_role->role." => ".$after_role->role.", ";
+        }
+        if($oldData['id_shif'] != $dashboardShif){
+            $data = $data."Shif : ".$oldData['id_shif']." => ".$dashboardShif.", ";
+        }
+        $data = rtrim($data, " ,");
+        // $data = "ID Staff : ".$oldData['id_staff']." => ".$dashboardStaff.
+        // ", ID RFID : ".$oldData['id_rfid']." => ".$dashboardRfid.
+        // ", Prefix : ".$oldData['prefix']." => ".$dashboardPrefix.
+        // ", First Name : ".$oldData['name_first']." => ".$dashboardFirst.
+        // ", Last Name : ".$oldData['name_last']." => ".$dashboardLast.
+        // ", Role : ".$oldData['id_role']." => ".$dashboardRole.
+        // ", Shif : ".$oldData['id_shif']." => ".$dashboardShif;
+        // return response() -> json($data);
+        Approve::create([
+            'id_staff' => $oldData['id_staff'],
+            'edit_data' => $data,
+            'update_history'=>Carbon::now()->timezone('Asia/Bangkok')->toDateTimeString(),
+            'status'=>2,
         ]);
+        // Staff::where('id_staff',$dashboardIdModal)->update([
+        //     'id_staff' => $dashboardStaff,
+        //     'id_rfid' => $dashboardRfid,
+        //     'prefix' => $dashboardPrefix,
+        //     'name_first' => $dashboardFirst,
+        //     'name_last' => $dashboardLast,
+        //     // 'site' => $dashboardsite,
+        //     'id_role' => $dashboardRole,
+        //     'id_shif' => $dashboardShif
+        // ]);
 
         // $data = Staff::where('id_staff','0997')->get();
         // 'staff_img' => $dashboardimg
@@ -115,6 +158,7 @@ Log::error($error);
             'id_rfid' => $dashboardRfid,
             'prefix' => $dashboardPrefix,
             'name_first' => $dashboardFirst,
+            // 'name_first_change' => $oldData['name_first'],
             'name_last' => $dashboardLast,
             // 'site' => $dashboardsite,
             'id_role' => $dashboardRole,
@@ -195,5 +239,10 @@ Log::error($error);
  public function search($key)
    {
     return Staff::where('id_staff',$key)->get();
+   }
+
+   public function checkStatusButton($id)
+   {
+    return Approve::where('id_approve',$id)->get('status');
    }
 }

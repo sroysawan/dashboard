@@ -37,11 +37,11 @@ render() {
                     <div class="row gx-10 mb-3">
                         <div class="col-md-6">
                             <label class="small mb-1" for="id_staff">Staff ID</label>
-                            <input class="bg wi" id="id_staff" name="id_staff" type="text" maxlength="6" required="required"></input>
+                            <input class="bg wi" id="id_staff" name="id_staff" type="text" maxlength="6" required="required" ></input>
                         </div>
                         <div class="col-md-6">
                             <label class="small mb-1" for="id_rfid">RFID</label>
-                            <input class="bg wi" id="id_rfid" name="id_rfid" type="text" maxlength="10" required="required"></input>
+                            <input class="bg wi" id="id_rfid" name="id_rfid" type="text" maxlength="10" required="required" ></input>
                         </div>
                     </div>
                     <div class="row gx-3 mb-3">
@@ -87,7 +87,7 @@ render() {
                     <div class="row gx-3 mb-3">
                         <div class="col-md-12">
                         Select picture to upload:
-                            <input class="btn text-black bg " type="file" name="fileToUpload" id="fileToUpload"></input>
+                            <input class="btn text-black bg " type="file" name="fileToUpload" id="fileToUpload" accept=".png,jpg"></input>
                             <br></br>
                         </div>
                     </div>

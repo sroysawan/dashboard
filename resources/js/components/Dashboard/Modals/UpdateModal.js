@@ -223,9 +223,9 @@ return dashboardUpdate;
             console.log(response.data);
             console.log("Update Success");
             //  toast.success("Dashboard Updated Successully");
-             setTimeout(() => {
-                 location.reload();
-            },500)
+            //  setTimeout(() => {
+            //      location.reload();
+            // },500)
          })
     }
 

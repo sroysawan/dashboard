@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import CreateModal from './Modals/CreateModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles.css';
-
+import DataTable from 'react-data-table-component';
 
 class TableOperator extends Component{
   
@@ -14,32 +14,45 @@ class TableOperator extends Component{
       
     this.state = {
         Staff : [],
+        StaffTemp: [],
     }
 
 }
-
 componentDidMount() {
-this.getInfoStaff();
-}
-
-getInfoStaff = () => {
-let self = this;
-axios.get('/update/DashboardStaff/operator').then(function (response) {
-    self.setState({                                                                                                                                                                                                                                                                                                                       
-        Staff: response.data
-    });
-});
-}
-
- Search = () => {
-  var txt = document.getElementById("myInput").value;
-  console.log(txt);
-  axios.get('/api/search/' + txt).then(function (response) {
-});
- 
-}
-
-
+  this.getInfoStaff();
+  }
+  
+  getInfoStaff = () => {
+  let self = this;
+  axios.get('/update/DashboardStaff/operator').then(function (response) {
+      self.setState({                                                                                                                                                                                                                                                                                                                       
+          Staff: response.data,
+          StaffTemp : response.data,
+      });
+  });
+  }
+  
+  Search = (event) => {
+    var txt = event.target.value;
+    var result =[];
+    if(txt.lenght <= 0){
+      result = this.state.StaffTemp;
+    }
+    else{
+      result = this.state.StaffTemp.filter(data=>{
+        return data.id_staff.toLowerCase().includes(txt.toLowerCase()) ||
+        data.name_last.toLowerCase().includes(txt.toLowerCase()) ||
+        data.name_first.toLowerCase().includes(txt.toLowerCase()) ||
+        data.id_rfid.toLowerCase().includes(txt.toLowerCase()) 
+      })
+      this.setState({
+        Staff:result,
+      });
+      result = [];
+  
+    }
+  
+    }
 render() {
   return (
     <div className="container">
@@ -49,7 +62,7 @@ render() {
             </div>
             <div class="card-body">
               <center>
-              <input type="text"  class="form-control rounded" id="myInput" onKeyUp={() => { this.Search()}}placeholder="Search for names.." title="Type in a name"></input>
+              <input type="text"  class="form-control se" id="myInput" onChange={(event) => { this.Search(event)}}placeholder="Search for names.." title="Type in a name"></input>
               </center><br></br>
               <div class="table table-responsive" id="sortTable">
               <table className="table table-bordered table-striped table-responsive">
@@ -80,6 +93,7 @@ render() {
     );
   }
 }
+
 
 export default TableOperator;
 

@@ -9,7 +9,7 @@ body{
 }
 
 .form-control{
-    background-color: rgba(201, 194, 194, 0.945);
+   
     max-width: 10em;
 
 }
@@ -35,4 +35,10 @@ body{
     background-color: rgb(30, 125, 248);
     color: white;
     border-radius: 5px;
+}
+.btn-w{
+    width: 180px;
+}
+.status-w{
+    width: 80px;
 }

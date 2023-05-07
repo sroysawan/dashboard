@@ -31,8 +31,8 @@ class Navbars extends Component{
           <NavDropdown.Item href="/import">Import Excel</NavDropdown.Item>
           <NavDropdown.Item href="/addstaff">Add Staff</NavDropdown.Item>
         </NavDropdown>
-        <Nav.Link href="">Addrove</Nav.Link>
-
+        <Nav.Link href="/approve">Approve</Nav.Link>
+        
         {/* <NavDropdown title="Jobs" id="basic-nav-dropdown">
           <NavDropdown.Item href="#uploadjob">Upload Jobs</NavDropdown.Item>
           <NavDropdown.Item href="#exportjob">Export Jobs</NavDropdown.Item>

@@ -1,0 +1,40 @@
+
+body{
+    background-color: rgb(245, 239, 239);
+}
+
+.card{
+    margin-top: 50px;
+    border-radius: 10px 10px 10px 10px;
+}
+
+.form-control{
+    max-width: 10em;
+}
+
+.se{
+    margin-left: 1050px;
+}
+
+.bg{
+    background-color: white;
+}
+
+.wi{
+    width: 290px;
+    height: 36px;
+    border:1px solid rgb(211, 209, 209);
+}
+
+.card-header{
+    color: rgb(4, 121, 255);
+    font-weight:600;
+}
+
+.btnt{
+    width: 65px;
+    height: 35px;
+    background-color: rgb(30, 125, 248);
+    color: white;
+    border-radius: 5px;
+}

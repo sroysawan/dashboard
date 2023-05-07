@@ -34,7 +34,7 @@ render() {
                 <div class="card-body">
                     <form class="text-black" action="pp-staff-upload-action.php" method="post" enctype="multipart/form-data">
                         Select file to upload:
-                        <input class="btn text-black" type="file" name="fileToUpload" id="fileToUpload" accept=".xls"></input>
+                        <input class="btn text-black" type="file" name="fileToUpload" id="fileToUpload" accept=".xlsx"></input>
                         <br></br>
                         <input class="btn btn-primary" type="submit" value="Upload!" name="submit"></input>
                         <br></br><br></br>
