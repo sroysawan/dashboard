@@ -1,6 +1,5 @@
 // import React from 'react';
 // import ReactDOM from 'react-dom';
-// import Home from './components/Home';
 // import Operation from './components/Operation';
 // import NewTask from './components/NewTask';
 // import DataDashboard from './components/Dashboard/DataDashboard';
@@ -43,24 +42,35 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Home from './components/Home';
-import Operation from './components/Operation';
-import NewTask from './components/NewTask';
 import DataDashboard from './components/Dashboard/DataDashboard';
 import DataOperation from './components/Operation/DataOperation';
 import DataNewTask from './components/NewTask/DataNewtask';
 import LoginPage from './components/LoginPage/LoginPage';
-import TestOperation from './components/Operation/TestOperation';
+import TableOperator from './components/Staff/TableOperator';
+import TableTechnician from './components/Staff/TableTechnician';
+import AddStaff from './components/Staff/AddStaff';
+import Approve from './components/Staff/Approve/Approve';
+import Import from './components/Staff/Import';
+import Table from './components/Staff/Table';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
       <Switch>
+        {/* --------> Dashboard <-------- */}
+        <Route path="/login" component={LoginPage} />
         <Route exact path="/" component={DataDashboard} />
         <Route path="/operation" component={DataOperation} />
         <Route path="/newtask" component={DataNewTask} />
-        <Route path="/login" component={LoginPage} />
+        
+        {/* --------> Staff <-------- */}
+        <Route path="/operator" component={TableOperator} />
+        <Route path="/technician" component={TableTechnician} />
+        <Route path="/addstaff" component={AddStaff} />
+        <Route path="/approve" component={Approve} />
+        <Route path="/import" component={Import} />
+        <Route path="/otherstaff" component={Table} />
       </Switch>
     </Router>
   </React.StrictMode>,

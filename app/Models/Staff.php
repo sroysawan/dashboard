@@ -15,7 +15,7 @@ class Staff extends Model
         'prefix',
         'name_first',
         'name_last',
-        'site',
+        // 'site',
         'id_role',
         'id_shif',
         'staff_img',
