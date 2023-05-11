@@ -56,6 +56,7 @@ class Tablebutton extends Component {
             data-bs-toggle="modal" 
             data-bs-target={'#editModal'+this.props.eachRowId}
             onClick={() => { this.getDashboardDetails(this.props.eachRowId) }}
+            disabled={this.props.level}
             >
                 <FaEdit/>
             </button>
@@ -72,7 +73,7 @@ class Tablebutton extends Component {
                 update
             </button> */}
     
-            <UpdateModal modalId= { this.props.eachRowId} dashboardData={ this.state}/>
+            <UpdateModal modalId= { this.props.eachRowId} dashboardData={ this.state} />
 
 
             <button type="button"
@@ -80,11 +81,12 @@ class Tablebutton extends Component {
                     data-bs-toggle="modal"
                     data-bs-target={'#deleteModal' + this.props.eachRowId}
                     onClick={() => { this.getDashboardDetails(this.props.eachRowId) }}
+                    disabled={this.props.level}
                 >
                     <FaTrash/>
             </button>
 
-            <DeleteModal modalId= { this.props.eachRowId} dashboardData={ this.state}/>
+            <DeleteModal modalId= { this.props.eachRowId} dashboardData={ this.state} />
 
 
             {/*<button type="button"

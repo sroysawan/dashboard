@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import TableRow from './TableRow';
+import TableOther from './TableOther';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CreateModal from './Modals/CreateModal';
@@ -85,7 +85,7 @@ render() {
                   <tbody>
                       {
                         this.state.Staff.map(function (row, key) {
-                              return <TableRow key={key} data={row} /> 
+                              return <TableOther key={key} data={row}/> 
                       })}
                   </tbody>
               </table>
