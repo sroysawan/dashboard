@@ -13,22 +13,44 @@ use Illuminate\support\Facades\DB;
 class staffController extends Controller
 {
     
-    public function getInfoStaff(){
-        try{
-            $staff = DB::table('staff')
-            ->select('*')
-            ->join('role','role.id_role','=','staff.id_role')
-            ->join('prefix','prefix.id_prefix','=','staff.prefix')    
-            ->orderBy('name_first', 'asc')       
-            ->get();
-            return response()-> json($staff);
+//     public function getInfoStaff(){
+//         try{
+//             $staff = DB::table('staff')
+//             ->select('*')
+//             ->join('role','role.id_role','=','staff.id_role')
+//             ->join('prefix','prefix.id_prefix','=','staff.prefix')    
+//             ->orderBy('name_first', 'asc')       
+//             ->get();
+//             return response()-> json($staff);
 
-        }
-        catch(Exception $error)
-    {
-    Log::error($error);
+//         }
+//         catch(Exception $error)
+//     {
+//     Log::error($error);
+// }
+// }
+
+public function getInfoStaff()
+{
+    try {
+        $staff = DB::table('staff')
+            ->select('*')
+            ->join('role', 'role.id_role', '=', 'staff.id_role')
+            ->join('prefix', 'prefix.id_prefix', '=', 'staff.prefix')
+            ->orderBy('name_first', 'asc')
+            ->where(function ($query) {
+                $query->where('role.id_role', '=', '6')
+                    ->orWhere('role.id_role', '=', '7')
+                    ->orWhere('role.id_role', '=', '9');
+            })
+            ->get();
+        
+        return response()->json($staff);
+    } catch (Exception $error) {
+        Log::error($error);
+    }
 }
-}
+
 
 public function getInfoStaffOperator(){
     try{
