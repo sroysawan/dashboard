@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+// import TableRow from '../Dashboard/TableRow';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 // import CreateModal from '../Dashboard/Modals/CreateModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ApproveRow from './ApproveRow';
 import Navbars from '../../Dashboard/Navbar/Navbars';
-import { GrHistory } from "react-icons/Gr"
-import { FaSearch } from "react-icons/Fa";
-import '../staffStyle.css';
-export class Approve extends Component{
+
+export class ApproveHistory extends Component{
   
   constructor(props) {
     super(props);
@@ -21,12 +19,13 @@ export class Approve extends Component{
 
 }
 componentDidMount = () => {
+    console.log('test');
    this.getApprove();
 }
 
   getApprove = () =>{
       let self = this;
-      axios.get('/update/getApprove').then(function (response) {
+      axios.get('/update/getApprove/history').then(function (response) {
         console.log(response.data);
         self.setState({                                                                                                                                                                                                                                                                                                                       
               approve: response.data,
@@ -62,35 +61,16 @@ componentDidMount = () => {
     }
 render() {
   return (
-       <div>
-      <header className="page-header page-header-dark pb-5"></header>
-       <div className="container">
+    <div className="container">
       <Navbars/>
-      <div className="card mb-4 w-100">
-       <div className="card-header fw-bold text-white fs-4 d-flex justify-content-between bg-primary">
-         <div>Approve List</div>
-         <button type='button'>
-    <Link to="/history">
-        <GrHistory/> History
-    </Link>
-</button>
-         </div>
-         <div className="card-header text-black">
-               <div className="d-flex">
-               <div className="p-2 ms-auto">
-                                <div className="input-wrapper">
-                                    <FaSearch id="search-icon"/>
-                                    <input 
-                                    className="search-input"
-                                    id="myInput" 
-                                    onChange={(event) => { this.Search(event)}}
-                                    placeholder="Search for names.." 
-                                    title="Type in a name"></input>
-                    </div>
-                    </div>
-                   </div>
-                </div>
+          <div class="card ">
+            <div class="container p-3 my-0 bg-primary text-white rounded-top">
+              <h5>Approve List</h5>
+            </div>
             <div class="card-body">
+              <center>
+              <input type="text"  class="form-control se" id="myInput" onChange={(event) => { this.Search(event)}}placeholder="Search for names.." title="Type in a name"></input>
+              </center><br></br>
               <div class="table table-responsive" id="sortTable">
               <table className="table table-bordered table-striped table-responsive">
                 <thead>
@@ -109,8 +89,8 @@ render() {
                     <th className="text-center" scope="col">Request date and time</th>
                     <th className="text-center" scope="col">Status</th>
                     <th className="text-center" scope="col">Approve</th>
-                    {/* <th className="text-center" scope="col">Approve by</th>
-                    <th className="text-center" scope="col">Approve date and time</th> */}
+                    <th className="text-center" scope="col">Approve by</th>
+                    <th className="text-center" scope="col">Approve date and time</th>
 
                   </tr>            
                   </thead>
@@ -124,11 +104,10 @@ render() {
             </div>
           </div>
       </div>
-      </div>
     );
   }
 }
 
 
-export default Approve;
+export default ApproveHistory;
 

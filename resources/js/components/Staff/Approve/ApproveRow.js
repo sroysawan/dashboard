@@ -59,7 +59,8 @@ class ApproveRow extends Component {
 
     confirmEdit = (isConfirm, id) =>{
         let reqData = {id_approve : id,
-                       confirm_approve : isConfirm};
+                       confirm_approve : isConfirm,
+                        role_approve : localStorage.getItem('token')};
             // console.log(reqData);
             axios.post('/update/approve/confirm',reqData).then(response=>{
                 console.log(response.data);
@@ -78,8 +79,8 @@ class ApproveRow extends Component {
                 {/* <td>{ this.props.data.id_approve}</td>
                 <td>{ this.props.data.id_foreman}</td> */}
                 <td>{ this.props.data.id_staff }</td>
-                <td></td>
-                {/* <td>{ this.props.data.id_manager }</td> */}
+                {/* <td></td> */}
+                <td>{ this.props.data.id_manager }</td>
                 {/* <td>{ this.props.data.prefix}</td>
  
                 <td>{ this.props.data.name}</td>
@@ -92,7 +93,7 @@ class ApproveRow extends Component {
                     {this.showbutton()}
 
                 </td>
-                <td></td>
+                <td>{ this.props.data.id_foreman }</td>
             <td>{ this.props.data.approve_datetime }</td>
             </tr>
         )
