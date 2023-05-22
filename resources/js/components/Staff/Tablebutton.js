@@ -23,15 +23,18 @@ class Tablebutton extends Component {
             currentDashboardSite: null,
             currentDashboardRole: null,
             currentDashboardShif: null,
+            approve_status :false,
             // currentDashboardimg: null,
         }
     }
 
     //Getting Individual
     getDashboardDetails = (id_staff) => {
+        // console.log(response.data.approve_status);
         axios.post('/get/individual/dashboard/details',{
             dashboardId: id_staff
         }).then((response) =>{
+            // console.log(response.data.approve_status);
             this.setState({
                 currentDashboardStaff: response.data.id_staff,
                 currentDashboardRfid: response.data.id_rfid,
@@ -40,7 +43,8 @@ class Tablebutton extends Component {
                 currentDashboardLast: response.data.name_last,
                 currentDashboardSite: response.data.site,
                 currentDashboardRole: response.data.id_role,
-                currentDashboardShif: response.data.id_shif
+                currentDashboardShif: response.data.id_shif,
+                approve_status : response.data.approve_status,
                 // currentDashboardimg: response.data.img
             })
             console.log(response.data);

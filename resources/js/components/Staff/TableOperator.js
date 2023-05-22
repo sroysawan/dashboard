@@ -6,7 +6,8 @@ import CreateModal from './Modals/CreateModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbars from '../Dashboard/Navbar/Navbars';
 import DataTable from 'react-data-table-component';
-
+import { FaSearch } from "react-icons/Fa";
+import './staffStyle.css';
 class TableOperator extends Component{
   
   constructor(props) {
@@ -25,6 +26,7 @@ componentDidMount() {
   getInfoStaff = () => {
   let self = this;
   axios.get('/update/DashboardStaff/operator').then(function (response) {
+    console.log(response.data);
       self.setState({                                                                                                                                                                                                                                                                                                                       
           Staff: response.data,
           StaffTemp : response.data,
@@ -55,16 +57,30 @@ componentDidMount() {
     }
 render() {
   return (
-    <div className="container">
+<div>
+      <header className="page-header page-header-dark pb-5"></header>
+       <div className="container">
       <Navbars/>
-          <div class="card ">
-            <div class="container p-3 my-0 bg-danger text-white rounded-top">
-              <h5>Staff List</h5>
-            </div>
+      <div className="card mb-4 w-100">
+       <div className="card-header fw-bold text-white fs-4 d-flex justify-content-between bg-primary">
+         <div>Operator Staff List</div>
+         </div>
+         <div className="card-header text-black">
+               <div className="d-flex">
+               <div className="p-2 ms-auto">
+                                <div className="input-wrapper">
+                                    <FaSearch id="search-icon"/>
+                                    <input 
+                                    className="search-input"
+                                    id="myInput" 
+                                    onChange={(event) => { this.Search(event)}}
+                                    placeholder="Search for names.." 
+                                    title="Type in a name"></input>
+                    </div>
+                    </div>
+                   </div>
+                </div>
             <div class="card-body">
-              <center>
-              <input type="text"  class="form-control se" id="myInput" onChange={(event) => { this.Search(event)}}placeholder="Search for names.." title="Type in a name"></input>
-              </center><br></br>
               <div class="table table-responsive" id="sortTable">
               <table className="table table-bordered table-striped table-responsive">
                 <thead>
@@ -76,8 +92,8 @@ render() {
                     <th className="text-center" scope="col">Role</th>
                     <th className="text-center" scope="col">Shif</th>
                     <th className="text-center" scope="col">Picture</th>
+                    <th className="text-center" scope="col">Status</th>
                     <th className="text-center" scope="col">Operation</th>
-                    
                   </tr>            
                   </thead>
                   <tbody>
@@ -91,6 +107,8 @@ render() {
             </div>
           </div>
       </div>
+      </div>
+      
     );
   }
 }

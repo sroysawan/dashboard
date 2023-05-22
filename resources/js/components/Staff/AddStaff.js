@@ -14,6 +14,7 @@ class AddStaff extends Component{
       
     this.state = {
         login: null,
+        tempUploadImage:null,
         // Staff : [],
         id_staff:null,
         id_rfid:null,
@@ -50,12 +51,53 @@ event.preventDefault();
         name_last:this.state.name_last,
         id_role:this.state.id_role,
         id_shif:this.state.id_shif,
+        img:this.state.tempUploadImage!=null?this.state.tempUploadImage.name:"-",
     };
+    if(this.state.tempUploadImage!=null){
+        this.uploadImage();
+      }
     axios.post('/create/add/staff',{data}).then(response=>{
         console.log(response.data);
     })
     
 }
+
+handleMachineUploadImage = (event) =>{
+    console.log(event.target.files[0]);
+    var selectedFile = event.target.files[0];
+    var allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+    if(selectedFile.size > (1048576*4)){
+      alert("Maximum image file size is 4 MB");
+    }
+    else if(selectedFile.name.length > 20){
+      alert("Filename is too longer");
+    }
+    else if (selectedFile && allowedTypes.includes(selectedFile.type)) {
+      this.setState({
+        tempUploadImage:selectedFile,
+        // imageValue:event.target.files[0].name,
+      })
+      console.log("Add file.");
+    } else {
+      console.log("Not found or match type file.");
+    }
+    
+  }
+
+  uploadImage = () =>{
+    var formData = new FormData();
+    formData.append('file', this.state.tempUploadImage);
+    axios.post('/update/uploadFileImage',formData,{
+      headers: {
+        'Content-Type': 'multipart/form-data'
+    }
+    }).then(response =>{
+      console.log(response.data);
+      this.setState({
+        tempUploadImage:null,
+      })
+    })
+  }
 
 handleStaff = (event) => {
     this.setState({
@@ -97,6 +139,8 @@ handleShif = (event) => {
         id_shif: event.target.value,
     });
 }
+
+
 
 render() {
   return (
@@ -182,11 +226,11 @@ render() {
                     <div class="row gx-3 mb-3">
                         <div class="col-md-12">
                         Select picture to upload:
-                            <input class="btn text-black bg " type="file" name="fileToUpload" id="fileToUpload" accept=".png,jpg"></input>
+                            <input class="btn text-black bg " id='image' type='file' accept="image/png, image/jpeg, image/jpg" onChange={this.handleMachineUploadImage}></input>
                             <br></br>
                         </div>
                     </div>
-                    <button id="submit_button" class="btnt" type="submit" onClick={this.addStaff}>Add</button>
+                    <button id="submit_button" className="btn btn-primary" type="submit" onClick={this.addStaff}>Add</button>
                 </form>
             </div>
         </div>
