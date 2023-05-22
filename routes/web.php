@@ -29,8 +29,12 @@ Route::get('/', function () {
 });
 
 //Dashboard New DB
+// Route::get('/update/DashboardRefresh/',
+//     [dashboardRefreshController::class, 'dashboardRefreshV5']
+// );
+
 Route::get('/update/DashboardRefresh/',
-    [dashboardRefreshController::class, 'dashboardRefreshV5']
+    [dashboardRefreshController::class, 'dashboardRefreshV6']
 );
 
 //Dashboard old DB
@@ -47,12 +51,16 @@ Route::get('/get/indivvidual/dashboard/details',
 Route::post('/update/dashboard/modal',
        [dashboardRefreshController::class, 'updateModalDashboard'])->name('dashboard.update'); 
 
+// Route::get('/get/indivvidual/dashboard/detailsNew',
+// [dashboardRefreshController::class, 'getDashboardDetailsNewDB'])->name('dashboard.detailsNew');
+
 Route::get('/get/indivvidual/dashboard/detailsNew',
-[dashboardRefreshController::class, 'getDashboardDetailsNewDB'])->name('dashboard.detailsNew');
+[dashboardRefreshController::class, 'getDashboardDetailsNewDBV2'])->name('dashboard.detailsNew');
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//Modal old DB
+//Modal DB Use this
 Route::get('/update/DashboardRefreshQueue2/',
     [dashboardRefreshController::class, 'dashboardRefreshQueue2']
 );
@@ -68,10 +76,16 @@ Route::get('/operation', function () {
     return view('operation'); //ชื่อไฟล์ blade
 });
 
+Route::get('/operationQ2', function () {
+    return view('operationQ2'); //ชื่อไฟล์ blade
+});
+
 //show data change operation
 Route::post('/change/Operation', [operationController::class, 'ChangeOperation']);
 //Add New Operation
 Route::post('/add/Operation', [operationController::class, 'AddNewOperation']);
+//Add New Operation Q2
+Route::post('/add/OperationQ2', [operationController::class, 'AddNewOperationQ2']);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -88,15 +102,25 @@ Route::post('/feed/Machine', [operationController::class, 'FeedMachine']);
 Route::get('/newtask', function () {
     return view('newtask');
 });
+Route::get('/newtaskQ2', function () {
+    return view('newtaskQ2');
+});
 //show data new task
 Route::post('/select/Newtask', [newtaskController::class, 'NewTask']);
 //Add New Newtask QUEUE 1
 Route::post('/add/Newtask', [newtaskController::class, 'AddNewtask']);
-
+//Add New Newtask QUEUE 2
+Route::post('/add/Newtask2', [newtaskController::class, 'AddNewtaskQ2']);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //reset activity
 Route::post('/reset/activity', [operationController::class, 'resetActivity']);
+
+
+
+
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // --------------------------------------------- staff ------------------------------------------------
@@ -125,7 +149,11 @@ Route::get('/approve', function () {
  return view('approve');
 });   
 
+Route::get('/history', function () {
+    return view('history_approve');
+   });  
 
+// Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
@@ -147,6 +175,9 @@ Route::post('/update/dashboard/data/update',
 Route::get('/update/getApprove',
     [ApproveController::class, 'getApprove'])->name('dashboard.approve');  
 
+Route::get('/update/getApprove/history',
+    [ApproveController::class, 'getApproveHistory'])->name('dashboard.approveHistory');  
+
 Route::post('/update/approve/confirm',
     [ApproveController::class, 'confirmApprove']);  
 
@@ -157,10 +188,16 @@ Route::get('/delete/dashboard/data/{dashboard}',
     [StaffController::class, 'destroy']);  
 
 Route::post('/store/dashboard/data',
-    [StaffController::class, 'store']);        
+    [StaffController::class, 'store']);     
     
+Route::post('/create/add/staff',
+    [StaffController::class, 'addStaff'])->name('dashboard.addStaff'); 
+    
+Route::post('/update/uploadFileImage',
+    [StaffController::class, 'uploadFileImage']);
 
 
+// Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
