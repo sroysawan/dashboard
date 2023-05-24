@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbars from '../Dashboard/Navbar/Navbars';
 import { FaSearch } from "react-icons/Fa";
 import './staffStyle.css';
+import ReactPaginate from "react-paginate";
 
 class TableTechnician extends Component{
   
@@ -16,6 +17,8 @@ class TableTechnician extends Component{
     this.state = {
         Staff : [],
         StaffTemp: [],
+        currentPage: 0,
+        itemsPerPage: 5, 
     }
 
 }
@@ -56,12 +59,24 @@ Search = (event) => {
 
   }
 
-
+      //Pagination
+      handlePageClick = (data) => {
+        this.setState({ currentPage: data.selected });
+      };
+      handleItemsPerPageChange = (event) => {
+          const itemsPerPage = parseInt(event.target.value);
+          this.setState({ itemsPerPage, currentPage: 0 });
+      };
 render() {
+  const { currentPage, itemsPerPage } = this.state;
+  const indexOfLastItem = (currentPage + 1) * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentTechnician = this.state.Staff.slice(indexOfFirstItem, indexOfLastItem);
+  const pageCount = Math.ceil(this.state.Staff.length / itemsPerPage);
   return (
     <div>
       <header className="page-header page-header-dark pb-5"></header>
-       <div className="container">
+       <div className="container-fluid px-4 mt-n10">
       <Navbars/>
       <div className="card mb-4 w-100">
        <div className="card-header fw-bold text-white fs-4 d-flex justify-content-between bg-primary">
@@ -69,6 +84,17 @@ render() {
          </div>
          <div className="card-header text-black">
                <div className="d-flex">
+               <div className="p-2 custom-header">
+                                <label>Row per page: </label>
+                                <select value={itemsPerPage} onChange={this.handleItemsPerPageChange}>
+                                <option value={5}>5</option>
+                                <option value={10}>10</option>
+                                <option value={20}>20</option>
+                                <option value={25}>25</option>
+                                <option value={50}>50</option>
+                                <option value={100}>100</option>
+                                </select>
+                </div>
                <div className="p-2 ms-auto">
                                 <div className="input-wrapper">
                                     <FaSearch id="search-icon"/>
@@ -101,12 +127,29 @@ render() {
                   </thead>
                   <tbody>
                       {
-                        this.state.Staff.map(function (row, key) {
+                        currentTechnician.map(function (row, key) {
                               return <TableRow key={key} data={row} /> 
                       })}
                   </tbody>
               </table>
               </div>
+              <div className="d-flex justify-content-center mt-3 pagination">
+                            <div className="dataTables_paginate">
+                            <ReactPaginate
+                                previousLabel={"<"}
+                                nextLabel={">"}
+                                breakLabel={"..."}
+                                breakClassName={"break-me"}
+                                pageCount={pageCount}
+                                marginPagesDisplayed={2}
+                                pageRangeDisplayed={5}
+                                onPageChange={this.handlePageClick}
+                                containerClassName={"pagination"}
+                                subContainerClassName={"pages pagination"}
+                                activeClassName={"active"}
+                            />
+                            </div>
+                            </div>
             </div>
           </div>
       </div>

@@ -29,7 +29,7 @@ class TableOther extends Component {
             });
         }else{
             this.setState({
-                status:'ทำงาน Manual'
+                status:'ทำงาน (Manual)'
             });
         }
     var user = localStorage.getItem('token');
