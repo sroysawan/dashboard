@@ -1,20 +1,137 @@
 import React, { Component } from 'react';
+import axios from "axios";
+import { withRouter } from 'react-router-dom';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { BrowserRouter as Router, Route, Link, Switch, Routes, redirect } from 'react-router-dom';
+
+import "./modalStyle.css";
+import * as bootstrap from 'bootstrap';
 class ViewModal2 extends Component{
 
     constructor(props){
         super(props);
         this.state = {
+            // currentDashboardStatus: null,
+            // currentDashboardIdmc: null,
+            // currentDashboardItemno: null,
+            // currentDashboardIdjob: null,
+            // currentDashboardOp: null,
+            // currentDashboardDatedue: null,
+            // currentDashboardQtypertray: null,
+            // currentDashboardQtyactivity: null,
+            // currentDashboardQtyaccum: null,
+            // currentDashboardQtyaccumsum: null,
+            // currentDashboardQtyorder: null,
+            // currentDashboardQtypercent: null,
+            // currentDashboardIdtask: null,
+            // currentDashboardDtupdate: null,
+            // currentDashboardIdactivity: null,
+            // currentDashboardIdstaff: null,
+            // currentDashboardStatusWork: null,
             selectedOption: null,
             isConditionMet: true,
+            // dashboardQtypertray: null,
+            // dashboardQtyactivity: null,
+            // dashboardQtyaccum: null,
+            // activityTemp: null,
+            // accumTemp: null,
+            // planning_machine: [],
+            // planning_others: [],
         }
         this.handleOptionChange = this.handleOptionChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
         this.resetRadioButtons = this.resetRadioButtons.bind(this);
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        let apiUrl ;
+        let newPath ;
+
+        if(this.state.selectedOption === 'radioChangeOp'){
+            apiUrl = '/change/Operation';
+            newPath = '/operationQ2';
+        }else if (this.state.selectedOption === 'radioRemoveQ2'){
+            apiUrl = '/remove/Machine';
+            newPath = '/';
+        }else if (this.state.selectedOption === 'radioNewTask'){
+            apiUrl = '/select/Newtask';
+            newPath = '/newtaskQ2';
+        }
+        axios.post(`${apiUrl}`, { 
+            selectedOption: this.state.selectedOption,
+            modalId: this.props.modalId, //id_machine
+            Idjob: this.props.dashboardData.currentDashboardIdjob,
+            operation: this.props.dashboardData.currentDashboardOp,
+            Idtask: this.props.dashboardData.currentDashboardIdtask,
+            Idstaff: this.props.dashboardData.currentDashboardIdstaff,
+            Idactivity: this.props.dashboardData.currentDashboardIdactivity
+
+        })
+            .then(response => {
+                // นำข้อมูลที่ได้จาก Laravel มาโชว์แยกหน้ากับหน้าที่มี radio button อยู่
+                console.log('Data received from Laravel:', response.data);
+                const { data_planning, machine_queues, data_newtask,} = response.data;
+
+                console.log('data_planning:', data_planning);
+                console.log('machine_queues:', machine_queues);
+                console.log('data_newtask:', data_newtask);
+
+
+                if (this.state.selectedOption === 'radioChangeOp') {
+                    console.log('currentOperation:', this.props.dashboardData.currentDashboardOp);
+                  }
+                this.handleCloseModal(); // ปิด modal ก่อนเปลี่ยนเส้นทาง
+
+                if(this.state.selectedOption === 'radioChangeOp'){
+                    this.props.history.push({
+                        pathname: '/operationQ2',
+                        state: {
+                            data: data_planning,
+                            machine_queues: machine_queues,
+                            modalId: this.props.modalId,
+                            currentDashboardOp: this.props.dashboardData.currentDashboardOp
+                    }
+                });
+                }else if (this.state.selectedOption === 'radioRemoveQ2') {
+                    this.props.history.push({
+                        pathname: '/',
+                        state: {
+                            data: response.data,
+                            modalId: this.props.modalId,
+                        }
+                    });
+                    window.location.reload();
+                }else if (this.state.selectedOption === 'radioNewTask') {
+                    this.props.history.push({
+                        pathname: '/newtaskQ2',
+                        state: {
+                            data: data_newtask,
+                            machine_queues: machine_queues,
+                            modalId: this.props.modalId,
+                            currentDashboardOp: this.props.dashboardData.currentDashboardOp,
+                            Idactivity: this.props.dashboardData.currentDashboardIdactivity
+                        }
+                    });
+                }  
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }
 
     handleModalClick = (e) => {
         if (e.target.className === "modal fade") {
             this.resetRadioButtons();
         }
+    };
+
+    handleCloseModal = () => {
+        const modalElement = document.getElementById(`viewModal2${this.props.modalId}`);
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        modalInstance.hide();
+        console.log(this.props.modalId);
     };
 
     resetRadioButtons() {
@@ -34,17 +151,6 @@ class ViewModal2 extends Component{
             selectedOption: event.target.value,
         });
     }
-
-    handleFormSubmit = (submitEvent) => {
-        submitEvent.preventDefault();
-        if (this.state.selectedOption === "radioChangeOp") {
-            window.location.href = "/operation";
-        } else if (this.state.selectedOption === "radioRemove") {
-            window.location.href = "/operation";
-        } else if (this.state.selectedOption === "radioNewTask") {
-            window.location.href = "/newtask";
-        }
-    };
     
     render(){  
         return(    
@@ -117,7 +223,7 @@ class ViewModal2 extends Component{
                     <br/>
                     <h5>Action: </h5>
                     <div class="mb-3">
-                    <form onSubmit={this.handleFormSubmit}>
+                    <form onSubmit={this.handleSubmit}>
                                     <div class="form-check">
                                         <input
                                             className="form-check-input"
@@ -126,7 +232,7 @@ class ViewModal2 extends Component{
                                             value="radioChangeOp"
                                             checked={this.state.selectedOption === "radioChangeOp"}
                                             onChange={this.handleOptionChange}
-                                            disabled={this.props.dashboardData.currentDashboardItemno === ''}
+                                            disabled={this.props.dashboardData.currentDashboardItemno === ''|| this.props.level}
                                         />
                                         <label class="form-check-label">
                                             Change operation (เปลี่ยน Operation)
@@ -137,12 +243,12 @@ class ViewModal2 extends Component{
                                             className="form-check-input"
                                             type="radio"
                                             name="radioButton"
-                                            value="radioRemove"
-                                            checked={this.state.selectedOption === "radioRemove"}
+                                            value="radioRemoveQ2"
+                                            checked={this.state.selectedOption === "radioRemoveQ2"}
                                             onChange={this.handleOptionChange}
-                                            disabled={this.props.dashboardData.currentDashboardItemno === '' }
+                                            disabled={this.props.dashboardData.currentDashboardItemno === '' || this.props.level}
                                         />
-                                        <label className="form-check-label" for="radioRemove">
+                                        <label className="form-check-label" for="radioRemoveQ2">
                                             Remove this task (เอางานออก)
                                         </label>
                                     </div>
@@ -154,7 +260,7 @@ class ViewModal2 extends Component{
                                             value="radioNewTask"
                                             checked={this.state.selectedOption === "radioNewTask"}
                                             onChange={this.handleOptionChange}
-                                            disabled={this.props.dashboardData.currentDashboardItemno != ''}
+                                            disabled={this.props.dashboardData.currentDashboardItemno != '' || this.props.level}
                                         />
                                         <label class="form-check-label" for="radioNewTask">
                                             Select a new task (เพิ่มงานใหม่)
@@ -179,4 +285,4 @@ class ViewModal2 extends Component{
         );
     }
 }
-export default ViewModal2;
+export default withRouter(ViewModal2);

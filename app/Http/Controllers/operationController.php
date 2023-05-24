@@ -201,210 +201,86 @@ class operationController extends Controller
         }
     }
    
-// public function resetActivity(Request $request){
-//     try{
-//         $selectedOption = $request->input('selectedOption');
-//         $id_mc = $request->get('dashboardIdmc');
-//         $data_activity = Activity::where('id_machine', $id_mc)->where('status_work', '<', 3)->first();
-//         if (!empty($data_activity)) {
-//             $data_staff = Staff::select('id_rfid')->where('id_staff', $data_activity->id_staff)->first();
-//             $data_planning = Planning::where('id_task', $data_activity->id_task)->first();
-            
-//             return redirect()->route('quit_v2-reset', [
-//                 'id_rfid' => $data_staff->id_rfid,
-//                 'id_job' => $data_planning->id_job,
-//                 'operation' => $data_planning->operation,
-//                 'id_machine' => $data_activity->id_machine,
-//                 'no_send' => $data_activity->no_send,
-//                 'no_pulse1' => $data_activity->no_pulse1,
-//                 'no_pulse2' => $data_activity->no_pulse2,
-//                 'no_pulse3' => $data_activity->no_pulse3,
-//             ]);
-//         }
+    const ACTIVITY_BACKFLUSH = 1;
+    const ACTIVITY_REWORK = 2;
+    const ACTIVITY_DOWNTIME = 3;
 
-//         $data_downtime = ActivityDowntime::where('id_machine', $id_mc)->where('status_downtime', '<', 3)->first();
-//         if (!empty($data_downtime)) {
-//             $data_staff = Staff::select('id_rfid')->where('id_staff', $data_downtime->id_staff)->first();
-//             $data_planning = Planning::where('id_task', $data_downtime->id_task)->first();
-
-//         $data_activity_rework = ActivityRework::where('id_machine', $id_mc)->where('status_work', '<', 3)->first();
-//         if (!empty($data_activity_rework)) {
-//             $data_staff = Staff::select('id_rfid')->where('id_staff', $data_activity_rework->id_staff)->first();
-//             $data_planning = Planning::where('id_task', $data_activity_rework->id_task)->first();
-//         }
-
-//         MachineQueue::where('id_machine', $id_mc)->where('queue_number', 1)->update(['id_staff' => '']);
-//         MachineQueue::where('queue_number', '<', 1)->orWhere('queue_number', '>', 2)->delete();
-
-//         // Call terminate function
-//         terminate();
-
-//         $data_json = json_encode(array("code" => "OK", "message" => "OK"), JSON_UNESCAPED_UNICODE);
-//         print_r($data_json);
-
-//         // if (strcmp($dashboard, '1') == 0) {
-//         //     return redirect()->route('pp-machine');
-//         // }
-//     }
-//         catch(Exception $error){
-//             Log::error($error);
-//         }
-//     }
-   
-public function resetActivity(Request $request){
-    try {
+    public function quitReset(Request $request)
+    {
         $id_machine = $request->input('modalId');
-        $id_job = $request->input('Idjob');
-        $id_task = $request->input('Idtask');
-        $current_operation = $request->input('operation');
-
         $id_rfid = $request->get('id_rfid');
-
         $no_send = $request->get('no_send');
         $no_pulse1 = $request->get('no_pulse1');
         $no_pulse2 = $request->get('no_pulse2');
         $no_pulse3 = $request->get('no_pulse3');
 
-        
+        $id_staff = DB::table('staff')
+            ->where('id_rfid', $id_rfid)
+            ->value('id_staff');
 
-        // First part of the code
-        $activity = Activity::where('id_machine', $id_mc)
-                            ->where('status_work', '<', 3)
-                            ->first();
+        $data_activity = DB::table('activity')
+            ->where('status_work', '<', 3)
+            ->where('id_machine', $id_machine)
+            ->where('id_staff', $id_staff)
+            ->first();
 
-        if(!empty($activity)) {
-            // Insert your code here for handling $activity
-        }
+        $activity_type = self::ACTIVITY;
+        $table_activity = 'activity';
 
-        // Continue with the rest of the first part of your code...
-
-        // Second part of the code
-        $activity_type = 0;
-        $activity = Activity::where('status_work', '<', 3)
-        ->where('id_machine', $id_mc)
-        ->where('id_staff', function($query) use ($id_rfid) {
-            $query->select('id_staff')
-                ->from(with(new Staff)->getTable())
-                ->where('id_rfid', $id_rfid);
-        })->first();
-
-        if(empty($activity)) {
-            $activity = ActivityRework::where('status_work', '<', 3)
-                ->where('id_machine', $id_mc)
-                ->where('id_staff', function($query) use ($id_rfid) {
-                    $query->select('id_staff')
-                        ->from(with(new Staff)->getTable())
-                        ->where('id_rfid', $id_rfid);
-                })->first();
-
-            if(empty($activity)) {
-                $activity = ActivityDowntime::where('status_downtime', '<', 3)
-                    ->where('id_machine', $id_mc)
-                    ->where('id_staff', function($query) use ($id_rfid) {
-                        $query->select('id_staff')
-                            ->from(with(new Staff)->getTable())
-                            ->where('id_rfid', $id_rfid);
-                    })->first();
-
-                if(!empty($activity)){
-                    $activity_type = 3;
-                }
-            }else{
-                $activity_type = 2;
-            }
-        }else{
-            $activity_type = 1;
-        }
-
-        // Continue with the rest of the second part of your code...
-
-        // Last part of the code
-        MachineQueue::where('id_machine', $id_mc)
-            ->where('queue_number', 1)
-            ->update(['id_staff' => '']);
-
-        MachineQueue::where('queue_number', '<', 1)
-            ->orWhere('queue_number', '>', 2)
-            ->delete();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Machine feed q successfully'
-        ]);
-        
-    } catch (Exception $error) {
-        Log::error($error);
-        return response()->json([
-            'status' => 'error',
-            'message' => 'An error occurred: '.$error->getMessage()
-        ], 500); // This HTTP status code indicates a server error
-        }
-        }
-
-
-
-
-
-        public function combinedFunction(Request $request) {
-            $id_machine = $request->input('modalId');
-            $id_job = $request->input('Idjob');
-            $id_task = $request->input('Idtask');
-            $current_operation = $request->input('operation');
-
-            $activity = Activity::where('id_machine', $id_machine)
+        if (empty($data_activity)) {
+            $data_activity = DB::table('activity_rework')
                 ->where('status_work', '<', 3)
+                ->where('id_machine', $id_machine)
+                ->where('id_staff', $id_staff)
                 ->first();
-                
-            if ($activity != null) {
-                $staff = Staff::where('id_staff', $activity->id_staff)->first();
-                $planning = Planning::where('id_task', $activity->id_task)->first();
-        
-                return redirect()->route('quit_v2_reset', [
-                    'id_rfid' => $staff->id_rfid,
-                    'id_job' => $planning->id_job,
-                    'operation' => $planning->operation,
-                    'id_mc' => $activity->id_machine,
-                    'no_send' => $activity->no_send,
-                    'no_pulse1' => $activity->no_pulse1,
-                    'no_pulse2' => $activity->no_pulse2,
-                    'no_pulse3' => $activity->no_pulse3
-                ]);
-            }
-        
-            $activity_downtime = ActivityDowntime::where('id_machine', $id_machine)
-                ->where('status_downtime', '<', 3)
-                ->first();
-                
-            if ($activity_downtime != null) {
-                $staff = Staff::where('id_staff', $activity_downtime->id_staff)->first();
-                $planning = Planning::where('id_task', $activity_downtime->id_task)->first();
-        
-                return redirect()->route('quit_dt_reset', [
-                    'id_rfid' => $staff->id_rfid,
-                    'id_job' => $planning->id_job,
-                    'operation' => $planning->operation,
-                    'id_mc' => $activity_downtime->id_machine,
-                ]);
-            }
-        
-            // Similar logic for 'activity_rework'...
-        
-            $machine_queue = MachineQueue::where('id_machine', $request->id_mc)
-                ->where('queue_number', 1)
-                ->first();
-        
-            if ($machine_queue != null) {
-                $machine_queue->id_staff = '';
-                $machine_queue->save();
-            }
-        
-            return response()->json([
-                'code' => 'OK',
-                'message' => 'OK'
-            ]);
+
+            $activity_type = self::ACTIVITY_REWORK;
+            $table_activity = 'activity_rework';
         }
-        
 
+        if (empty($data_activity)) {
+            $data_activity = DB::table('activity_downtime')
+                ->where('status_downtime', '<', 3)
+                ->where('id_machine', $id_machine)
+                ->where('id_staff', $id_staff)
+                ->first();
 
+            $activity_type = self::ACTIVITY_DOWNTIME;
+            $table_activity = 'activity_downtime';
+        }
+
+        if (empty($data_activity)) {
+            return response()->json(['code' => '011']);
+        } else {
+            $total_break = strtotime($data_activity->total_food) + strtotime($data_activity->total_toilet);
+            $time_start = strtotime($data_activity->time_start);
+            $time_current = time();
+            $time_total = gmdate('H:i:s', $time_current - $time_start - $total_break);
+
+            DB::table($table_activity)
+                ->where('id_activity', $data_activity->id_activity)
+                ->update([
+                    'status_work' => 3,
+                    'total_work' => $time_total,
+                    'time_close' => date('Y-m-d H:i:s', $time_current),
+                    'no_send' => $no_send,
+                    'no_pulse1' => $no_pulse1,
+                    'no_pulse2' => $no_pulse2,
+                    'no_pulse3' => $no_pulse3,
+                ]);
+
+            DB::table('machine_queue')
+                ->where('id_machine', $id_machine)
+                ->where('queue_number', 1)
+                ->update(['id_staff' => '']);
+
+            if (empty($request->get('code_downtime'))) {
+                return response()->json(['time_work' => $time_total]);
+            }
+        }
+
+        return response()->json(['status' => 'success']);
+    }
 }
+
 
