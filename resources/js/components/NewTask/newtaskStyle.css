@@ -1,7 +1,3 @@
-/* .border-black {
-    border: 1px solid black !important;
-} */
-
 .custom-header {
     /* width: 33.33%; */
     width: 15%;
@@ -16,12 +12,12 @@
     /* transform:translate(-00px,5px); */
     /* border: 1px solid black; */
 }
-.new-warning{
+.input-warning{
     border:1px solid #000000;
     border-radius:3px;
     outline:none;
     box-sizing:border-box;
-    width: 120px;
+    width: 150px;
   }
   .warning-bt{
     border:1px solid #000000;
@@ -71,21 +67,11 @@ input:focus {
 }
 .search-input{
     background-color: #404144;
+    /* background-color: #353b48; */
     color: white;
-    width: 180px;
 }
 
-.hide-bt{
-    border: 4px solid blue;
-    border-radius: 3px;
-    width: 16px;
-    height: 16px;
-    display: inline-block;
-    position: relative;
-    align-items: center;
-    vertical-align: middle;
-    transform:translate(0px,5px);
-}
+
 .hide-label{
     transform:translate(0px,5px);
 }
@@ -126,82 +112,7 @@ input:focus {
 .sortable-header {
     cursor: pointer;
   }
-  
-.text-db-center{
-    text-align: center;
-    vertical-align: middle;
-}
-.text-db-left{
-    text-align: left;
-    vertical-align: middle;
-} 
-.status-box{
-    width: 4.5%;
-    text-align: center;
-}
-.mc-box{
-    width: 2%;
-    text-align: center;
-}
-.itemno-box{
-    width: 7.5%;
-    text-align: center;
-}
-.op-box{
-    width: 2%;
-    text-align: center;
-}
-.color-box{
-    width: 1%;
-    text-align: center;
-}
-.side-box{
-    width: 1%;
-    text-align: center;
-}
-.duedate-box{
-    width: 4%;
-    text-align: center;
-}
-.qtypt-box{
-    width: 4%;
-    text-align: center;
-}
-.qtyac-ord-box{
-    width: 8%;
-    text-align: center;
-}
-.progress-box{
-    width: 5%;
-    text-align: center;
-}
-.runt-box{
-    width: 1%;
-    text-align: center;
-}
-.total-box{
-    width: 8%;
-    text-align: center;
-}
-.est-box{
-    width: 8%;
-    text-align: center;
-}
-.date-box{
-    width: 4%;
-    text-align: center;
-}
-.time-box{
-    width: 4%;
-    text-align: center;
-}
-.nextitemno-box{
-    width: 7.5%;
-    text-align: center;
-}
-.nextop-box{
-    width: 4%;
-    text-align: center;
-}
 
-/* //////////////////////////////////////////////////////////////// */
+
+  
+

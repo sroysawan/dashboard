@@ -4,8 +4,9 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <link rel="icon" href="/images/favicon.png?v=2.6.6e" type="image/png"/>
 
-        <title>Job overview by Machine</title>
+        <title>Login Majorette</title>
 
         <!-- Import app.js -->
         <script src="./js/app.js" defer></script>

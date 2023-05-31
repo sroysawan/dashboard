@@ -114,7 +114,10 @@ Route::post('/add/Newtask2', [newtaskController::class, 'AddNewtaskQ2']);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //reset activity
-Route::post('/reset/activity', [operationController::class, 'resetActivity']);
+Route::post('/reset/activity', [operationController::class, 'ResetActivittyV1']);
+Route::post('/reset/quit', [operationController::class, 'quitActivity'])->name('quit.machine');
+
+Route::post('/reset_activity', [operationController::class, 'ResetActivittyV2']);
 
 
 
@@ -141,7 +144,7 @@ Route::get('/addstaff', function () {
     return view('addstaff');
 });   
 
-Route::get('/import', function () {
+Route::get('/import_staff', function () {
  return view('import');
 });   
 
@@ -196,6 +199,14 @@ Route::post('/create/add/staff',
 Route::post('/update/uploadFileImage',
     [StaffController::class, 'uploadFileImage']);
 
+Route::post('/update/updateFileImage',
+    [StaffController::class, 'updateFileImage']);
+
+Route::post('/update/uploadStaff',
+    [StaffController::class, 'addStaffUpload']);
+
+Route::post('/update/uploadImport',
+    [StaffController::class, 'UploadFileImport']);
 
 // Auth::routes();
 

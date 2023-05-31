@@ -3,7 +3,7 @@
     height: 80px;
   } */
   body {
-    padding-top: 50px; /* ระยะห่างของเนื้อหาจาก Navbar ที่ติด fixed */
+    padding-top: 30px; /* ระยะห่างของเนื้อหาจาก Navbar ที่ติด fixed */
   }
   
   .navbar {

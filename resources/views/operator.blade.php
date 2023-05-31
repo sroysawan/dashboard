@@ -3,8 +3,9 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="/images/favicon.png?v=2.6.6e" type="image/png"/>
 
-        <title>Laravel</title>
+        <title>Job overview by Machine</title>
 
         <!-- Import app.js -->
         <script src="./js/app.js" defer></script>
