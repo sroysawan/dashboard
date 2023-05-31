@@ -10,7 +10,7 @@ import TableOperator from './components/Staff/TableOperator';
 import TableTechnician from './components/Staff/TableTechnician';
 import AddStaff from './components/Staff/AddStaff';
 import Approve from './components/Staff/Approve/Approve';
-import Import from './components/Staff/Import';
+import ImportStaff from './components/Staff/ImportStaff';
 import Table from './components/Staff/Table';
 import ApproveHistory from './components/Staff/Approve/ApproveHistory';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -33,7 +33,7 @@ ReactDOM.render(
         <Route path="/addstaff" component={AddStaff} />
         <Route path="/approve" component={Approve} />
         <Route path="/history" component={ApproveHistory} />
-        <Route path="/import" component={Import} />
+        <Route path="/import_staff" component={ImportStaff} />
         <Route path="/otherstaff" component={Table} />
       </Switch>
     </Router>
