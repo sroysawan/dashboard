@@ -9,26 +9,25 @@ class TableRow extends Component {
             status:'',
         }
     }
-    componentDidMount=()=>{
-        if(this.props.data.status_staff == 0){
-            this.setState({
-                status:'ลาออก'
-            });
-        }
-        else if (this.props.data.status_staff == 1){
-            this.setState({
-                status:'ทำงาน'
-            });
-        }else{
-            this.setState({
-                status:'ทำงาน Manual'
-            });
+
+    renderStaffStatus() {
+        switch(this.props.data.status_staff) {
+            case 0:
+                return 'ลาออก';
+            case 1:
+                return 'ทำงาน';
+            case 2:
+                return 'ทำงาน (Manual)';
+            default:
+                return '';
         }
     }
 
     render() {
-
-
+        const placeholderImage = "/images/staff/placeholder.jpg";
+        const staffImageUrl = this.props.data.staff_img && this.props.data.staff_img !== '-' 
+        ? "/images/staff/" + encodeURI(this.props.data.staff_img) 
+        : placeholderImage;
         return (
             <tr>
                 <td>{ this.props.data.id_staff}</td>
@@ -38,8 +37,12 @@ class TableRow extends Component {
                 {/* <td>{ this.props.data.site }</td> */}
                 <td>{this.props.data.role}</td>
                 <td>{ this.props.data.id_shif }</td>
-                <td>{ this.props.data.staff_img!='-'||null ? <img src={"images/staff/"+encodeURI(this.props.data.staff_img)} width="90" height="120" alt={"Image ID : "+this.props.data.staff_img} />:this.props.data.staff_img }</td>
-                <td>{ this.state.status }</td>
+                {/* <td>{ this.props.data.staff_img!='-'||null ? <img src={"images/staff/"+encodeURI(this.props.data.staff_img)} width="90" height="120" alt={"Image ID : "+this.props.data.staff_img} />:this.props.data.staff_img }</td> */}
+                <td>
+                    <img src={staffImageUrl} width="90" height="120" alt={"Image ID : "+this.props.data.staff_img} />
+                </td>
+                {/* <td>{ this.state.status }</td> */}
+                <td>{ this.renderStaffStatus() }</td>
                 <td>
                     <Tablebutton eachRowId={ this.props.data.id_staff}/>
                 </td>

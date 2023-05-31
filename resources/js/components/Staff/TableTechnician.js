@@ -102,7 +102,7 @@ render() {
                                     className="search-input"
                                     id="myInput" 
                                     onChange={(event) => { this.Search(event)}}
-                                    placeholder="Search for names.." 
+                                    placeholder="Search id, RFID, Name" 
                                     title="Type in a name"></input>
                     </div>
                     </div>
