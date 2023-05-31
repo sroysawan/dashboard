@@ -30,6 +30,8 @@ class ViewModal extends Component {
             currentDashboardIdtask: null,
             currentDashboardDtupdate: null,
             currentDashboardIdactivity: null,
+            currentDashboardIdstaff: null,
+            currentDashboardStatusWork: null,
             selectedOption: null,
             isConditionMet: true,
             dashboardQtypertray: null,
@@ -42,27 +44,28 @@ class ViewModal extends Component {
         };
         this.handleOptionChange = this.handleOptionChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        // this.handleSelectedOptionChange = this.handleSelectedOptionChange.bind(this);
         this.resetRadioButtons = this.resetRadioButtons.bind(this);
     }
 
     getDashboardDetailsNewDB = (id_machine) => {
+        // console.log('123');
+        
         console.log(id_machine);
-        axios
-            .get("/get/indivvidual/dashboard/detailsNew", {
+
+        axios.get("/get/indivvidual/dashboard/detailsNew", {
                 params: { dashboardID: id_machine},
             })
             .then((response) => {
                 console.log(response.data);
                 this.setState({
-                    currentDashboardStatus: response.data.status_work,
+                    // currentDashboardStatus: response.data.status_work,
                     currentDashboardIdmc: response.data.id_machine,
                     currentDashboardItemno: response.data.item_no,
                     currentDashboardIdjob: response.data.id_job,
                     currentDashboardOp: response.data.operation,
                     currentDashboardDatedue: response.data.date_due,
                     currentDashboardQtypertray: response.data.qty_per_pulse2,
-                    currentDashboardQtyactivity:response.data.no_pulse1,
+                    currentDashboardQtyactivity:response.data.no_pulse_sum,
                     currentDashboardQtyaccum: response.data.qty_accum,
                     currentDashboardQtyaccumsum: response.data.qty_accum_sum,
                     currentDashboardQtyorder: response.data.qty_order,
@@ -70,7 +73,15 @@ class ViewModal extends Component {
                     currentDashboardIdtask: response.data.id_task,
                     currentDashboardDtupdate: response.data.datetime_update,
                     currentDashboardIdactivity: response.data.id_activity,
+                    currentDashboardIdstaff: response.data.id_staff,
+                    currentDashboardStatusWork: response.data.status_work,
 
+                    currentDashboardIdRfid: response.data.id_rfid,
+                    currentDashboardActivityType: response.data.type,
+                    currentDashboardNosend: response.data.no_send,
+                    currentDashboardNoPulse1: response.data.no_pulse1,
+                    currentDashboardNoPulse2: response.data.no_pulse2,
+                    currentDashboardNoPulse3: response.data.no_pulse3,
                 });
             });
     };
@@ -92,15 +103,25 @@ class ViewModal extends Component {
             apiUrl = '/select/Newtask';
             newPath = '/newtask';
         }else if (this.state.selectedOption === 'radioResetActivity'){
-            apiUrl = '/';
+            apiUrl = '/reset_activity';
             newPath = '/';
         }
         axios.post(`${apiUrl}`, { 
             selectedOption: this.state.selectedOption,
-            modalId: this.props.modalId,
+            modalId: this.props.modalId, //id_machine
             Idjob: this.props.dashboardData.currentDashboardIdjob,
             operation: this.props.dashboardData.currentDashboardOp,
             Idtask: this.props.dashboardData.currentDashboardIdtask,
+            Idstaff: this.props.dashboardData.currentDashboardIdstaff,
+            Idactivity: this.props.dashboardData.currentDashboardIdactivity,
+            
+            Id_Rfid: this.props.dashboardData.currentDashboardIdRfid,
+            Id_ActivityType: this.props.dashboardData.currentDashboardActivityType,
+            Id_Nosend: this.props.dashboardData.currentDashboardNosend,
+            Id_NoPulse1: this.props.dashboardData.currentDashboardNoPulse1,
+            Id_NoPulse2: this.props.dashboardData.currentDashboardNoPulse2,
+            Id_NoPulse3: this.props.dashboardData.currentDashboardNoPulse3,
+
         })
             .then(response => {
                 // นำข้อมูลที่ได้จาก Laravel มาโชว์แยกหน้ากับหน้าที่มี radio button อยู่
@@ -121,9 +142,7 @@ class ViewModal extends Component {
                     this.props.history.push({
                         pathname: '/operation',
                         state: {
-                            // data: response.data,
                             data: data_planning,
-                            // data_planning2: data_planning2,
                             machine_queues: machine_queues,
                             modalId: this.props.modalId,
                             currentDashboardOp: this.props.dashboardData.currentDashboardOp
@@ -154,7 +173,8 @@ class ViewModal extends Component {
                             data: data_newtask,
                             machine_queues: machine_queues,
                             modalId: this.props.modalId,
-                            currentDashboardOp: this.props.dashboardData.currentDashboardOp
+                            currentDashboardOp: this.props.dashboardData.currentDashboardOp,
+                            Idactivity: this.props.dashboardData.currentDashboardIdactivity
                         }
                     });
                 }else if (this.state.selectedOption === 'radioResetActivity') {
@@ -173,18 +193,17 @@ class ViewModal extends Component {
             });
     }
 
+    handleModalClick = (e) => {
+        if (e.target.className === "modal fade") {
+            this.resetRadioButtons();
+        }
+    };
+
     handleCloseModal = () => {
         const modalElement = document.getElementById(`viewModal${this.props.modalId}`);
         const modalInstance = bootstrap.Modal.getInstance(modalElement);
         modalInstance.hide();
         console.log(this.props.modalId);
-    };
-
-
-    handleModalClick = (e) => {
-        if (e.target.className === "modal fade") {
-            this.resetRadioButtons();
-        }
     };
 
     resetRadioButtons() {
@@ -295,35 +314,6 @@ class ViewModal extends Component {
         return dashboardUpdate;
     }
 
-    // updateModalDashboard = () => {
-    //     console.log(this.props.modalId);
-    //     console.log(this.state.dashboardQtypertray);
-    //     console.log(this.state.dashboardQtyactivity);
-    //     console.log(this.state.dashboardQtyaccum);
-
-    //     axios
-    //         .get("/update/dashboard/modal", {
-    //             params: {
-    //                 dashboardId:
-    //                 this.props.dashboardData.currentDashboardIdtask,
-    //                 dashboardQtypertray: this.state.dashboardQtypertray,
-    //                 dashboardQtyactivity: this.state.dashboardQtyactivity,
-    //                 dashboardQtyaccum: this.state.dashboardQtyaccum,
-    //                 activityTemp: this.state.activityTemp,
-    //                 accumTemp: this.state.accumTemp,
-    //             },
-    //         })
-    //         .then((response) => {
-    //             console.log(response.data);
-    //             console.log("Update Success");
-    //             toast.success("Update Success");
-    //             setTimeout(() => {
-    //                 location.reload();
-    //             }, 1000);
-    //             // this.getDashboardDetailsNewDB();
-    //         });
-    // };
-
     updateModalDashboard = () => {
         console.log(this.props.modalId);
         console.log(this.state.dashboardQtypertray);
@@ -388,6 +378,11 @@ class ViewModal extends Component {
                                 <table id="modal_table_current" class="table table-striped">
                                     <tbody>
                                         <tr>
+                                            {/* {this.props.dashboardData.currentDashboardStatusWork == 4?<td>Machine in downtime status</td>:''} */}
+                                            {this.props.dashboardData.currentDashboardStatusWork == 4 ? 
+                                            <td className="text-danger">Machine in downtime status</td> : ''}
+                                        </tr>
+                                        <tr>
                                             <td>Machine ID:</td>
                                             <td>
                                                 {this.props.dashboardData.currentDashboardIdmc}
@@ -423,14 +418,14 @@ class ViewModal extends Component {
                                                 {this.props.dashboardData.currentDashboardQtyactivity}
                                             </td>
                                         </tr>
-                                        <tr>
+                                        {/* <tr>
                                             <td>Qty accum:</td>
                                             <td>
                                                 {this.props.dashboardData.currentDashboardQtyaccum}
                                             </td>
-                                        </tr>
+                                        </tr> */}
                                         <tr>
-                                            <td>Qty accum dashboard:</td>
+                                            <td>Qty accum:</td>
                                             <td>
                                                 {this.props.dashboardData.currentDashboardQtyaccumsum}
                                             </td>
@@ -473,7 +468,10 @@ class ViewModal extends Component {
                                                 value="radioChangeOp"
                                                 checked={this.state.selectedOption === "radioChangeOp"}
                                                 onChange={this.handleOptionChange}
-                                                disabled={this.props.dashboardData.currentDashboardItemno === ""}
+                                                disabled={this.props.dashboardData.currentDashboardItemno === "" || this.props.level 
+                                                || this.props.dashboardData.currentDashboardStatusWork == '1' || this.props.dashboardData.currentDashboardStatusWork == '2'
+                                                || this.props.dashboardData.currentDashboardStatusWork == '4'
+                                            } 
                                             />
                                             <label className="form-check-label" htmlFor="radioChangeOp">
                                                 Change operation (เปลี่ยน Operation)
@@ -487,7 +485,10 @@ class ViewModal extends Component {
                                                 value="radioRemove"
                                                 checked={this.state.selectedOption === "radioRemove"}
                                                 onChange={this.handleOptionChange}
-                                                disabled={this.props.dashboardData.currentDashboardItemno === ""}
+                                                disabled={this.props.dashboardData.currentDashboardItemno === "" || this.props.level 
+                                            || this.props.dashboardData.currentDashboardStatusWork == '1' || this.props.dashboardData.currentDashboardStatusWork == '2'
+                                            || this.props.dashboardData.currentDashboardStatusWork == '4'
+                                            }
                                             />
                                             <label className="form-check-label">
                                                 Remove this task (เอางานออก)
@@ -501,7 +502,7 @@ class ViewModal extends Component {
                                                 value="radioNextQueue"
                                                 checked={this.state.selectedOption === "radioNextQueue"}
                                                 onChange={this.handleOptionChange}
-                                                disabled={this.props.dashboardData.currentDashboardItemno != ""}
+                                                disabled={this.props.dashboardData.currentDashboardItemno != "" || this.props.level}
                                             />
                                             <label className="form-check-label">
                                                 Feed task from next queue (ดึงงานจากคิวถัดไป)
@@ -515,7 +516,7 @@ class ViewModal extends Component {
                                                 value="radioNewTask"
                                                 checked={this.state.selectedOption === "radioNewTask"}
                                                 onChange={this.handleOptionChange}
-                                                disabled={this.props.dashboardData.currentDashboardItemno != ""}
+                                                disabled={this.props.dashboardData.currentDashboardItemno != "" || this.props.level}
                                             />
                                             <label className="form-check-label">
                                                 Select a new task (เพิ่มงานใหม่)
@@ -529,7 +530,7 @@ class ViewModal extends Component {
                                                 value="radioResetActivity"
                                                 checked={this.state.selectedOption === "radioResetActivity"}
                                                 onChange={this.handleOptionChange}
-                                                disabled={this.props.dashboardData.currentDashboardItemno === ""}
+                                                disabled={this.props.dashboardData.currentDashboardItemno === "" || this.props.level || this.props.dashboardData.currentDashboardStatusWork == '3'}
                                             />
                                             <label className="form-check-label">
                                                 Reset activity (รีเซ็ตงาน)
@@ -591,6 +592,11 @@ class ViewModal extends Component {
                                 <table id="modal_table_current" className="table table-striped">
                                     <tbody>
                                         <tr>
+                                            {/* {this.props.dashboardData.currentDashboardStatusWork == 4?<td>Machine in downtime status</td>:''} */}
+                                            {this.props.dashboardData.currentDashboardStatusWork == 4 ? 
+                                            <td className="text-danger">Machine in downtime status</td> : ''}
+                                        </tr>
+                                        <tr>
                                             <td>Machine ID:</td>
                                             <td>
                                                 {this.props.dashboardData.currentDashboardIdmc}
@@ -635,6 +641,7 @@ class ViewModal extends Component {
                                                     className="form-control mb3 bg"
                                                     value={this.state.dashboardQtyactivity ?? ""}
                                                     onChange={this.inputDashboardQtyactivity}
+                                                    disabled={this.props.dashboardData.currentDashboardStatusWork == 4 || this.props.dashboardData.currentDashboardStatusWork == 3}
                                                 />
                                             </div>
                                         </tr>
@@ -654,7 +661,7 @@ class ViewModal extends Component {
                                             </div> */}
                                         </tr>
                                         <tr>
-                                            <td>Qty accum dashboard:</td>
+                                            <td>Qty accum:</td>
                                             <td>
                                                 {this.props.dashboardData.currentDashboardQtyaccumsum}
                                             </td>
