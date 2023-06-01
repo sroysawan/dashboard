@@ -14,7 +14,8 @@ class EditModal extends Component {
             currentDashboardLast: null,
             //currentDashboardSite: null,
             currentDashboardRole: null,
-            currentDashboardShif: null
+            currentDashboardShif: null,
+            
             // dashboardimg: null,  
         }
     }
@@ -32,7 +33,8 @@ class EditModal extends Component {
                 currentDashboardLast: response.data.name_last,
                 //currentDashboardSite: response.data.site,
                 currentDashboardRole: response.data.id_role,
-                currentDashboardShif: response.data.id_shif
+                currentDashboardShif: response.data.id_shif,
+                // status_approve : response.data.status_approve,
                 // currentDashboardimg: response.data.img
             })
             
@@ -86,7 +88,13 @@ class EditModal extends Component {
 
     render() {
         return (
-            <div className="modal fade" id={"editModal"+this.props.modalId } tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div 
+            className="modal fade" 
+            id={"editModal"+this.props.modalId } 
+            tabIndex="-1" 
+            aria-labelledby="exampleModalLabel" 
+            aria-hidden="true"
+            >
                 <div className="modal-dialog">
                     <div className="modal-content">
                     <div className="modal-header">
@@ -94,50 +102,66 @@ class EditModal extends Component {
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div className="modal-body">
-
-      
-                        Staff ID : <strong>{ this.props.dashboardData.currentDashboardStaff} </strong>
-                        
-                        <hr/>
-                        RFID : <strong>{ this.props.dashboardData.currentDashboardRfid} </strong>
-                        
-                        <hr/>
-                        Prefix : <strong>{ this.convert_Prefix(this.props.dashboardData.currentDashboardPrefix)}</strong>
-                        <hr/>
-                        First name : <strong>{ this.props.dashboardData.currentDashboardFirst} </strong>
-                        
-                        <hr/>
-                        Last name : <strong>{ this.props.dashboardData.currentDashboardLast} </strong>
-                        
-                        {/*<hr/>
-                        Site : <strong>{ this.props.dashboardData.currentDashboardSite} </strong>
-                        */}
-                        <hr/>
-                        Role : <strong>{ this.convert_Role(this.props.dashboardData.currentDashboardRole)} </strong>
-                        
-                        <hr/>
-                        Shif : <strong>{ this.props.dashboardData.currentDashboardShif} </strong>
-                        {/* <select className='form-select' aria-label="Disabled select example" disabled id="dashboardStaff" onChange={this.inputDashboardShif}value ={this.state.dashboardShif}>
-                        <option selected=" ">กรุณาเลือก...</option>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                        </select> */}
+                    <table id="modal_table_current" class="table table-striped">
+                            <tbody>
+                                    <tr>
+                                        <td>Staff ID:</td>
+                                        <td>
+                                            {this.props.dashboardData.currentDashboardStaff}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>RFID ID:</td>
+                                        <td>
+                                            {this.props.dashboardData.currentDashboardRfid}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Prefix:</td>
+                                        <td>
+                                            {this.convert_Prefix(this.props.dashboardData.currentDashboardPrefix)}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>First name:</td>
+                                        <td>
+                                            {this.props.dashboardData.currentDashboardFirst}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Last name:</td>
+                                        <td>
+                                            {this.props.dashboardData.currentDashboardLast}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Role:</td>
+                                        <td>
+                                            {this.convert_Role(this.props.dashboardData.currentDashboardRole)}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Shif:</td>
+                                        <td>
+                                            {this.props.dashboardData.currentDashboardShif}
+                                        </td>
+                                    </tr>   
+                            </tbody>
+                        </table>
                     </div>
 
 
                     <div className ="modal-footer">
-
                     <button type="button" 
-                            className="btn btn-info"
+                            className={this.props.dashboardData.approve_status ? 'btn btn-danger' : 'btn btn-primary'}
                             data-bs-toggle="modal" 
                             data-bs-target={'#updateModal'+this.props.modalId}
                             onClick={ () => { this.getDashboardDetails(this.props.modalId) }}
+                            disabled={this.props.dashboardData.approve_status}
                     >
-                            update
+                            {this.props.dashboardData.approve_status ? 'อยู่ระหว่างการแก้ไข' : 'Edit'}
                     </button>
                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">close</button>
-                    
                     </div>
                     </div>
                 </div>

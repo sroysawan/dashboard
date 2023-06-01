@@ -15,8 +15,8 @@ class DeleteModal extends Component {
 
     //Delete date.
     deletedashboardData = (num) =>{
-
         axios.get('/delete/dashboard/data/' + num)
+        window.location.reload();
     }
     render() {
         return (
@@ -25,12 +25,12 @@ class DeleteModal extends Component {
                 <div className="modal-dialog">
                     <div className="modal-content">
                     <div className="modal-header">
-                        <h5 className="modal-title" id="exampleModalLabel">Dashboard Delete</h5>
+                        <h5 className="modal-title" id="exampleModalLabel">Staff Delete</h5>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div className="modal-body">
                         
-                         Are you sure, You want to delete this Dashboard data
+                         Are you sure, You want to delete this staff
                     </div>
                     <div className ="modal-footer">
 

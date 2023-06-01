@@ -76,25 +76,15 @@ class ApproveRow extends Component {
 
         return (
             <tr>
-                {/* <td>{ this.props.data.id_approve}</td>
-                <td>{ this.props.data.id_foreman}</td> */}
                 <td>{ this.props.data.id_staff }</td>
-                {/* <td></td> */}
                 <td>{ this.props.data.id_manager }</td>
-                {/* <td>{ this.props.data.prefix}</td>
- 
-                <td>{ this.props.data.name}</td>
-                <td>{ this.props.data.role}</td> */}
                 <td>{ this.props.data.edit_data.split(", ").map((item, index) => <React.Fragment key={index}>{item}<br/></React.Fragment>) }</td>
-                {/* <td>{ this.props.data.new_data}</td> */}
                 <td>{ this.props.data.update_history }</td>
                 <td className='status-w'>{ this.state.approve_status}</td>
                 <td className='btn-w'>
                     {this.showbutton()}
 
                 </td>
-                <td>{ this.props.data.id_foreman }</td>
-            <td>{ this.props.data.approve_datetime }</td>
             </tr>
         )
     }

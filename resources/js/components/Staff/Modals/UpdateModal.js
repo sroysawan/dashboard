@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { Component } from 'react';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -19,6 +19,7 @@ class UpdateModal extends Component {
             //dashboardsite: null,
             dashboardRole: null,
             dashboardShif: null,
+            tempUploadImage:null,
             // dashboardimg: null,
             
         }
@@ -205,6 +206,10 @@ return dashboardUpdate;
         console.log(this.state.dashboardLast);
         console.log(this.state.dashboardRole);
         console.log(this.state.dashboardShif);
+        if(this.state.tempUploadImage != null){
+            // console.log('update image');
+            this.uploadImage();
+          }
 
         axios.post('/update/dashboard/data/update',{
             dashboardId: this.props.modalId,
@@ -216,18 +221,57 @@ return dashboardUpdate;
             //dashboardsite: this.state.dashboardsite,
             dashboardRole: this.state.dashboardRole,
             dashboardShif: this.state.dashboardShif,
+            dashboardLogin: localStorage.getItem('token'),
             // dashboardimg: this.state.dashboardimg,
             
         })
          .then((response) => {
             console.log(response.data);
             console.log("Update Success");
-            //  toast.success("Dashboard Updated Successully");
-            //  setTimeout(() => {
-            //      location.reload();
-            // },500)
-         })
+            toast.success("Update Success");
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        });
     }
+
+    handleUploadImage = (event) =>{
+        console.log(event.target.files[0]);
+        var selectedFile = event.target.files[0];
+        var allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+        if(selectedFile.size > (1048576*4)){
+          alert("Maximum image file size is 4 MB");
+        }
+        else if(selectedFile.name.length > 20){
+          alert("Filename is too longer");
+        }
+        else if (selectedFile && allowedTypes.includes(selectedFile.type)) {
+          this.setState({
+            tempUploadImage:selectedFile,
+            // imageValue:event.target.files[0].name,
+          })
+          console.log("Add file.");
+        } else {
+          console.log("Not found or match type file.");
+        }
+        
+      }
+
+      uploadImage = () =>{
+        var formData = new FormData();
+        formData.append('file', this.state.tempUploadImage);
+        formData.append('id_staff', this.state.dashboardStaff);
+        axios.post('/update/updateFileImage',formData,{
+          headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+        }).then(response =>{
+          console.log(response.data);
+          this.setState({
+            tempUploadImage:null,
+          })
+        })
+      }
 
     render() {
         return (
@@ -306,14 +350,9 @@ return dashboardUpdate;
                         <option selected=" ">กรุณาเลือก...</option>
                         <option value="1">Operator</option>
                         <option value="2">Technician</option>
-                        <option value="3">Production Support</option>
-                        <option value="4">Instructor</option>
-                        <option value="5">Senior Instructor</option>
                         <option value="6">Foreman</option>
-                        <option value="7">Leader</option>
-                        <option value="8">Senior Technician</option>
                         <option value="9">Manager</option>
-                        <option value="10">Engineering</option>
+                        <option value="11">Data Entry</option>
                         </select>
                                 {/* <input type="text"
                                 id="dashboardStaff"
@@ -346,8 +385,14 @@ return dashboardUpdate;
                                 onChange={this.inputDashboardimg}
                                 />
                             </div> */}
-
-                            
+                        Change Image :
+                            <div className="form-group">
+                                <input className="btn text-black bg " id='image' type='file' 
+                                    accept="image/png, image/jpeg, image/jpg" 
+                                    onChange={this.handleUploadImage}>
+                                </input>
+                            </div>
+                        
                         </form>
                     </div>
                     <div className ="modal-footer">
@@ -356,7 +401,7 @@ return dashboardUpdate;
                                 value="Update"
                                 onClick={this.updateDashboardData}
                                 />           
-                                
+                    <ToastContainer autoClose={400}/>          
                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">close</button>
                         
                     </div>
