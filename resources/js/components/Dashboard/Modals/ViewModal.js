@@ -32,11 +32,17 @@ class ViewModal extends Component {
             currentDashboardIdactivity: null,
             currentDashboardIdstaff: null,
             currentDashboardStatusWork: null,
+            currentDashboardIdbreak:null,
+            no_pulse2:null,
+            no_pulse3:null,
             selectedOption: null,
             isConditionMet: true,
             dashboardQtypertray: null,
             dashboardQtyactivity: null,
             dashboardQtyaccum: null,
+            Id_NoPulse2:null,
+            Id_NoPulse3:null,
+            IdactivityDowntime:null,
             activityTemp: null,
             accumTemp: null,
             planning_machine: [],
@@ -75,13 +81,15 @@ class ViewModal extends Component {
                     currentDashboardIdactivity: response.data.id_activity,
                     currentDashboardIdstaff: response.data.id_staff,
                     currentDashboardStatusWork: response.data.status_work,
+                    currentDashboardIdbreak: response.data.id_break,
+                    currentDashboardIdactivityDowntime: response.data.id_activity_downtime,
 
                     currentDashboardIdRfid: response.data.id_rfid,
                     currentDashboardActivityType: response.data.type,
                     currentDashboardNosend: response.data.no_send,
                     currentDashboardNoPulse1: response.data.no_pulse1,
-                    currentDashboardNoPulse2: response.data.no_pulse2,
-                    currentDashboardNoPulse3: response.data.no_pulse3,
+                    no_pulse2: response.data.no_pulse2,
+                    no_pulse2: response.data.no_pulse3,
                 });
             });
     };
@@ -114,13 +122,15 @@ class ViewModal extends Component {
             Idtask: this.props.dashboardData.currentDashboardIdtask,
             Idstaff: this.props.dashboardData.currentDashboardIdstaff,
             Idactivity: this.props.dashboardData.currentDashboardIdactivity,
-            
+            Idbreak: this.props.dashboardData.currentDashboardIdbreak,
+            IdactivityDowntime :this.props.dashboardData.currentDashboardIdactivityDowntime,
+
             Id_Rfid: this.props.dashboardData.currentDashboardIdRfid,
             Id_ActivityType: this.props.dashboardData.currentDashboardActivityType,
             Id_Nosend: this.props.dashboardData.currentDashboardNosend,
             Id_NoPulse1: this.props.dashboardData.currentDashboardNoPulse1,
-            Id_NoPulse2: this.props.dashboardData.currentDashboardNoPulse2,
-            Id_NoPulse3: this.props.dashboardData.currentDashboardNoPulse3,
+            Id_NoPulse2: this.props.dashboardData.no_pulse2,
+            Id_NoPulse3: this.props.dashboardData.no_pulse3,
 
         })
             .then(response => {
@@ -224,14 +234,18 @@ class ViewModal extends Component {
         });
     }
       
-    showTestData = () => {
+    showTestData = (event) => {
         console.log(
-            "#updateModal" + this.props.modalId + " with data : " + this.state
+            "#updateModal" + this.props.modalId + " with data : " + this.state + this.state.dashboardQtyactivity
         );
+        this.setState({
+            dashboardQtyactivity: this.props.dashboardData.currentDashboardQtyactivity,
+        });
     };
 
    
     inputDashboardQtypertray = (event) => {
+        console.log(event.target.value);
         this.setState({
             dashboardQtypertray: event.target.value,
         });
@@ -275,7 +289,7 @@ class ViewModal extends Component {
         if (
             current_state.dashboardQtyaccum &&
             current_state.dashboardQtyaccum !==
-                props.dashboardData.currentDashboardQtyaccum
+                props.dashboardData.currentDashboardQtyaccumsum
         ) {
             return null;
         }
@@ -302,23 +316,25 @@ class ViewModal extends Component {
         }
         if (
             current_state.dashboardQtyaccum !==
-                props.dashboardData.currentDashboardQtyaccum ||
+                props.dashboardData.currentDashboardQtyaccumsum ||
             current_state.dashboardQtyaccum ===
-                props.dashboardData.currentDashboardQtyaccum
+                props.dashboardData.currentDashboardQtyaccumsum
         ) {
             dashboardUpdate.dashboardQtyaccum =
-                props.dashboardData.currentDashboardQtyaccum;
+                props.dashboardData.currentDashboardQtyaccumsum;
             dashboardUpdate.accumTemp =
-                props.dashboardData.currentDashboardQtyaccum;
+                props.dashboardData.currentDashboardQtyaccumsum;
         }
         return dashboardUpdate;
     }
 
     updateModalDashboard = () => {
         console.log(this.props.modalId);
-        console.log(this.state.dashboardQtypertray);
+        console.log('id_task' + this.props.dashboardData.currentDashboardIdtask);
+console.log('activitytempt'+this.state.activityTemp)
+        console.log('qty_per_pulse2' + this.state.dashboardQtypertray);
         console.log(this.state.dashboardQtyactivity);
-        console.log(this.state.dashboardQtyaccum);
+        console.log(this.props.dashboardData.currentDashboardQtyaccumsum);
         console.log('id_activity' + this.props.dashboardData.currentDashboardIdactivity);
         console.log('id_machine' + this.props.dashboardData.currentDashboardIdmc)
         console.log('sum' + this.props.dashboardData.currentDashboardQtyaccumsum)
@@ -330,13 +346,23 @@ class ViewModal extends Component {
                 dashboardIdactivity: this.props.dashboardData.currentDashboardIdactivity,
                 dashboardQtypertray: this.state.dashboardQtypertray,
                 dashboardQtyactivity: this.state.dashboardQtyactivity,
-                dashboardQtyaccum: this.state.dashboardQtyaccum,
-                dashboardQtyaccumsum: this.props.dashboardData.currentDashboardQtyaccumsum,
+                dashboardQtyaccum: this.props.dashboardData.currentDashboardQtyaccumsum,
+                // dashboardQtyaccum: this.state.dashboardQtyaccum,
+                // dashboardQtyaccumsum: this.props.dashboardData.currentDashboardQtyaccumsum,
                 activityTemp: this.state.activityTemp,
                 accumTemp: this.state.accumTemp,
+                Id_NoPulse2: this.props.dashboardData.no_pulse2,
+                Id_NoPulse3: this.props.dashboardData.no_pulse3,
+                Id_ActivityType: this.props.dashboardData.currentDashboardActivityType,
             })
             .then((response) => {
-                console.log(response.data);
+                console.log('Data' ,response.data);
+                this.setState({ 
+                    no_pulse2: response.data.no_pulse2,
+                    no_pulse3: response.data.no_pulse3 
+                });
+                console.log('Updated no_pulse2:', response.data.no_pulse2);
+                console.log('Updated no_pulse3:', response.data.no_pulse3);
                 console.log("Update Success");
                 toast.success("Update Success");
                 setTimeout(() => {
@@ -348,7 +374,7 @@ class ViewModal extends Component {
     render() {
         // const isDisabled = !(this.state.dashboardQtypertray && this.state.dashboardQtyactivity);
         // const { selectedOption } = this.state;
-
+        // console.log(this.state);
         return (
             <>
                 <div
@@ -645,11 +671,11 @@ class ViewModal extends Component {
                                                 />
                                             </div>
                                         </tr>
-                                        <tr>
-                                            <td>Qty accum:</td>
+                                        {/* <tr> */}
+                                            {/* <td>Qty accum:</td>
                                             <td>
                                                 {this.props.dashboardData.currentDashboardQtyaccum}
-                                            </td>
+                                            </td> */}
                                             {/* <div className="form-group">
                                                 <input
                                                     type="number"
@@ -659,7 +685,7 @@ class ViewModal extends Component {
                                                     onChange={this.inputDashboardQtyaccum}
                                                 />
                                             </div> */}
-                                        </tr>
+                                        {/* </tr> */}
                                         <tr>
                                             <td>Qty accum:</td>
                                             <td>

@@ -11,6 +11,8 @@ use App\Models\Planning;
 use App\Models\CodeDowntime;
 use App\Models\Staff;
 use App\Models\Logs;
+use App\Models\Breaks;
+use App\Models\BreakRework;
 use Illuminate\Support\Facades\Log;
 use Exception;
 
@@ -316,15 +318,428 @@ class operationController extends Controller
     }
 
 
+    // public function ResetActivittyV2(Request $request){
+    //     try{
+    //     //     $sql = "SELECT * FROM machine_queue
+    //     //  INNER JOIN staff ON machine_queue.id_staff = staff.id_staff 
+    //     //  WHERE id_machine = '" . $_GET['id_mc'] . "'";
+    //     $data_machine_queue = DB::select('select * from machine_queue as m, staff as s where m.id_staff = s.id_staff');
+
+    //     $id_mc = $request->input('modalId');
+    //     $id_activity = $request->input('Idactivity');
+    //     $activity_type = $request->input('Id_ActivityType');
+    //     $id_break = Breaks::where('id_staff',$data_machine_queue->id_staff)->where('id_activity', $data_machine_queue->id_activity)->first();
+    //     $id_break_rework = BreakRework::where('id_staff',$data_machine_queue->id_staff)->where('id_activity', $data_machine_queue->id_activity)->first();
+    //         //conyinuev3
+
+    //         $table;
+    //         $str_activity;
+    //         $str_status;
+    //         $table_break;
+    //         if($activity_type == 'dt'){
+    //             $table = 'activity_downtime';
+    //             // $table_break = 'break_downtime';
+    //             $str_status = 'status_downtime';
+    //             $str_activity = 'id_activity_downtime';
+    //         }
+    //         else{
+    //             $str_status = 'status_work';
+    //             $str_activity = 'id_activity';
+    //         if($activity_type == 'bf'){
+    //             $table = 'activity';
+    //             $table_break = 'break';
+    //         }
+    //         else{
+    //             $table = 'activity_rework';
+    //             $table_break = 'break_rework';
+    //         }
+    //         }
+    //         $data_break = "SELECT break_code, break_start AS time_break FROM " . $table_break . " WHERE id_break=" . $id_break; 
+    //         if(empty($data_break)){
+    //             return response() -> json(['code'=>'009', 'message'=>'Invalid break ID']);
+    //         }else{
+    //             $data_activity =  "SELECT id_break, total_food, total_toilet, CURRENT_TIMESTAMP() AS time_current 
+    //                 FROM " . $table . " 
+    //                 WHERE " . $str_status . "=2 
+    //                 AND " . $str_activity . "='" . $id_activity . "'" .
+    //                 "AND id_machine='" . $id_mc . "'";
+                
+
+    //             if(empty($data_activity)){
+    //                 return response() -> json(['code'=>'010', 'message'=>'No break activity found']);
+    //             }
+    //             else{
+    //                 $break_code = intval($data_break["break_code"]);
+    //                 // BREAK CODE: 1=FOOD, 2=TOILET
+    //                 if($break_code==1){
+    //                     $total_break = strtotime("1970-01-01 " . $data_activity["total_food"] . " UTC");
+    //                     $str_break = 'total_food';
+    //                 }elseif ($break_code==2){
+    //                     $total_break = strtotime("1970-01-01 " . $data_activity["total_toilet"] . " UTC");
+    //                     $str_break = 'total_toilet';
+    //                 }
+    //                 $time_break = strtotime($data_break["time_break"]);
+    //                 $time_current = strtotime($data_activity["time_current"]);
+    //                 $break_duration = $time_current-$time_break;
+    //                 $break_duration_text = gmdate('H:i:s', $break_duration);
+    //                 $total_break_text =  gmdate('H:i:s', $break_duration + $total_break);
+                    
+    //                 $update_break = "UPDATE " . $table . " SET " . $str_status . "=1, " . $str_break . "='" .
+    //                 $total_break . "' WHERE " . $str_activity . "=" . $id_activity;
+    //                 $update_break = "UPDATE " . $table_break . " SET " .
+    //                     "break_stop='" . $time_current . "', " .
+    //                     "break_duration='" . $break_duration . "' " .
+    //                     "WHERE id_break=" . $id_break;
+    //         //quit_v3
+    //         $data_machine_queue = DB::select('select * from machine_queue as m, staff as s where m.id_staff = s.id_staff');
+            
+    //         // return response() -> json($request->all());
+
+    //         if(!empty($data_machine_queue)){
+    //             $id_rfid = $data_machine_queue[0]->id_rfid;
+    //             $id_activity = $request->input('Idactivity');
+    //             $activity_type = $request->input('Id_ActivityType');
+    //             $no_send = 1;
+    //             $no_pulse1 = 0;
+    //             $no_pulse2 = 0;
+    //             $no_pulse3 = 0;
+    //             $multiplier = 1;
+    //             $dashboard = 1;
+    //             $id_mc = $request->input('modalId');
+
+    //             $data_staff_rfid = Staff::where('id_rfid', $id_rfid)->first();
+
+    //             // get_staff_by_rfid($conn, $id_rfid);
+    //             if(empty($data_staff_rfid)){
+    //                 return response() -> json(['code'=>'011', 'message'=>'Invalid RFID']);
+    //         //        print_r($data_json);
+    //             }
+    //             else {
+    //                 $table;
+    //                 $str_activity;
+    //                 $str_status;
+    //                 $table_break;
+    //                 if($activity_type == 'dt'){
+    //                     $table = 'activity_downtime';
+    //                     // $table_break = 'break_downtime';
+    //                     $str_status = 'status_downtime';
+    //                     $str_activity = 'id_activity_downtime';
+    //                 }
+    //                 else{
+    //                     $str_status = 'status_work';
+    //                     $str_activity = 'id_activity';
+    //                     if($activity_type == 'bf'){
+    //                         $table = 'activity';
+    //                         $table_break = 'break';
+    //                     }
+    //                     else{
+    //                         $table = 'activity_rework';
+    //                         $table_break = 'break_rework';
+    //                     }
+    //                 }
+
+    //                 // list($table, $str_activity, $str_status) = get_info_from_activity_type($activity_type);
+    //                 // $data_activity = get_active_activity_by_activity_id_type_staff_and_machine(
+    //                 //     $conn,
+    //                 //     $table,
+    //                 //     $str_activity,
+    //                 //     $str_status,
+    //                 //     $id_activity,
+    //                 //     $data_staff_rfid['id_staff'],
+    //                 //     $id_mc);
+    //                 $sql = "SELECT *, CURRENT_TIMESTAMP() AS time_current FROM " . $table . " WHERE " .
+    //                         $str_activity . "=" . $id_activity . " AND 
+    //                         id_staff = '" . $request->input('Idstaff') . "' AND 
+    //                         id_machine = '" . $request->input('modalId') . "' AND " .
+    //                         $str_status . "=1";
+    //                 $data_activity = DB::select($sql);
+    //                 // return response() ->  json( $data_activity);
+
+
+    //                 if(empty($data_activity)) {
+    //                     return response() ->  json(["code"=>"012", 'message'=>'Activity mismatches']);
+    //         //            print_r($data_json);
+    //                 } else {
+    //                     $is_quit = true;
+    //                     $status_work = 3;
+
+    //                         if(strcmp('activity_downtime', $table) == 0){
+    //                             $status_work_text = 'status_downtime=';
+    //                             $id_activity_text = 'id_activity_downtime';
+    //                         }else{
+    //                             $id_activity_text = 'id_activity';
+    //                             $status_work_text = 'status_work=';
+    //                         }
+                        
+    //                         $sql = "SELECT id_task, time_start, total_work, total_food, total_toilet, no_pulse1, no_pulse2, no_pulse3, 
+    //                         CURRENT_TIMESTAMP() AS time_current FROM " . $table . " WHERE " . $id_activity_text . "=" . $id_activity;
+
+    //                         $data_activity = DB::select($sql);
+                        
+    //                         $sql = "SELECT planning.op_color, planning.op_side, planning.qty_per_pulse2, divider.divider AS multiplier 
+    //                     FROM planning INNER JOIN divider ON planning.op_color=divider.op_color AND planning.op_side=divider.op_side 
+    //                     WHERE planning.id_task=" . $data_activity[0]->id_task;
+
+    //                         $data_planning = DB::select($sql);
+                        
+    //                         $multiplier = $data_planning[0]->multiplier;
+                        
+    //                         $total_food = strtotime("1970-01-01 " . $data_activity[0]->total_food . " UTC");
+    //                         $total_toilet = strtotime("1970-01-01 " . $data_activity[0]->total_toilet . " UTC");
+    //                         $total_break = $total_food + $total_toilet;
+    //                         $time_start = strtotime($data_activity[0]->time_start);
+    //                         $time_current = strtotime($data_activity[0]->time_current);
+    //                         $time_total_second = $time_current - $time_start - $total_break;
+    //                         $time_total =  gmdate('H:i:s', $time_total_second);
+                        
+    //                         $no_pulse1 = floatval($data_activity[0]->no_pulse1) + ($no_pulse1 * floatval($multiplier));
+    //                         $no_pulse2 = intval($data_activity[0]->no_pulse2) + ($no_pulse2 * intval($data_planning[0]->qty_per_pulse2));
+    //                         $no_pulse3 = $no_pulse3 + intval($data_activity[0]->no_pulse3) ;
+                        
+    //                         $count_accum = $no_pulse2 + $no_pulse3;
+                        
+    //                         if($count_accum==0){
+    //                             $run_time_actual=0.0;
+    //                         }else{
+    //                             $count_accum = floatval($count_accum);
+    //                             $run_time_actual = round($time_total_second/$count_accum, 2);
+    //                         }
+                        
+    //                         $sql = "UPDATE " . $table . " SET ";
+    //                         $sql = $sql . $status_work_text . $status_work . ",";
+    //                         if ($is_quit){
+    //                             $sql = $sql . "time_close='" . $data_activity[0]->time_current . "',";
+    //                         }
+    //                         $sql = $sql . "total_work='" . $time_total . "',";
+    //                         $sql = $sql . "run_time_actual=" . $run_time_actual . ",";
+    //                         $sql = $sql . "no_send=" . $no_send . ",";
+    //                         $sql = $sql . "no_pulse1=" . $no_pulse1 . ",";
+    //                         $sql = $sql . "no_pulse2=" . $no_pulse2 . ",";
+    //                         $sql = $sql . "no_pulse3=" . $no_pulse3 . ",";
+    //                         $sql = $sql . "multiplier=" . $multiplier;
+    //                         $sql = $sql . " WHERE " . $id_activity_text . "=" . $id_activity;
+    //                         // return response() ->  json( $sql);
+    //                         DB::update($sql);
+    //                         // $result = $conn->query($sql);
+    //                     // $data_json = update_count($conn, $is_quit, $table, $status_work,
+    //                     //     $id_activity,
+    //                     //     $no_send,
+    //                     //     $no_pulse1,
+    //                     //     $no_pulse2,
+    //                     //     $no_pulse3,
+    //                     //     $multiplier);
+
+    //                     $sql = "UPDATE machine_queue SET id_staff='' WHERE id_machine='" . $id_mc . "' AND queue_number=1";
+    //                     DB::update($sql);
+
+    //                     $data_json = [
+    //                         'code'=>'200',
+    //                         'message'=>'OK',
+    //                         'qty_pulse1' => $no_pulse1,
+    //                         'qty_pulse2' => $no_pulse2,
+    //                         'qty_pulse3' => $no_pulse3,
+    //                         'count_accum' => $count_accum,
+    //                         'time_start' => $data_activity["time_start"],
+    //                         'time_current' => $data_activity["time_current"],
+    //                         'total_food' => $data_activity["total_food"],
+    //                         'total_toilet' => $data_activity["total_toilet"],
+    //                         'time_total_second' => $time_total_second,
+    //                         'time_work' => $time_total,
+    //                         'run_time_actual' => $run_time_actual,
+    //                         "quit_complete"=>true,
+    //                         "total_break"=>$total_break_text,
+    //                     ];
+    //                     return response() ->json($data_json);
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     catch (Exception $error) {
+    //         Log::error($error);
+    //         return response()->json($error);
+    //     }
+    // }
+
+
+    //ใช้อันนี้
+    // public function ResetActivittyV2(Request $request){
+    //     try{
+    //     //     $sql = "SELECT * FROM machine_queue
+    //     //  INNER JOIN staff ON machine_queue.id_staff = staff.id_staff 
+    //     //  WHERE id_machine = '" . $_GET['id_mc'] . "'";
+
+    //         $data_machine_queue = DB::select('select * from machine_queue as m, staff as s where m.id_staff = s.id_staff');
+    //         // return response() -> json($request->all());
+
+    //         if(!empty($data_machine_queue)){
+    //             $id_rfid = $data_machine_queue[0]->id_rfid;
+    //             $id_activity = $request->input('Idactivity');
+    //             $activity_type = $request->input('Id_ActivityType');
+    //             $no_send = 1;
+    //             $no_pulse1 = 0;
+    //             $no_pulse2 = 0;
+    //             $no_pulse3 = 0;
+    //             $multiplier = 1;
+    //             $dashboard = 1;
+    //             $id_mc = $request->input('modalId');
+
+    //             $data_staff_rfid = Staff::where('id_rfid', $id_rfid)->first();
+    //             // get_staff_by_rfid($conn, $id_rfid);
+    //             if(empty($data_staff_rfid)){
+    //                 return response() -> json(['code'=>'011', 'message'=>'Invalid RFID']);
+    //         //        print_r($data_json);
+    //             }
+    //             else {
+    //                 $table;
+    //                 $str_activity;
+    //                 $str_status;
+    //                 if($activity_type == 'dt'){
+    //                     $table = 'activity_downtime';
+    //                     $str_status = 'status_downtime';
+    //                     $str_activity = 'id_activity_downtime';
+    //                 }
+    //                 else{
+    //                     $str_status = 'status_work';
+    //                     $str_activity = 'id_activity';
+    //                     if($activity_type == 'bf'){
+    //                         $table = 'activity';
+    //                     }
+    //                     else{
+    //                         $table = 'activity_rework';
+    //                     }
+    //                 }
+
+    //                 // list($table, $str_activity, $str_status) = get_info_from_activity_type($activity_type);
+    //                 // $data_activity = get_active_activity_by_activity_id_type_staff_and_machine(
+    //                 //     $conn,
+    //                 //     $table,
+    //                 //     $str_activity,
+    //                 //     $str_status,
+    //                 //     $id_activity,
+    //                 //     $data_staff_rfid['id_staff'],
+    //                 //     $id_mc);
+    //                 $sql = "SELECT *, CURRENT_TIMESTAMP() AS time_current FROM " . $table . " WHERE " .
+    //                         $str_activity . "=" . $id_activity . " AND 
+    //                         id_staff = '" . $request->input('Idstaff') . "' AND 
+    //                         id_machine = '" . $request->input('modalId') . "' AND " .
+    //                         $str_status . "=1";
+    //                 $data_activity = DB::select($sql);
+    //                 // return response() ->  json( $data_activity);
+
+
+    //                 if(empty($data_activity)) {
+    //                     return response() ->  json(["code"=>"012", 'message'=>'Activity mismatches']);
+    //         //            print_r($data_json);
+    //                 } else {
+    //                     $is_quit = true;
+    //                     $status_work = 3;
+
+    //                         if(strcmp('activity_downtime', $table) == 0){
+    //                             $status_work_text = 'status_downtime=';
+    //                             $id_activity_text = 'id_activity_downtime';
+    //                         }else{
+    //                             $id_activity_text = 'id_activity';
+    //                             $status_work_text = 'status_work=';
+    //                         }
+                        
+    //                         $sql = "SELECT id_task, time_start, total_work, total_food, total_toilet, no_pulse1, no_pulse2, no_pulse3, 
+    //                         CURRENT_TIMESTAMP() AS time_current FROM " . $table . " WHERE " . $id_activity_text . "=" . $id_activity;
+
+    //                         $data_activity = DB::select($sql);
+                        
+    //                         $sql = "SELECT planning.op_color, planning.op_side, planning.qty_per_pulse2, divider.divider AS multiplier 
+    //                     FROM planning INNER JOIN divider ON planning.op_color=divider.op_color AND planning.op_side=divider.op_side 
+    //                     WHERE planning.id_task=" . $data_activity[0]->id_task;
+
+    //                         $data_planning = DB::select($sql);
+                        
+    //                         $multiplier = $data_planning[0]->multiplier;
+    //                         //คำนวณเวลาทั้งหมดที่ใช้ทำงาน
+    //                         $total_food = strtotime("1970-01-01 " . $data_activity[0]->total_food . " UTC");
+    //                         $total_toilet = strtotime("1970-01-01 " . $data_activity[0]->total_toilet . " UTC");
+    //                         $total_break = $total_food + $total_toilet;
+    //                         $time_start = strtotime($data_activity[0]->time_start);
+    //                         $time_current = strtotime($data_activity[0]->time_current);
+    //                         $time_total_second = $time_current - $time_start - $total_break;
+    //                         $time_total =  gmdate('H:i:s', $time_total_second);
+                        
+    //                         $no_pulse1 = floatval($data_activity[0]->no_pulse1) + ($no_pulse1 * floatval($multiplier));
+    //                         $no_pulse2 = intval($data_activity[0]->no_pulse2) + ($no_pulse2 * intval($data_planning[0]->qty_per_pulse2));
+    //                         $no_pulse3 = $no_pulse3 + intval($data_activity[0]->no_pulse3) ;
+                        
+    //                         $count_accum = $no_pulse2 + $no_pulse3;
+                        
+    //                         if($count_accum==0){
+    //                             $run_time_actual=0.0;
+    //                         }else{
+    //                             $count_accum = floatval($count_accum);
+    //                             $run_time_actual = round($time_total_second/$count_accum, 2);
+    //                         }
+                        
+    //                         $sql = "UPDATE " . $table . " SET ";
+    //                         $sql = $sql . $status_work_text . $status_work . ",";
+    //                         if ($is_quit){
+    //                             $sql = $sql . "time_close='" . $data_activity[0]->time_current . "',";
+    //                         }
+    //                         $sql = $sql . "total_work='" . $time_total . "',";
+    //                         $sql = $sql . "run_time_actual=" . $run_time_actual . ",";
+    //                         $sql = $sql . "no_send=" . $no_send . ",";
+    //                         $sql = $sql . "no_pulse1=" . $no_pulse1 . ",";
+    //                         $sql = $sql . "no_pulse2=" . $no_pulse2 . ",";
+    //                         $sql = $sql . "no_pulse3=" . $no_pulse3 . ",";
+    //                         $sql = $sql . "multiplier=" . $multiplier;
+    //                         $sql = $sql . " WHERE " . $id_activity_text . "=" . $id_activity;
+    //                         // return response() ->  json( $sql);
+    //                         DB::update($sql);
+    //                         // $result = $conn->query($sql);
+    //                     // $data_json = update_count($conn, $is_quit, $table, $status_work,
+    //                     //     $id_activity,
+    //                     //     $no_send,
+    //                     //     $no_pulse1,
+    //                     //     $no_pulse2,
+    //                     //     $no_pulse3,
+    //                     //     $multiplier);
+
+    //                     $sql = "UPDATE machine_queue SET id_staff='' WHERE id_machine='" . $id_mc . "' AND queue_number=1";
+    //                     DB::update($sql);
+
+    //                     $data_json = [
+    //                         'code'=>'200',
+    //                         'message'=>'OK',
+    //                         'qty_pulse1' => $no_pulse1,
+    //                         'qty_pulse2' => $no_pulse2,
+    //                         'qty_pulse3' => $no_pulse3,
+    //                         'count_accum' => $count_accum,
+    //                         'time_start' => $data_activity["time_start"],
+    //                         'time_current' => $data_activity["time_current"],
+    //                         'total_food' => $data_activity["total_food"],
+    //                         'total_toilet' => $data_activity["total_toilet"],
+    //                         'time_total_second' => $time_total_second,
+    //                         'time_work' => $time_total,
+    //                         'run_time_actual' => $run_time_actual,
+    //                         "quit_complete"=>true,
+    //                     ];
+    //                     return response() ->json($data_json);
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     catch (Exception $error) {
+    //         Log::error($error);
+    //         return response()->json($error);
+    //     }
+    // }
+    
+
+    //test break->continue->reset
     public function ResetActivittyV2(Request $request){
         try{
-        //     $sql = "SELECT * FROM machine_queue
-        //  INNER JOIN staff ON machine_queue.id_staff = staff.id_staff 
-        //  WHERE id_machine = '" . $_GET['id_mc'] . "'";
+        $id_break = $request->input('Idbreak');
+        // $id_machine = $request->input('modalId');
+        $id_activity = $request->input('Idactivity');
+        $activity_type = $request->input('Id_ActivityType');
 
             $data_machine_queue = DB::select('select * from machine_queue as m, staff as s where m.id_staff = s.id_staff');
-            // return response() -> json($request->all());
-
             if(!empty($data_machine_queue)){
                 $id_rfid = $data_machine_queue[0]->id_rfid;
                 $id_activity = $request->input('Idactivity');
@@ -338,53 +753,171 @@ class operationController extends Controller
                 $id_mc = $request->input('modalId');
 
                 $data_staff_rfid = Staff::where('id_rfid', $id_rfid)->first();
-                // get_staff_by_rfid($conn, $id_rfid);
                 if(empty($data_staff_rfid)){
                     return response() -> json(['code'=>'011', 'message'=>'Invalid RFID']);
-            //        print_r($data_json);
-                }
-                else {
+                }else {
                     $table;
                     $str_activity;
                     $str_status;
                     if($activity_type == 'dt'){
                         $table = 'activity_downtime';
-                        $str_status = 'status_downtime';
+                        $str_status = 'status_downtime'; //3
                         $str_activity = 'id_activity_downtime';
-                    }
-                    else{
-                        $str_status = 'status_work';
+                    }else{
+                        $str_status = 'status_work'; //1
                         $str_activity = 'id_activity';
                         if($activity_type == 'bf'){
                             $table = 'activity';
+                            $table_break = 'break';
                         }
                         else{
-                            $table = 'activity_rework';
+                            $table = 'activity_rework'; //2
+                            $table_break = 'break_rework';
                         }
                     }
 
-                    // list($table, $str_activity, $str_status) = get_info_from_activity_type($activity_type);
-                    // $data_activity = get_active_activity_by_activity_id_type_staff_and_machine(
-                    //     $conn,
-                    //     $table,
-                    //     $str_activity,
-                    //     $str_status,
-                    //     $id_activity,
-                    //     $data_staff_rfid['id_staff'],
-                    //     $id_mc);
-                    $sql = "SELECT *, CURRENT_TIMESTAMP() AS time_current FROM " . $table . " WHERE " .
-                            $str_activity . "=" . $id_activity . " AND 
-                            id_staff = '" . $request->input('Idstaff') . "' AND 
-                            id_machine = '" . $request->input('modalId') . "' AND " .
-                            $str_status . "=1";
-                    $data_activity = DB::select($sql);
-                    // return response() ->  json( $data_activity);
+                    // $sql = "SELECT *, CURRENT_TIMESTAMP() AS time_current FROM " . $table . " WHERE " .
+                    //         $str_activity . "=" . $id_activity . " AND 
+                    //         id_staff = '" . $request->input('Idstaff') . "' AND 
+                    //         id_machine = '" . $request->input('modalId') . "' AND " .
+                    //         // $str_status . "=1 OR " . $str_status . "=2";
+                    //         $str_status . "=1 ";
+                    if($activity_type == 'dt'){
+                        $sql = "SELECT *, CURRENT_TIMESTAMP() AS time_current FROM " . $table . " WHERE " .
+                        $str_activity . " = :id_activity AND id_staff = :id_staff AND id_machine = :id_machine AND (" .
+                        $str_status . " = 1 OR " . $str_status . " = 2)";
+                        $data_activity = DB::select($sql, [
+                        'id_activity' => $id_activity,
+                        'id_staff' => $request->input('Idstaff'),
+                        'id_machine' => $request->input('modalId'),
+                    ]);
+                    }
+                    else{
+                        $sql = "SELECT a.*, b.id_break, CURRENT_TIMESTAMP() AS time_current 
+                        FROM " . $table . " AS a 
+                        LEFT JOIN " . $table_break . " AS b ON a." . $str_activity . " = b." . $str_activity . "
+                        WHERE a." . $str_activity . " = :id_activity 
+                        AND a.id_staff = :id_staff 
+                        AND a.id_machine = :id_machine 
+                        AND (a." . $str_status . " = 1 OR a." . $str_status . " = 2)";
+                
+                        $data_activity = DB::select($sql, [
+                            'id_activity' => $id_activity,
+                            'id_staff' => $request->input('Idstaff'),
+                            'id_machine' => $request->input('modalId'),
+                        ]);
+                    }
+                    
 
+                    // $data_activity = DB::select($sql);
+                    // dd($data_activity);
+                    
+                    // dd($data_activity);
 
+                    // if($str_status === '2'){
+                    //     $data_activity_break = DB::table($table)
+                    //     ->select('id_break')
+                    //     ->where('id_break', $request->input('Idbreak'))
+                    //     ->where($str_activity, $request->input('Idactivity'))
+                    //     ->where('id_machine', $request->input('modalId'))
+                    //     ->first();
+                   
+                    if($data_activity[0]->id_break != 0){
+                        $has_break = $data_activity[0]->id_break != NULL ;
+                    }
+                    else{
+                        $has_break = false;
+                    }
+//  return response()->json([$data_activity,$has_break]);
+                    $response = null;
+                        // if($data_activity[0]->id_break != NULL) {
+                            if ($has_break) {
+                        $data_break = DB::table($table_break)
+                                    ->select('break_code', 'break_start AS time_break')
+                                    ->where('id_break', $request->input('Idbreak'))
+                                    ->first();
+
+                        if(empty($data_break)){
+                        return response() ->  json(['code'=>'009', 'message'=>'Invalid break ID']);
+                        }
+                        else{
+                        $data_activity = DB::table($table)
+                                        ->select('id_break', 'total_food', 'total_toilet', DB::raw('CURRENT_TIMESTAMP AS time_current'))
+                                        ->where($str_status, 2)
+                                        ->where($str_activity, $request->input('Idactivity'))
+                                        ->where('id_machine', $request->input('modalId'))
+                                        ->first();
+                                        
+                        if(empty($data_activity)){
+                            return response() ->  json(['code'=>'010', 'message'=>'No break activity found']);
+                        }
+                        else{
+                            $break_code = intval($data_break->break_code);
+                            // BREAK CODE: 1=FOOD, 2=TOILET
+                            if($break_code==1){
+                                $total_break = strtotime("1970-01-01 " . $data_activity->total_food . " UTC");
+                                $str_break = 'total_food';
+                            }elseif ($break_code==2){
+                                $total_break = strtotime("1970-01-01 " . $data_activity->total_toilet . " UTC");
+                                $str_break = 'total_toilet';
+                            }
+
+                            $time_break = strtotime($data_break->time_break);
+                            $time_current = strtotime($data_activity->time_current);
+                            $break_duration = $time_current-$time_break;
+                            $break_duration_text = gmdate('H:i:s', $break_duration);
+                            $total_break_text =  gmdate('H:i:s', $break_duration + $total_break);
+
+                            DB::transaction(function () use ($str_status, $str_break, $total_break_text, $str_activity, $id_activity, $table, $table_break, $id_break, $time_current, $break_duration_text) {
+                                $break_stop_datetime = date("Y-m-d H:i:s", $time_current);  // convert Unix timestamp to MySQL datetime format
+                                DB::table($table)
+                                    ->where($str_activity, $id_activity)
+                                    ->update([
+                                        $str_status => 1,
+                                        $str_break => $total_break_text
+                                    ]);
+                            
+                                DB::table($table_break)
+                                    ->where('id_break', $id_break)
+                                    ->update([
+                                        'break_stop' => $break_stop_datetime,  // use the converted datetime
+                                        'break_duration' => $break_duration_text
+                                    ]);
+                            });
+                            $response = ['total_break' => $total_break_text];
+                        // return response()->json(['total_break' => $total_break_text]);
+                        }
+                        }
+                        }
+                    
                     if(empty($data_activity)) {
-                        return response() ->  json(["code"=>"012", 'message'=>'Activity mismatches']);
+                        // return response() ->  json(["code"=>"012", 'message'=>'Activity mismatches']);
+                        $response = ["code"=>"012", 'message'=>'Activity mismatches'];
             //            print_r($data_json);
                     } else {
+//                         $table = '';
+// $table_break = '';
+// $str_activity = '';
+// $str_status = '';
+// if($activity_type == 'dt'){
+//     $table = 'activity_downtime';
+//     $table_break = 'break_downtime';
+//     $str_status = 'status_downtime';
+//     $str_activity = 'id_activity_downtime';
+// }
+// else{
+//     $str_status = 'status_work';
+//     $str_activity = 'id_activity';
+//     if($activity_type == 'bf'){
+//         $table = 'activity';
+//         $table_break = 'break';
+//     }
+//     else{
+//         $table = 'activity_rework';
+//         $table_break = 'break_rework';
+//     }
+// }
+
                         $is_quit = true;
                         $status_work = 3;
 
@@ -408,7 +941,7 @@ class operationController extends Controller
                             $data_planning = DB::select($sql);
                         
                             $multiplier = $data_planning[0]->multiplier;
-                        
+                            //คำนวณเวลาทั้งหมดที่ใช้ทำงาน
                             $total_food = strtotime("1970-01-01 " . $data_activity[0]->total_food . " UTC");
                             $total_toilet = strtotime("1970-01-01 " . $data_activity[0]->total_toilet . " UTC");
                             $total_break = $total_food + $total_toilet;
@@ -445,14 +978,6 @@ class operationController extends Controller
                             $sql = $sql . " WHERE " . $id_activity_text . "=" . $id_activity;
                             // return response() ->  json( $sql);
                             DB::update($sql);
-                            // $result = $conn->query($sql);
-                        // $data_json = update_count($conn, $is_quit, $table, $status_work,
-                        //     $id_activity,
-                        //     $no_send,
-                        //     $no_pulse1,
-                        //     $no_pulse2,
-                        //     $no_pulse3,
-                        //     $multiplier);
 
                         $sql = "UPDATE machine_queue SET id_staff='' WHERE id_machine='" . $id_mc . "' AND queue_number=1";
                         DB::update($sql);
@@ -477,13 +1002,186 @@ class operationController extends Controller
                     }
                 }
             }
-        }
+        
+    }
         catch (Exception $error) {
             Log::error($error);
             return response()->json($error);
         }
     }
-    
 }
 
 
+// $table = '';
+// $table_break = '';
+// $str_activity = '';
+// $str_status = '';
+// if($activity_type == 'dt'){
+//     $table = 'activity_downtime';
+//     $table_break = 'break_downtime';
+//     $str_status = 'status_downtime';
+//     $str_activity = 'id_activity_downtime';
+// }
+// else{
+//     $str_status = 'status_work';
+//     $str_activity = 'id_activity';
+//     if($activity_type == 'bf'){
+//         $table = 'activity';
+//         $table_break = 'break';
+//     }
+//     else{
+//         $table = 'activity_rework';
+//         $table_break = 'break_rework';
+//     }
+
+// $data_activity_break = DB::table($table)
+// ->select('id_break')
+// ->where('id_break', $request->input('Idbreak'))
+// ->where($str_activity, $request->input('Idactivity'))
+// ->where('id_machine', $request->input('modalId'))
+// ->first();
+
+// if($data_activity[0]->id_break != NULL) {
+
+// $data_break = DB::table($table_break)
+//             ->select('break_code', 'break_start AS time_break')
+//             ->where('id_break', $request->input('Idbreak'))
+//             ->first();
+
+// if(empty($data_break)){
+// return response() ->  json(['code'=>'009', 'message'=>'Invalid break ID']);
+// }
+// else{
+// $data_activity = DB::table($table)
+//                 ->select('id_break', 'total_food', 'total_toilet', DB::raw('CURRENT_TIMESTAMP AS time_current'))
+//                 ->where($str_status, 2)
+//                 ->where($str_activity, $request->input('Idactivity'))
+//                 ->where('id_machine', $request->input('modalId'))
+//                 ->first();
+                
+// if(empty($data_activity)){
+//     return response() ->  json(['code'=>'010', 'message'=>'No break activity found']);
+// }
+// else{
+//     $break_code = intval($data_break[0]->break_code);
+//     // BREAK CODE: 1=FOOD, 2=TOILET
+//     if($break_code==1){
+//         $total_break = strtotime("1970-01-01 " . $data_activity[0]->total_food . " UTC");
+//         $str_break = 'total_food';
+//     }elseif ($break_code==2){
+//         $total_break = strtotime("1970-01-01 " . $data_activity[0]->total_toilet . " UTC");
+//         $str_break = 'total_toilet';
+//     }
+
+//     $time_break = strtotime($data_break[0]->time_break);
+//     $time_current = strtotime($data_activity[0]->time_current);
+//     $break_duration = $time_current-$time_break;
+//     $break_duration_text = gmdate('H:i:s', $break_duration);
+//     $total_break_text =  gmdate('H:i:s', $break_duration + $total_break);
+
+//     DB::transaction(function () use ($str_status, $str_break, $total_break_text, $str_activity, $id_activity, $table, $table_break, $id_break, $time_current, $break_duration_text) {
+//         DB::table($table)
+//             ->where($str_activity, $id_activity)
+//             ->update([
+//                 $str_status => 1,
+//                 $str_break => $total_break_text
+//             ]);
+
+//         DB::table($table_break)
+//             ->where('id_break', $id_break)
+//             ->update([
+//                 'break_stop' => $time_current,
+//                 'break_duration' => $break_duration_text
+//             ]);
+//     });
+// return response()->json(['total_break' => $total_break_text]);
+// }
+// }
+// }
+
+//////////////////////////////////////////////////////////////////
+
+// $data_activity = DB::table($table)
+// ->select('id_break')
+// ->where('id_break', $request->input('Idbreak'))
+// ->where($str_activity, $request->input('Idactivity'))
+// ->where('id_machine', $request->input('modalId'))
+// ->first();
+// $table = '';
+// $table_break = '';
+// $str_activity = '';
+// $str_status = '';
+// if($activity_type == 'dt'){
+//     $table = 'activity_downtime';
+//     $table_break = 'break_downtime';
+//     $str_status = 'status_downtime';
+//     $str_activity = 'id_activity_downtime';
+// }
+// else{
+//     $str_status = 'status_work';
+//     $str_activity = 'id_activity';
+//     if($activity_type == 'bf'){
+//         $table = 'activity';
+//         $table_break = 'break';
+//     }
+//     else{
+//         $table = 'activity_rework';
+//         $table_break = 'break_rework';
+//     }
+
+//     $data_break = DB::table($table_break)
+//                 ->select('break_code', 'break_start AS time_break')
+//                 ->where('id_break', $request->input('Idbreak'))
+//                 ->first();
+
+// if(empty($data_break)){
+//     return response() ->  json(['code'=>'009', 'message'=>'Invalid break ID']);
+// }
+// else{
+//     $data_activity = DB::table($table)
+//                     ->select('id_break', 'total_food', 'total_toilet', DB::raw('CURRENT_TIMESTAMP AS time_current'))
+//                     ->where($str_status, 2)
+//                     ->where($str_activity, $request->input('Idactivity'))
+//                     ->where('id_machine', $request->input('modalId'))
+//                     ->first();
+                    
+//     if(empty($data_activity)){
+//         return response() ->  json(['code'=>'010', 'message'=>'No break activity found']);
+//     }
+//     else{
+//         $break_code = intval($data_break["break_code"]);
+//         // BREAK CODE: 1=FOOD, 2=TOILET
+//         if($break_code==1){
+//             $total_break = strtotime("1970-01-01 " . $data_activity["total_food"] . " UTC");
+//             $str_break = 'total_food';
+//         }elseif ($break_code==2){
+//             $total_break = strtotime("1970-01-01 " . $data_activity["total_toilet"] . " UTC");
+//             $str_break = 'total_toilet';
+//         }
+
+//         $time_break = strtotime($data_break["time_break"]);
+//         $time_current = strtotime($data_activity["time_current"]);
+//         $break_duration = $time_current-$time_break;
+//         $break_duration_text = gmdate('H:i:s', $break_duration);
+//         $total_break_text =  gmdate('H:i:s', $break_duration + $total_break);
+
+//         DB::transaction(function () use ($str_status, $str_break, $total_break_text, $str_activity, $id_activity, $table, $table_break, $id_break, $time_current, $break_duration_text) {
+//             DB::table($table)
+//                 ->where($str_activity, $id_activity)
+//                 ->update([
+//                     $str_status => 1,
+//                     $str_break => $total_break_text
+//                 ]);
+
+//             DB::table($table_break)
+//                 ->where('id_break', $id_break)
+//                 ->update([
+//                     'break_stop' => $time_current,
+//                     'break_duration' => $break_duration_text
+//                 ]);
+//         });
+
+// return response()->json(['total_break' => $total_break_text]);
+//     }
+//     }
+// }

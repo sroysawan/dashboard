@@ -54,6 +54,7 @@ Route::post('/update/dashboard/modal',
 // Route::get('/get/indivvidual/dashboard/detailsNew',
 // [dashboardRefreshController::class, 'getDashboardDetailsNewDB'])->name('dashboard.detailsNew');
 
+//modal
 Route::get('/get/indivvidual/dashboard/detailsNew',
 [dashboardRefreshController::class, 'getDashboardDetailsNewDBV2'])->name('dashboard.detailsNew');
 
@@ -213,6 +214,24 @@ Route::post('/update/uploadImport',
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
+
+//save setting
+// Route::get('/settings', function (Request $request) {
+//     return UserSetting::where('user_id', $request->user()->id)->first();
+// });
+
+// Route::post('/settings', function (Request $request) {
+//     $settings = UserSetting::updateOrCreate(
+//         ['user_id' => $request->user()->id],
+//         ['settings' => $request->settings]
+//     );
+
+//     return $settings;
+// });
+Route::group(['middleware' => 'auth:api'], function(){
+    Route::get('/user_settings/{user_id}', [loginController::class, 'getUserSetting']);
+    Route::put('/user_settings/{user_id}', [loginController::class, 'updateUserSetting']);
+});
 
 
 
