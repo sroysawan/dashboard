@@ -4,7 +4,6 @@ class ApproveRowHtr extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // approve_status : this.props.data.status,
             approve_status:"",
         }
     }

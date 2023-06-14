@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import Tablebutton from './Tablebutton';
 
 class ApproveRow extends Component {
 
@@ -50,7 +49,6 @@ class ApproveRow extends Component {
                             >
                             ไม่อนุมัติ
                     </button></td>
-                    {/* {this.props.data.status==2?'ดำเนินการแล้ว':''} */}
                     </tr>  </center> 
                     );
         }

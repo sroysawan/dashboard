@@ -21,7 +21,32 @@ class approveController extends Controller
                 WHEN 2 THEN 1
                 WHEN 1 THEN 2
                 WHEN 3 THEN 3
-            END'))->orderBy('update_history','desc')
+            END'))
+            ->where('status', 2)
+            ->orderBy('update_history','desc')
+            ->get();
+            return response()-> json($results);
+    
+        }
+        catch(Exception $error)
+    {
+    Log::error($error);
+    return response() -> json($error);
+    }
+    }
+
+    public function getApproveHistory(Request $request){
+        try{
+            // $data = $request->all();
+            // $approve = Approve::all();
+            $results = DB::table('approve')
+            // ->orderBy(DB::raw('CASE status
+            //     WHEN 2 THEN 1
+            //     WHEN 1 THEN 2
+            //     WHEN 3 THEN 3
+            // END'))
+            ->where('status','!=',2)    
+            ->orderBy('update_history','desc')
             ->get();
             return response()-> json($results);
     
@@ -87,6 +112,7 @@ class approveController extends Controller
                 Approve::where('id_approve',$data_req['id_approve'])->update([
                     'status' => 1,
                     'approve_datetime' => Carbon::now()->timezone('Asia/Bangkok'),
+                    'id_foreman' => $data_req['role_approve'] ,
                 ]);
                 for ($i=0;$i<count($key);$i++){
                     if($key[$i]=='id_role'){
@@ -127,6 +153,7 @@ class approveController extends Controller
                 Approve::where('id_approve',$data_req['id_approve'])->update([
                     'status' => 3,
                     'approve_datetime' => Carbon::now()->timezone('Asia/Bangkok'),
+                    'id_foreman' => $data_req['role_approve'] ,
                 ]);
                 return response() -> json('success is not confirm');
             }

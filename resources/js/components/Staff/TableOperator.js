@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import TableRow from './TableRow';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import CreateModal from './Modals/CreateModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbars from '../Dashboard/Navbar/Navbars';
-import DataTable from 'react-data-table-component';
 import { FaSearch } from "react-icons/Fa";
 import './staffStyle.css';
 import ReactPaginate from "react-paginate";

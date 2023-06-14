@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-
-
 class DetailTable extends Component {
 
     constructor(props) {
@@ -65,26 +63,7 @@ class DetailTable extends Component {
                         
                         <hr/>
                         Shif: <strong>{ this.props.dashboardData.currentDashboardShif} </strong>
-
-
-                        
                     </div>
-
-
-
-
-                    {/* <div className ="modal-footer">
-                    <button type="button" 
-            className="btn btn-primary"
-            data-bs-toggle="modal" 
-            data-bs-target={'#detailTable'+this.props.eachRowId}
-            onClick={ () => { this.getDashboardDetails( this.props.eachRowId) }}
-            >
-                update
-            </button>
-            
-                        
-                    </div> */}
                     </div>
                 </div>
             </div>

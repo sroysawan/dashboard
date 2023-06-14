@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
-
 class UpdateModal extends Component {
 
     constructor(props) {
@@ -16,17 +14,11 @@ class UpdateModal extends Component {
             dashboardPrefix: null,
             dashboardFirst: null,
             dashboardLast: null,
-            //dashboardsite: null,
             dashboardRole: null,
             dashboardShif: null,
             tempUploadImage:null,
-            // dashboardimg: null,
-            
         }
     }
-
-   
-
 
     //Update  
     inputDashboardStaffID = (event) => {
@@ -76,12 +68,6 @@ class UpdateModal extends Component {
             dashboardShif: event.target.value,
         });
     }
-    // //Update  
-    // inputDashboardimg = (event) => {
-    //     this.setState({
-    //         dashboardimg: event.target.value,
-    //     });
-    // }
 
 
 static getDerivedStateFromProps(props,current_state){
@@ -93,18 +79,12 @@ static getDerivedStateFromProps(props,current_state){
         dashboardPrefix: null,
         dashboardFirst: null,
         dashboardLast: null,
-        //dashboardsite: null,
         dashboardRole: null,
         dashboardShif: null,
-        // dashboardimg: null,
 }
 
 
 //Updating data from input
-
-
-
-
 if(current_state.dashboardStaff && (current_state.dashboardStaff !== props.dashboardData.currentDashboardStaff)){
     return null;
     }
@@ -171,11 +151,6 @@ if(current_state.dashboardStaff !== props.dashboardData.currentDashboardStaff||
     dashboardUpdate.dashboardLast = props.dashboardData.currentDashboardLast;
  }
 
- {/*if(current_state.dashboardsite !== props.dashboardData.currentDashboardsite||
-    current_state.dashboardsite === props.dashboardData.currentDashboardsite) {
-    dashboardUpdate.dashboardsite = props.dashboardData.currentDashboardsite;
- }*/}
-
  if(current_state.dashboardRole !== props.dashboardData.currentDashboardRole||
     current_state.dashboardRole === props.dashboardData.currentDashboardRole) {
     dashboardUpdate.dashboardRole = props.dashboardData.currentDashboardRole;
@@ -185,11 +160,6 @@ if(current_state.dashboardStaff !== props.dashboardData.currentDashboardStaff||
     current_state.dashboardShif === props.dashboardData.currentDashboardShif) {
     dashboardUpdate.dashboardShif = props.dashboardData.currentDashboardShif;
  }
-
-//  if(current_state.dashboardimg !== props.dashboardData.currentDashboardimg||
-//     current_state.dashboardimg === props.dashboardData.currentDashboardimg) {
-//     dashboardUpdate.dashboardimg = props.dashboardData.currentDashboardimg;
-//  }
 
 
 return dashboardUpdate;
@@ -310,13 +280,6 @@ return dashboardUpdate;
                         <option value="2">นาง</option>
                         <option value="3">นางสาว</option>
                         </select>
-                                {/* <input type="text"
-                                id="dashboardStaff"
-                                className='form-control mb3'
-                                value={this.state.dashboardPrefix ?? ""}
-                                onChange={this.inputDashboardPrefix}
-                                />
-                            </div> */}
                             First name :
                             <div className="form-group">
                                 <input type="text"
@@ -335,15 +298,6 @@ return dashboardUpdate;
                                 onChange={this.inputDashboardLast}
                                 />
                             </div>
-                            {/*Site :
-                            <div className="form-group">
-                                <input type="text"
-                                id="dashboardsite"
-                                className='form-control mb3'
-                                value={this.state.dashboardsite ?? ""}
-                                onChange={this.inputDashboardsite}
-                                />
-                        </div>*/}
                             Role :
                             {/* <div className="form-group"> */}
                                 <select className='form-select form-select-sm' id="dashboardRole" onChange={this.inputDashboardRole}value ={this.state.dashboardRole }>
@@ -354,37 +308,12 @@ return dashboardUpdate;
                         <option value="9">Manager</option>
                         <option value="11">Data Entry</option>
                         </select>
-                                {/* <input type="text"
-                                id="dashboardStaff"
-                                className='form-control mb3'
-                                value={this.state.dashboardRole ?? ""}
-                                onChange={this.inputDashboardRole}
-                                />
-                            </div> */}
-                            Shif :
-                            {/* <div className="form-group"> */}
                                 <select className='form-select form-select-sm'aria-label=".form-select-sm example"id="dashboardShif" onChange={this.inputDashboardShif}value ={this.state.dashboardShif}>
                         <option selected=" ">กรุณาเลือก...</option>
                         <option value="A">A</option>
                         <option value="B">B</option>
                         <option value="C">C</option>
                         </select>
-                                {/* <input type="text"
-                                id="dashboardStaff"
-                                className='form-control mb3'
-                                value={this.state.dashboardShif ?? ""}
-                                onChange={this.inputDashboardShif}
-                                /> */}
-                            {/* </div> */}
-
-                            {/* <div className="form-group">
-                                <input type="text"
-                                id="dashboardStaff"
-                                className='form-control mb3'
-                                value={this.state.dashboardimg ?? ""}
-                                onChange={this.inputDashboardimg}
-                                />
-                            </div> */}
                         Change Image :
                             <div className="form-group">
                                 <input className="btn text-black bg " id='image' type='file' 

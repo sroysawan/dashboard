@@ -5,8 +5,6 @@ import axios from 'axios';
 import UpdateModal from './Modals/UpdateModal';
 import { FaEdit } from "react-icons/Fa";
 import { FaTrash } from "react-icons/Fa"
-import { BiUserCheck } from "react-icons/Bi"
-
 class Tablebutton extends Component {
 
     constructor(props) {
@@ -24,17 +22,13 @@ class Tablebutton extends Component {
             currentDashboardRole: null,
             currentDashboardShif: null,
             approve_status :false,
-            // currentDashboardimg: null,
         }
     }
 
-    //Getting Individual
     getDashboardDetails = (id_staff) => {
-        // console.log(response.data.approve_status);
         axios.post('/get/individual/dashboard/details',{
             dashboardId: id_staff
         }).then((response) =>{
-            // console.log(response.data.approve_status);
             this.setState({
                 currentDashboardStaff: response.data.id_staff,
                 currentDashboardRfid: response.data.id_rfid,
@@ -67,16 +61,6 @@ class Tablebutton extends Component {
             </button>
 
             <EditModal modalId= { this.props.eachRowId} dashboardData={ this.state}/>
-            
-            {/* <button type="button" 
-            className="btn btn-info"
-            data-bs-toggle="modal" 
-            data-bs-target={'#updateModal'+this.props.eachRowId}
-            onClick={ () => { this.getDashboardDetails( this.props.eachRowId) }}
-            >
-                
-                update
-            </button> */}
     
             <UpdateModal modalId= { this.props.eachRowId} dashboardData={ this.state} />
 
@@ -90,20 +74,7 @@ class Tablebutton extends Component {
                 >
                     <FaTrash/>
             </button>
-
             <DeleteModal modalId= { this.props.eachRowId} dashboardData={ this.state} />
-
-
-            {/*<button type="button"
-                    className="btn btn-primart"
-                    data-bs-toggle="modal"
-                    data-bs-target={'#detailModal' + this.props.eachRowId}
-                    onClick={() => { this.getDashboardDetails(this.props.eachRowId) }}
-                >
-                    <BiUserCheck/>
-            </button>
-
-            <DetailTable modalId= { this.props.eachRowId} dashboardData={ this.state}/>  */}
           </div>
         )
     }

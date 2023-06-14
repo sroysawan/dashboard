@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import TableOther from './TableOther';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import CreateModal from './Modals/CreateModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbars from '../Dashboard/Navbar/Navbars';
 import { FaSearch } from "react-icons/Fa";
