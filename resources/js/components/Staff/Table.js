@@ -163,11 +163,11 @@ render() {
                     </span>
                     </th>
                     <th className="text-center" scope="col">RFID</th> 
-                    <th className="text-center" scope="col">prefix</th>
+                    <th className="text-center" scope="col">Prefix</th>
                     <th className="text-center" scope="col">Name</th>
                     <th className="text-center" scope="col">Role</th>
-                    <th className="text-center" scope="col">Shif</th>
-                    <th className="text-center" scope="col">Picture</th>
+                    {/* <th className="text-center" scope="col">Shif</th> */}
+                    <th className="text-db-center" scope="col">Picture</th>
                     <th className="text-center" scope="col">Status</th>
                     <th className="text-center" scope="col">Operation</th>
                     

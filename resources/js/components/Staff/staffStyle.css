@@ -57,3 +57,8 @@ input:focus {
 .Htr-icon{
     margin-right: 10px;
 }
+
+.text-db-center{
+    text-align: center;
+    vertical-align: middle;
+}

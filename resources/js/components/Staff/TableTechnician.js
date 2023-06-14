@@ -18,7 +18,9 @@ class TableTechnician extends Component{
         Staff : [],
         StaffTemp: [],
         currentPage: 0,
-        itemsPerPage: 5, 
+        itemsPerPage: 5,
+        sortConfig: { key: 'id_staff', direction: 'asc' },
+        isSorted: false, 
     }
 
 }
@@ -67,12 +69,53 @@ Search = (event) => {
           const itemsPerPage = parseInt(event.target.value);
           this.setState({ itemsPerPage, currentPage: 0 });
       };
+
+      sortBy =(key) =>{
+        let direction = 'asc';
+        if (
+          this.state.sortConfig &&
+          this.state.sortConfig.key === key &&
+          this.state.sortConfig.direction === 'asc'
+        ) {
+          direction = 'desc';
+        }
+        this.setState({ sortConfig: { key, direction }, isSorted: true  });
+      }
+  
+      compare =(a, b, direction) =>{
+        if (a === b) {
+          return 0;
+        } else if (a < b) {
+          return direction === 'asc' ? -1 : 1;
+        } else {
+          return direction === 'asc' ? 1 : -1;
+        }
+      }
+      
+      renderSortingArrow = (columnKey) =>{
+        if (this.state.sortConfig.key === columnKey) {
+          return this.state.sortConfig.direction === 'asc' ? '▴' : '▾';
+        }
+        return '▴';
+      }
 render() {
+  const sortedData = [...this.state.Staff];
+  if (this.state.isSorted && this.state.sortConfig.key) {
+    sortedData.sort((a, b) =>
+      this.compare(
+        a[this.state.sortConfig.key],
+        b[this.state.sortConfig.key],
+        this.state.sortConfig.direction
+      )
+    );
+  }
   const { currentPage, itemsPerPage } = this.state;
+  // Logic for displaying current items
   const indexOfLastItem = (currentPage + 1) * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentTechnician = this.state.Staff.slice(indexOfFirstItem, indexOfLastItem);
-  const pageCount = Math.ceil(this.state.Staff.length / itemsPerPage);
+  const currentTechnician = sortedData.slice(indexOfFirstItem, indexOfLastItem);
+  const pageCount = Math.ceil(sortedData.length / itemsPerPage);
+
   return (
     <div>
       <header className="page-header page-header-dark pb-5"></header>
@@ -113,13 +156,17 @@ render() {
               <table className="table table-bordered table-striped table-responsive">
                 <thead>
                   <tr className="bg-warning text-dark">
-                    <th className="text-center" scope="col">StaffID</th>
+                  <th className="text-center" scope="col">StaffID
+                    <span className="mc-box sortable-header" 
+                    onClick={() => this.sortBy('id_staff')}>{this.renderSortingArrow('id_staff')}
+                    </span>
+                    </th>
                     <th className="text-center" scope="col">RFID</th> 
                     <th className="text-center" scope="col">prefix</th>
                     <th className="text-center" scope="col">Name</th>
                     <th className="text-center" scope="col">Role</th>
                     <th className="text-center" scope="col">Shif</th>
-                    <th className="text-center" scope="col">Picture</th>
+                    <th className="text-db-center" scope="col">Picture</th>
                     <th className="text-center" scope="col">Status</th>
                     <th className="text-center" scope="col">Operation</th>
                     

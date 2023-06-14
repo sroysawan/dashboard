@@ -15,7 +15,9 @@ class EditModal extends Component {
             //currentDashboardSite: null,
             currentDashboardRole: null,
             currentDashboardShif: null,
-            
+            currentDashboardStatus: null,
+
+            status:'',
             // dashboardimg: null,  
         }
     }
@@ -34,6 +36,8 @@ class EditModal extends Component {
                 //currentDashboardSite: response.data.site,
                 currentDashboardRole: response.data.id_role,
                 currentDashboardShif: response.data.id_shif,
+                currentDashboardStatus: response.data.status_staff,
+
                 // status_approve : response.data.status_approve,
                 // currentDashboardimg: response.data.img
             })
@@ -83,6 +87,19 @@ class EditModal extends Component {
         }
         else if(in_role == 10){
             return  "Engineering"
+        }
+    }
+
+    renderStaffStatus() {
+        switch(this.props.dashboardData.currentDashboardStatus) {
+            case 0:
+                return 'ลาออก';
+            case 1:
+                return 'ทำงาน';
+            case 2:
+                return 'ทำงาน (Manual)';
+            default:
+                return '';
         }
     }
 
@@ -146,6 +163,12 @@ class EditModal extends Component {
                                             {this.props.dashboardData.currentDashboardShif}
                                         </td>
                                     </tr>   
+                                    <tr>
+                                        <td>Status:</td>
+                                        <td>
+                                        { this.renderStaffStatus() }
+                                        </td>
+                                    </tr> 
                             </tbody>
                         </table>
                     </div>

@@ -65,6 +65,8 @@ class DetailTable extends Component {
                         
                         <hr/>
                         Shif: <strong>{ this.props.dashboardData.currentDashboardShif} </strong>
+
+
                         
                     </div>
 

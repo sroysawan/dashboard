@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Tablebutton from './Tablebutton';
-
+import './staffStyle.css';
 class TableRow extends Component {
 
     constructor(props) {
@@ -38,7 +38,7 @@ class TableRow extends Component {
                 <td>{this.props.data.role}</td>
                 <td>{ this.props.data.id_shif }</td>
                 {/* <td>{ this.props.data.staff_img!='-'||null ? <img src={"images/staff/"+encodeURI(this.props.data.staff_img)} width="90" height="120" alt={"Image ID : "+this.props.data.staff_img} />:this.props.data.staff_img }</td> */}
-                <td>
+                <td className="text-db-center">
                     <img src={staffImageUrl} width="90" height="120" alt={"Image ID : "+this.props.data.staff_img} />
                 </td>
                 {/* <td>{ this.state.status }</td> */}

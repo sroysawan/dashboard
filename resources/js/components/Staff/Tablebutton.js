@@ -45,6 +45,7 @@ class Tablebutton extends Component {
                 currentDashboardRole: response.data.id_role,
                 currentDashboardShif: response.data.id_shif,
                 approve_status : response.data.approve_status,
+                currentDashboardStatus: response.data.status_staff,
                 // currentDashboardimg: response.data.img
             })
             console.log(response.data);

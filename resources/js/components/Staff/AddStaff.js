@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import CreateModal from './Modals/CreateModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbars from '../Dashboard/Navbar/Navbars';
+import './staffStyle.css';
 
 
 class AddStaff extends Component{
@@ -30,7 +31,7 @@ class AddStaff extends Component{
 
 componentDidMount = () =>{
     var roleLogin = localStorage.getItem('token');
-    if (roleLogin == 'manager' || roleLogin =='employee'){
+    if (roleLogin == 'Manager' || roleLogin =='Data Entry'){
         this.setState({
             login:1
         });
@@ -58,11 +59,15 @@ event.preventDefault();
       }
     axios.post('/create/add/staff',{data}).then(response=>{
         console.log(response.data);
+        toast.success("Add Success");
+        setTimeout(() => {
+            location.reload();
+        }, 1000);
+            
     })
-    
 }
 
-handleMachineUploadImage = (event) =>{
+handleUploadImage = (event) =>{
     console.log(event.target.files[0]);
     var selectedFile = event.target.files[0];
     var allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
@@ -146,33 +151,37 @@ render() {
   return (
   <div id="layoutSidenav_content">
                 <main>
-                    <header class="page-header page-header-dark pb-5">
-                        <div class="container-xl px-4">
-                            <div class="page-header-content pt-4">
+                    <header className="page-header page-header-dark pb-5">
+                        <div className="container-xl px-4">
+                            <div className="page-header-content pt-4">
                             </div>
                         </div>
                     </header>
-    <div class="container">
+    <div className="container">
         <Navbars/>
-    <div class="col-xl-6">
-        <div class="card mb-4">
-            <div class="card-header">Add New Staff</div>
-            <div class="card-body">
+    <div className="col-xl-6">
+        <div className="card mb-4">
+            <div className="card-header">Add New Staff</div>
+            <div className="card-body">
                 <form enctype="multipart/form-data">
-                    <div class="row gx-10 mb-3">
-                        <div class="col-md-6">
-                            <label class="small mb-1" for="id_staff">Staff ID</label>
-                            <input class="bg wi" id="id_staff" name="id_staff" type="text" maxlength="6" onChange={this.handleStaff} required="required" ></input>
+                    <div className="row gx-10 mb-3">
+                        <div className="col-md-6">
+                            <label className="small mb-1" for="id_staff">Staff ID
+                            <span style={{ color: 'red' }}>*</span>
+                            </label>
+                            <input className="form-control" id="id_staff" name="id_staff" type="text" maxlength="6" onChange={this.handleStaff} required="required" ></input>
                         </div>
-                        <div class="col-md-6">
-                            <label class="small mb-1" for="id_rfid">RFID</label>
-                            <input class="bg wi" id="id_rfid" name="id_rfid" type="text" maxlength="10" onChange={this.handleRfid} required="required" ></input>
+                        <div className="col-md-6">
+                            <label className="small mb-1" for="id_rfid">RFID
+                            <span style={{ color: 'red' }}>*</span>
+                            </label>
+                            <input className="form-control" id="id_rfid" name="id_rfid" type="text" maxlength="10" onChange={this.handleRfid} required="required" ></input>
                         </div>
                     </div>
-                    <div class="row gx-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="small mb-1" for="prefix">Prefix</label>
-                            <select  class="bg wi" id="prefix" name="prefix" value={this.state.prefix} onChange={this.handlePrefix} required="required">
+                    <div className="row gx-3 mb-3">
+                        <div className="col-md-6">
+                            <label className="small mb-1" for="prefix">Prefix</label>
+                            <select  className="form-control" id="prefix" name="prefix" value={this.state.prefix} onChange={this.handlePrefix} required="required">
                                 {/* <option value="0"></option> */}
                                 <option value="1">นาย</option>
                                 <option value="2">นาง</option>
@@ -180,42 +189,45 @@ render() {
                             </select>
                         </div>
                     </div>
-                    <div class="row gx-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="small mb-1" for="name_first">First name</label>
-                            <input class="bg wi" id="name_first" name="name_first" type="text" onChange={this.handleFirst} required="required"></input>
+                    <div className="row gx-3 mb-3">
+                        <div className="col-md-6">
+                            <label className="small mb-1" for="name_first">First name
+                            <span style={{ color: 'red' }}>*</span>
+                            </label>
+                            <input className="form-control" id="name_first" name="name_first" type="text" onChange={this.handleFirst} required="required"></input>
                         </div>
-                        <div class="col-md-6">
-                            <label class="small mb-1" for="name_last">Last name</label>
-                            <input class="bg wi" id="name_last" name="name_last" type="text" onChange={this.handleLast} required="required"></input>
+                        <div className="col-md-6">
+                            <label className="small mb-1" for="name_last">Last name
+                            <span style={{ color: 'red' }}>*</span>
+                            </label>
+                            <input className="form-control" id="name_last" name="name_last" type="text" onChange={this.handleLast} required="required"></input>
                         </div>
                     </div>
-                    <div class="row gx-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="small mb-1" for="id_role">Role</label>
+                    <div className="row gx-3 mb-3">
+                        <div className="col-md-6">
+                            <label className="small mb-1" for="id_role">Role
+                            <span style={{ color: 'red' }}>*</span>
+                            </label>
                             {this.state.login == 1 ?
-                            <select class="bg wi" id="id_role" name="id_role" value={this.state.id_role} onChange={this.handleRole} required="required">
+                            <select className="form-control" id="id_role" name="id_role" value={this.state.id_role} onChange={this.handleRole} required="required">
                                 <option value="1">Operator</option>
                                 <option value="2">Technician</option>
-                                <option value="3">Production Support</option>
-                                <option value="4">Instructor</option>
-                                <option value="5">Senior Instructor</option>
                                 <option value="6">Foreman</option>
-                                <option value="7">Leader</option>
-                                <option value="8">Senior Technician</option>
                                 <option value="9">Manager</option>
-                                <option value="10">Engineering</option>
+                                <option value="11">Data Entry</option>
                             </select>:
-                            <select class="bg wi" id="id_role" name="id_role" value={this.state.id_role} onChange={this.handleRole} required="required">
+                            <select className="form-control" id="id_role" name="id_role" value={this.state.id_role} onChange={this.handleRole} required="required">
                             <option value="1">Operator</option>
                             <option value="2">Technician</option>
                         </select>
 
                             }
                         </div>
-                        <div class="col-md-6">
-                            <label class="small mb-1" for="id_shif">Team</label>
-                            <select class="bg wi" id="id_shif" name="id_shif" value={this.state.id_shif} onChange={this.handleShif} required="required">
+                        <div className="col-md-6">
+                            <label className="small mb-1" for="id_shif">Team
+                            <span style={{ color: 'red' }}>*</span>
+                            </label>
+                            <select className="form-control" id="id_shif" name="id_shif" value={this.state.id_shif} onChange={this.handleShif} required="required">
                                 {/* <option value="0"></option> */}
                                 <option value="A">A</option>
                                 <option value="B">B</option>
@@ -223,13 +235,14 @@ render() {
                             </select>
                         </div>
                     </div>
-                    <div class="row gx-3 mb-3">
-                        <div class="col-md-12">
+                    <div className="row gx-3 mb-3">
+                        <div className="col-md-12">
                         Select picture to upload:
-                            <input class="btn text-black bg " id='image' type='file' accept="image/png, image/jpeg, image/jpg" onChange={this.handleMachineUploadImage}></input>
+                            <input className="btn text-black bg " id='image' type='file' accept="image/png, image/jpeg, image/jpg" onChange={this.handleUploadImage}></input>
                             <br></br>
                         </div>
                     </div>
+                    <ToastContainer autoClose={400}/>
                     <button id="submit_button" className="btn btn-primary" type="submit" onClick={this.addStaff}>Add</button>
                 </form>
             </div>
