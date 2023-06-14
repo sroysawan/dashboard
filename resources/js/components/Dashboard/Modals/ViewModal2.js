@@ -1,43 +1,15 @@
 import React, { Component } from 'react';
 import axios from "axios";
 import { withRouter } from 'react-router-dom';
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { BrowserRouter as Router, Route, Link, Switch, Routes, redirect } from 'react-router-dom';
-
-import "./modalStyle.css";
 import * as bootstrap from 'bootstrap';
 class ViewModal2 extends Component{
 
     constructor(props){
         super(props);
         this.state = {
-            // currentDashboardStatus: null,
-            // currentDashboardIdmc: null,
-            // currentDashboardItemno: null,
-            // currentDashboardIdjob: null,
-            // currentDashboardOp: null,
-            // currentDashboardDatedue: null,
-            // currentDashboardQtypertray: null,
-            // currentDashboardQtyactivity: null,
-            // currentDashboardQtyaccum: null,
-            // currentDashboardQtyaccumsum: null,
-            // currentDashboardQtyorder: null,
-            // currentDashboardQtypercent: null,
-            // currentDashboardIdtask: null,
-            // currentDashboardDtupdate: null,
-            // currentDashboardIdactivity: null,
-            // currentDashboardIdstaff: null,
-            // currentDashboardStatusWork: null,
             selectedOption: null,
             isConditionMet: true,
-            // dashboardQtypertray: null,
-            // dashboardQtyactivity: null,
-            // dashboardQtyaccum: null,
-            // activityTemp: null,
-            // accumTemp: null,
-            // planning_machine: [],
-            // planning_others: [],
         }
         this.handleOptionChange = this.handleOptionChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);

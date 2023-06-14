@@ -1,7 +1,7 @@
-import React, { Component, forEach } from "react";
+import React, { Component } from "react";
 import axios from "axios";
 import Clock from "react-digital-clock";
-import "./dashboardStyle.css";
+import './dashboardStyle.css';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { FaFlag, FaSearch } from "react-icons/Fa";
 import Blink from 'react-blink-text';
@@ -9,7 +9,6 @@ import DashboardButton from './Buttons/DashboardButton';
 import DashboardButton2 from './Buttons/DashboardButton2';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import DraggableHeader from "./DraggableHeader";
 import Navbars from "./Navbar/Navbars";
 import ReactPaginate from "react-paginate";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -29,15 +28,16 @@ class DataDashboard extends Component {
             SearchDashboard: [],
             ColorRuntime: 'black',       
             hiddenRows: new Set(),
-            isRowHidden: false,    
-            warningValue:savedWarningValue,
+            isRowHidden: JSON.parse(localStorage.getItem(localStorage.getItem('token')+'_hide')),    
+            warningValue:parseFloat(localStorage.getItem(localStorage.getItem('token')+'_value')),
             inputWarning: '',
-            sortConfig: { key: 'id_machine', direction: 'asc' },
+            sortConfig: { key: localStorage.getItem(localStorage.getItem('token')+'_sort'), direction: localStorage.getItem(localStorage.getItem('token')+'_sortDirection') },
             currentPage: 0,
             itemsPerPage: 50,
             isManager:false,
             isDataEntry:false,
             isForeman:false,
+            settings: null
 
     };
     this.toggleRowVisibility = this.toggleRowVisibility.bind(this);
@@ -46,27 +46,51 @@ class DataDashboard extends Component {
 }
 
     componentDidMount = () => {
-        this.getDashboardRefresh();
+        
         this.interval = setInterval(this.getDashboardRefresh, 10000);
         var user = localStorage.getItem('token');
-            if(user == 'employee'){
+        console.log(JSON.parse(localStorage.getItem(localStorage.getItem('token')+'_hide')));
+        console.log(localStorage.getItem('token')+'_value'+'--'+(localStorage.getItem(localStorage.getItem('token')+'_hide')+"--"+localStorage.getItem('token')+'_value'+((localStorage.getItem(localStorage.getItem('token')+'_value')))));
+            if(user == 'Data Entry'){
                 this.setState({
-                    isDataEntry:true
+                    isDataEntry:true,
+                    // warningValue:parseFloat(localStorage.getItem(user+'_value')),
                 })
             }
-            else if(user == 'manager'){
+            else if(user == 'Manager'){
                 this.setState({
-                    isManager:true
+                    isManager:true,
+                    // warningValue:parseFloat(localStorage.getItem(user+'_value')),
                 })
             }
-            else if(user == 'foreman'){
+            else if(user == 'Foreman'){
                 this.setState({
-                    isForeman:true
+                    isForeman:true,
+                    // warningValue:parseFloat(localStorage.getItem(user+'_value')),
                 })
             }
             else{
                 window.location.href = '/login';
             }
+             this.getDashboardRefresh().then(()=>{
+                const hiddenRows = new Set();
+                if(this.state.isRowHidden){
+                this.state.DashboardRefresh.forEach((item) => {
+                const status_work = item.status_work;
+                const id_machine = item.id_machine;
+                // const item_no = item.item_no;
+                    if (status_work  === '') {
+                        // if (item_no  === '') {
+                        hiddenRows.add(id_machine);
+                    }
+                });
+                this.setState({ hiddenRows,});
+            }
+            // this.sortBy(localStorage.getItem(localStorage.getItem('token')+'_sort'),localStorage.getItem(localStorage.getItem('token')+'_sortDirection'));
+        });
+            
+            
+
         // this.getRuntimecolor(this.props.run_time_actual,this.props.run_time_std,this.props.status_work);
     };
 
@@ -74,9 +98,9 @@ class DataDashboard extends Component {
         clearInterval(this.interval);
     }
 
-    getDashboardRefresh = () => {
+     getDashboardRefresh = () => { 
         let self = this;
-        axios.get("/update/DashboardRefresh/").then(function (response) {
+        return axios.get("/update/DashboardRefresh/").then(function (response) {
             console.log(response.data);
             self.setState({
                 DashboardRefresh: Object.values(response.data),
@@ -97,20 +121,39 @@ class DataDashboard extends Component {
 
     //hide-bt
     toggleRowVisibility =()=> {
+        // console.log(this.state.isRowHidden);
         if (this.state.isRowHidden) {
             this.setState({ hiddenRows: new Set(), isRowHidden: false });
+            localStorage.setItem(localStorage.getItem('token')+'_hide','false');
         } else {
             const hiddenRows = new Set();
             this.state.DashboardRefresh.forEach((item) => {
             const status_work = item.status_work;
             const id_machine = item.id_machine;
+            // const item_no = item.item_no;
             if (status_work  === '') {
+                // if (item_no  === '') {
                 hiddenRows.add(id_machine);
             }
         });
         this.setState({ hiddenRows, isRowHidden: true });
+        localStorage.setItem(localStorage.getItem('token')+'_hide','true');
+        
         }
+        console.log(localStorage.getItem(localStorage.getItem('token')+'_hide'));
+        console.log(this.state.isRowHidden);
+        // console.log(123);
     }
+    // changeHiddenRow = () =>{
+    //     if(localStorage.getItem(localStorage.getItem('token')+'_hide') === 'false'){
+    //         localStorage.setItem(localStorage.getItem('token')+'_hide','true');
+    //     }
+    //     else{
+    //         localStorage.setItem(localStorage.getItem('token')+'_hide','false');
+    //     }
+    //     console.log(localStorage.getItem(localStorage.getItem('token')+'_hide'));
+    //     console.log(this.state.isRowHidden);
+    // }
     
     // update warning progress
     handleChange = (event) => {
@@ -126,6 +169,8 @@ class DataDashboard extends Component {
         this.setState(prevState => {
             const newWarning = parseFloat(prevState.inputWarning);
             localStorage.setItem('warningValue', newWarning);
+            localStorage.setItem(localStorage.getItem('token')+'_value',newWarning.toString());
+            console.log(localStorage.getItem(localStorage.getItem('token')+'_value'));
             return {
                 warningValue: newWarning,
                 inputWarning: '',
@@ -171,15 +216,13 @@ class DataDashboard extends Component {
     };
 
     //reorder
-    moveHeader = (dragIndex, hoverIndex) => {
-        const columnOrder = [...this.state.columnOrder];
-        const draggedHeader = columnOrder[dragIndex];
-        columnOrder.splice(dragIndex, 1);
-        columnOrder.splice(hoverIndex, 0, draggedHeader);
-        this.setState({ columnOrder });
-    };
-
-
+    // moveHeader = (dragIndex, hoverIndex) => {
+    //     const columnOrder = [...this.state.columnOrder];
+    //     const draggedHeader = columnOrder[dragIndex];
+    //     columnOrder.splice(dragIndex, 1);
+    //     columnOrder.splice(hoverIndex, 0, draggedHeader);
+    //     this.setState({ columnOrder });
+    // };
 
     //sort
     sortBy =(key) =>{
@@ -191,6 +234,9 @@ class DataDashboard extends Component {
         ) {
           direction = 'desc';
         }
+        localStorage.setItem(localStorage.getItem('token')+'_sort',key);
+        localStorage.setItem(localStorage.getItem('token')+'_sortDirection',direction);
+        console.log(localStorage.getItem(localStorage.getItem('token')+'_sort')+localStorage.getItem(localStorage.getItem('token')+'_sortDirection'));
         this.setState({ sortConfig: { key, direction } });
       }
 
@@ -214,21 +260,22 @@ class DataDashboard extends Component {
     //Data in Table on Dashboard
     //Status
     getStatusColor = (status_work) =>{    
-      if (status_work === 0 || status_work==3 || status_work==5 || status_work==6) return 'blue';
-      if (status_work === 1 || status_work==7 ) return 'green';
-      if (status_work === 2 ) return 'orange';
+      if (status_work === 0 || status_work== 3 || status_work== 5 || status_work== 6) return 'blue';
+      if (status_work === 1 || status_work== 'y' ) return 'green';
+      if (status_work === 2 || status_work== 42 ) return 'orange';
       if (status_work === 4 ) return 'red';     
   }
-  getIdstaff = (status_work,id_staff) =>{    
+  getIdstaff = (status_work,id_staff,type_activity) =>{    
       if (status_work === 0 || status_work==3 || status_work==5 || status_work==6) return '';
+      if (type_activity === 'rw' && status_work === 1 || type_activity === 'rw' && status_work === 2) return id_staff + '\n' + 'RW';
       if (status_work === 1 ) return id_staff;
       if (status_work === 2 ) return id_staff;
       if (status_work === 4 ) return id_staff;
-      if (status_work === 7 ) return id_staff + '\n' + 'RW';
+    //   if (type_activity === 'rw' ) return id_staff + '\n' + 'RW';
       return '';
   }
-  getDowntime = (id_code_downtime,status_work) =>{    
-      if ((id_code_downtime !== "-") && !(status_work === 0 || status_work==3 || status_work==5 || status_work==6)) return id_code_downtime;
+  getDowntime = (id_code_downtime,status_work,code_downtime,des_downtime_thai) =>{    
+      if ((id_code_downtime !== "-") && !(status_work === 0 || status_work==3 || status_work==5 || status_work==6)) return des_downtime_thai;
       else return '';
   }
 
@@ -243,29 +290,39 @@ class DataDashboard extends Component {
 
   //Qty accum/Qty order
   getAccum = (qty_complete,qty_process,divider,qty_order) =>{           
-      qty_accum = qty_complete + Math.round(qty_process*divider);
-    //   qty_accum = qty_complete + Math.round(qty_process);
+      qty_accum = parseInt(qty_complete) + parseInt(qty_process);;
       if (divider == '' ){
           return '';
       }else{
         //   console.log(qty_accum);
           return Math.round(qty_accum) + ' / ' + qty_order;
       }
+
   }
 
   //Progress
+//   getPercent = (qty_order) =>{ 
+//       percent = Math.round(qty_accum/qty_order*100);
+//       if (qty_order == '' ){
+//           return '';
+//       }else{
+//           //console.log(percent);
+//           return percent;
+//       }
+//   }
   getPercent = (qty_order) =>{ 
-      percent = Math.round(qty_accum/qty_order*100);
-      if (qty_order == '' ){
-          return '';
-      }else{
-          //console.log(percent);
-          return percent;
-      }
-  }
-  getBlinkProgress = (qty_order,status_work) =>{
-    if (status_work === '') {
+    percent = Math.round(parseInt(qty_accum) / parseInt(qty_order) * 100);
+    if (qty_order == '' ){
+        return '';
+    }else{
+        return percent;
+    }
+}
+
+  getBlinkProgress = (qty_order,item_no,qty_percent) =>{
+    if (item_no === '') {
         return null;
+        
     }else if (qty_order - qty_accum <= this.state.warningValue){
           return  <Blink text={<ProgressBar variant='warning' min={0} max={100} now={this.getPercent(qty_order)} label={`${this.getPercent(qty_order)}%` }/>} ></Blink>
       }else if(qty_order - qty_accum > this.state.warningValue) {
@@ -274,15 +331,15 @@ class DataDashboard extends Component {
 }
 
   //RunTime
-  getRuntime = (run_time_actual,run_time_std,status_work) =>{
+  getRuntime = (run_time_actual,run_time_std,item_no) =>{
       const options = {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2
       };
-
+      run_time_actual = parseFloat(run_time_actual); 
       //if (status_work === 0 || status_work==3 || status_work==5 || status_work==6) return run_time_actual= 'N/A';
       //if (status_work === 0 || status_work==3 || status_work==5 || status_work==6) return run_time_actual = 0;
-      if (status_work === '') {
+      if (item_no === '') {
         return null;
     } else if
       (runtimes = run_time_actual.toLocaleString('en-US', options) + ' / ' + run_time_std.toLocaleString('en-US', options)){
@@ -291,8 +348,8 @@ class DataDashboard extends Component {
       return runtimes;
       }
   }
-  getFlagcolor =(run_time_actual,run_time_std,status_work) =>{
-    if (status_work === '') {
+  getFlagcolor =(run_time_actual,run_time_std,status_work,item_no) =>{
+    if (item_no === '') {
         return null;
     }
     else if (status_work === 0 || status_work==3 || status_work==5 || status_work==6) return <FaFlag color="black"/>;
@@ -316,7 +373,7 @@ class DataDashboard extends Component {
 }
 
   //Total Open Run Time
-  getTotal = (qty_order,run_time_std,status_work) =>{
+  getTotal = (qty_order,run_time_std,status_work,item_no) =>{
   run_time_std = parseInt(run_time_std);
   run_time_open = ((qty_order-qty_accum)*run_time_std);
   const seconds_of_a_day = 86400;
@@ -335,16 +392,18 @@ class DataDashboard extends Component {
       useGrouping: false
   }
   var total_time = run_time_day + " days\n" + run_time_hr.toLocaleString('en-US', options_run_time_open) + ":" + run_time_min.toLocaleString('en-US', options_run_time_open) + ":" + run_time_sec.toLocaleString('en-US', options_run_time_open);
-  if (status_work === '') {
+//   console.log("Total Time: ", run_time_open);
+  if (item_no=== '') {
     return null;
 }
-  if (run_time_hr<0 || run_time_min<0 || run_time_sec<0) return '0';
+  if (run_time_hr<0 || run_time_min<0 || run_time_sec<0) 
+  return '0';
   else 
   return total_time;       
   }
 
   //Estimated finish
-  getEsDateTime = (qty_order,run_time_std,run_time_actual,status_work) =>{
+  getEsDateTime = (qty_order,run_time_std,run_time_actual,status_work,item_no) =>{
       run_time_std = parseInt(run_time_std);
       run_time_open = ((qty_order-qty_accum)*run_time_std);
       const seconds_of_a_day = 86400;
@@ -369,8 +428,8 @@ class DataDashboard extends Component {
       const break_3am_stop = 12600;
       const break_11am_start = 39600;
       const break_11am_stop = 41400;
-      const break_6pm_start = 64800;
-      const break_6pm_stop = 66600;
+    //   const break_6pm_start = 64800;
+    //   const break_6pm_stop = 66600;
       var midnight = new Date();
       midnight.setHours( 0 );
       midnight.setMinutes( 0 );
@@ -401,14 +460,14 @@ class DataDashboard extends Component {
               run_time_open = run_time_open + (break_11am_stop - seconds_of_this_day);// ADD ONLY THE DIFFERENCE
           }
       }
-      if (seconds_to_complete > break_6pm_start){                                     // IF COMPLETE TIME AFTER BREAK TIME 6PM TODAY
-          if (seconds_of_this_day < break_6pm_start){                                 // AND NOW IS NOT 6PM YET
-              run_time_open += 1800;                                                  // ADD FULL BREAK DURATION
-          }
-          else if (seconds_of_this_day < break_6pm_stop) {                            // BUT IF NOW IS DURING THE BREAK TIME TODAY
-              run_time_open = run_time_open + (break_6pm_stop - seconds_of_this_day); // ADD ONLY THE DIFFERENCE
-          }
-      }
+    //   if (seconds_to_complete > break_6pm_start){                                     // IF COMPLETE TIME AFTER BREAK TIME 6PM TODAY
+    //       if (seconds_of_this_day < break_6pm_start){                                 // AND NOW IS NOT 6PM YET
+    //           run_time_open += 1800;                                                  // ADD FULL BREAK DURATION
+    //       }
+    //       else if (seconds_of_this_day < break_6pm_stop) {                            // BUT IF NOW IS DURING THE BREAK TIME TODAY
+    //           run_time_open = run_time_open + (break_6pm_stop - seconds_of_this_day); // ADD ONLY THE DIFFERENCE
+    //       }
+    //   }
       if (seconds_to_complete > seconds_of_a_day){
           var seconds_of_tomorrow = seconds_to_complete%seconds_of_a_day;
           if (seconds_of_tomorrow > break_3am_start){                                 // IF COMPLETE TIME AFTER BREAK TIME 3AM TOMORROW
@@ -417,12 +476,12 @@ class DataDashboard extends Component {
           if (seconds_of_tomorrow > break_11am_start){                                // IF COMPLETE TIME AFTER BREAK TIME 11AM TOMORROW
               run_time_open += 1800;                                                  // ADD FULL BREAK DURATION
           }
-          if (seconds_of_tomorrow > break_6pm_start){                                 // IF COMPLETE TIME AFTER BREAK TIME 6PM TOMORROW
-              run_time_open += 1800;                                                  // ADD FULL BREAK DURATION
-          }
+        //   if (seconds_of_tomorrow > break_6pm_start){                                 // IF COMPLETE TIME AFTER BREAK TIME 6PM TOMORROW
+        //       run_time_open += 1800;                                                  // ADD FULL BREAK DURATION
+        //   }
       }
 
-      if(run_time_actual === '' || status_work === ''){
+      if(run_time_actual === '' || item_no === ''){
           est_time = new Date(time_now + (run_time_open*1000));
           var est_date = ('');
           var est_times = ('');
@@ -461,8 +520,6 @@ class DataDashboard extends Component {
           );
         }
         const { currentPage, itemsPerPage } = this.state;
-        
-    
         // Logic for displaying current items
         const indexOfLastItem = (currentPage + 1) * itemsPerPage;
         const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -474,7 +531,7 @@ class DataDashboard extends Component {
                 <header className="page-header page-header-dark pb-5"></header>
                 <div className="container-fluid px-4 mt-n10">
                 <Navbars/>
-                    <div className="card mb-4 w-100">
+                    <div className="card mb-4 w-100 border-black">
                         <div className="card-header bg-red fw-bold text-white fs-4 d-flex justify-content-between bg-danger">
                             <div>Job overview by Machine</div>
                             <Clock />
@@ -487,6 +544,8 @@ class DataDashboard extends Component {
                                         type="checkbox"
                                         style={{ margin: "5px" }}
                                         onClick={this.toggleRowVisibility}
+                                        // onChange={this.changeHiddenRow}
+                                        checked={this.state.isRowHidden}
                                     />
                                     <label className="hide-label">
                                     Hide unassigned machines
@@ -495,15 +554,16 @@ class DataDashboard extends Component {
                                 <div className="p-2 warning-left">
                                     <label className="hide-label">Current warning value: {this.state.warningValue}</label>&nbsp;
                                     <input
-                                        className="input-warning hide-label"
+                                        className="new-warning hide-label"
                                         type="number"
                                         min="0"
                                         value={this.state.inputWarning}
                                         onChange={this.handleChange}
-                                        placeholder="Enter New Value"
+                                        placeholder="Value"
+                                        disabled={this.state.isDataEntry}
                                     />&nbsp;
                                     <button type="button" className="warning-bt hide-label" onClick={this.updateWarning} 
-                                        disabled={this.state.inputWarning === ""}>Update</button>
+                                        disabled={this.state.inputWarning === "" || this.state.isDataEntry}>Update</button>
                                 </div> 
                                 <div className="p-2 color-left">
                                     <div
@@ -519,7 +579,7 @@ class DataDashboard extends Component {
                                         }}
                                     />
                                     <label className="hide-label">
-                                    Machine is not working
+                                    Idle machine
                                     </label>
                                     <div
                                         style={{
@@ -549,7 +609,7 @@ class DataDashboard extends Component {
                                         }}
                                     />
                                     <label className="hide-label">
-                                    Idle machine
+                                    Break machineIdle
                                     </label>
                                     <div
                                         style={{
@@ -572,7 +632,7 @@ class DataDashboard extends Component {
                                     <FaSearch id="search-icon"/>
                                     <input
                                         className="search-input"
-                                        placeholder= "Search"
+                                        placeholder= "Search M/C, Item no, Op"
                                         onChange={this.searchData}
                                     />
                                 </div>
@@ -599,12 +659,12 @@ class DataDashboard extends Component {
                                             <th rowSpan="2" className="qtyac-ord-box" scope="col">Qty accum/Qty order</th>
                                             <th rowSpan="2" className="progress-box" scope="col">
                                                 Progress (%)
-                                                <span className="mc-box sortable-header" onClick={() => this.sortBy('qty_order')}>{this.renderSortingArrow('qty_order')}</span>
+                                                <span className="mc-box sortable-header" onClick={() => this.sortBy('qty_percent')}>{this.renderSortingArrow('qty_percent')}</span>
                                             </th>
                                             <th rowSpan="2" className="runt-box" scope="col">Run time Actual/Std(Second)</th>
                                             <th rowSpan="2" className="total-box" scope="col">
                                                 Total open run time(Hr)
-                                                <span className="mc-box sortable-header" onClick={() => this.sortBy('qty_order')}>{this.renderSortingArrow('qty_order')}</span>
+                                                <span className="mc-box sortable-header" onClick={() => this.sortBy('run_time_open')}>{this.renderSortingArrow('run_time_open')}</span>
                                             </th>
                                             <th colSpan="2" className="est-box" scope="col">Estimated finish</th>
                                             <th rowSpan="2" className="nextitemno-box" scope="col">Next item number</th>
@@ -621,8 +681,9 @@ class DataDashboard extends Component {
                                             <tr key={index}>
                                             <td style={{ backgroundColor: this.getStatusColor(item.status_work) }}>
                                                 <td style={{color: 'white' }}>
-                                                {(this.getIdstaff(item.status_work,item.id_staff) )}
-                                                {(this.getDowntime(item.id_code_downtime,item.status_work,item.id_staff) )} 
+                                                {(this.getIdstaff(item.status_work,item.id_staff,item.type) + '\n' )} 
+                                                <br />
+                                                {(this.getDowntime(item.id_code_downtime,item.status_work,item.id_staff,item.code_downtime,item.des_downtime_thai) )} 
                                                 </td>
                                             </td>
                                             <td className="text-db-center">{item.id_machine}</td>
@@ -632,15 +693,16 @@ class DataDashboard extends Component {
                                             <td className="text-db-center">{ item.op_side }</td>
                                             <td className="text-db-center">{ item.date_due }</td>
                                             <td className="text-db-center">{ item.qty_per_pulse2 }</td>
+                                            {/* {console.log('qty_process:', item.qty_process)} */}
                                             <td className="text-db-center">{ this.getAccum(item.qty_complete,item.qty_process,item.divider,item.qty_order) }</td>
-                                            <td className="text-db-center">{this.getBlinkProgress(item.qty_order,item.status_work)}</td>
+                                            <td className="text-db-center">{this.getBlinkProgress(item.qty_order,item.item_no,item.qty_percent)}</td>
                                             <td style={{ color: this.state.ColorRuntime}}>
-                                                { this.getFlagcolor(item.run_time_actual,item.run_time_std,item.status_work)}
-                                                { this.getRuntime(item.run_time_actual,item.run_time_std,item.status_work)} 
+                                                { this.getFlagcolor(item.run_time_actual,item.run_time_std,item.status_work,item.item_no)}
+                                                { this.getRuntime(item.run_time_actual,item.run_time_std,item.item_no)} 
                                             </td>
-                                            <td className="text-db-left">{ this.getTotal(item['qty_order'],item['run_time_std'],item.status_work) }</td>
-                                            <td className="text-db-center">{this.getEsDateTime(item['qty_order'], item['run_time_std'], item.status_work)[0]}</td> 
-                                            <td className="text-db-center">{this.getEsDateTime(item['qty_order'], item['run_time_std'], item.status_work)[1]}</td> 
+                                            <td className="text-db-left">{ this.getTotal(item['qty_order'],item['run_time_std'],item.status_work,item.item_no) }</td>
+                                            <td className="text-db-center">{this.getEsDateTime(item['qty_order'], item['run_time_std'], item.item_no)[0]}</td> 
+                                            <td className="text-db-center">{this.getEsDateTime(item['qty_order'], item['run_time_std'], item.item_no)[1]}</td> 
                                             <td className="text-db-left"><DashboardButton2 eachRowId= {item.id_machine} level={this.state.isDataEntry}/>{ this.getItem_2(item.item_no_2) }</td>
                                             <td className="text-db-center">{ this.getOp_2(item.operation_2) }</td>
                                             </tr>

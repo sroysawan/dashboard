@@ -1,39 +1,40 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
 import Navbars from '../Dashboard/Navbar/Navbars';
 import ReactPaginate from "react-paginate";
-import "./operationStyle.css";
+import "./newtaskStyle.css";
 import { FaSearch } from "react-icons/Fa";
 
 var tempData = [];
-class DataOperationQ2 extends Component {
+class DataNewtask extends Component {
     constructor(props) {
         super(props);
-        // console.log("Data received:", this.props.location.state.data);
         this.state = {
             data: this.props.location.state.data,
             machine_queues: this.props.location.state.machine_queues,
             modalId: this.props.location.state.modalId,
-            currentOperation: this.props.location.state.currentDashboardOp,
+            currentDashboardOp: this.props.location.state.currentDashboardOp,
+            Idactivity: this.props.location.state.currentDashboardIdactivity,
             currentPage: 0,
-            itemsPerPage: 10,            
+            itemsPerPage: 10,
             searchValue: "",
-            SearchChangeOperation: this.props.location.state.data,
+            SearchNewtask: this.props.location.state.data,
         };
     }
-
+    // componentDidMount() {
+    //   window.scrollTo(0, 0);
+    // }
     //Pagination
     handlePageClick = (data) => {
-      this.setState({ currentPage: data.selected });
+        this.setState({ currentPage: data.selected });
     };
     handleItemsPerPageChange = (event) => {
         const itemsPerPage = parseInt(event.target.value);
         this.setState({ itemsPerPage, currentPage: 0 });
     };
 
-     //search
-     searchData = (event) => {
-      this.state.SearchChangeOperation.map((x) => {
+    //search
+    searchData = (event) => {
+      this.state.SearchNewtask.map((x) => {
           if (
               x.operation.toLowerCase().includes(event.target.value.toLowerCase()) ||
               x.id_job.toLowerCase().includes(event.target.value.toLowerCase()) ||
@@ -46,7 +47,7 @@ class DataOperationQ2 extends Component {
               });
           } else if (event.target.value === "") {
               this.setState({
-                  data: SearchChangeOperation,
+                  data: SearchNewtask,
                   searchValue: event.target.value,
               });
           } else if (
@@ -60,13 +61,15 @@ class DataOperationQ2 extends Component {
       tempData = [];
   };
 
-  handleAddTo = async (id_job, operation_new, id_machine) => {
-    console.log('Data sent to Laravel:', { id_job, operation_new, id_machine });
+  handleAddTo = async (id_job, operation_new, id_machine, id_activity, status_work) => {
+    console.log('newtask sent to Laravel:', { id_job, operation_new, id_machine, id_activity, status_work });
     try {
-      const response = await axios.post('/add/OperationQ2', {
+      const response = await axios.post('/add/Newtask', {
         id_job: id_job,
         operation_new: operation_new,
         id_machine: id_machine,
+        id_activity: id_activity,
+        status_work: status_work,
       });
       console.log(response.data);
       if (response.data.success) {
@@ -80,11 +83,11 @@ class DataOperationQ2 extends Component {
   };
 
     render() {
-      const { currentPage, itemsPerPage } = this.state;
-      const indexOfLastItem = (currentPage + 1) * itemsPerPage;
-      const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-      const currentItems = this.state.data.slice(indexOfFirstItem, indexOfLastItem);
-      const pageCount = Math.ceil(this.state.data.length / itemsPerPage);
+        const { currentPage, itemsPerPage } = this.state;
+        const indexOfLastItem = (currentPage + 1) * itemsPerPage;
+        const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+        const currentItems = this.state.data.slice(indexOfFirstItem, indexOfLastItem);
+        const pageCount = Math.ceil(this.state.data.length / itemsPerPage);
         return(
           <div>
             <header className="page-header page-header-dark pb-5"></header>
@@ -92,14 +95,13 @@ class DataOperationQ2 extends Component {
             <Navbars/>
             <div className="card mb-4 w-100">
                         <div className="card-header bg-dark fw-bold text-white fs-4 d-flex justify-content-between bg-danger">
-                            <div>Queue 2 Manufacturing orders to be assigned to Machine:{" "}
+                            <div>Manufacturing orders to be assigned to Machine:{" "}
                             {this.state.modalId}
                             </div>
                         </div>
                         <div className="card-header text-black">
                             <div className="d-flex">
                             <div className="p-2 custom-header">
-                                <label>Row per page: </label>
                                 <select value={itemsPerPage} onChange={this.handleItemsPerPageChange}>
                                 <option value={5}>5</option>
                                 <option value={10}>10</option>
@@ -108,6 +110,7 @@ class DataOperationQ2 extends Component {
                                 <option value={50}>50</option>
                                 <option value={100}>100</option>
                                 </select>
+                                <label>entries per page</label>
                             </div>
                         <div className="p-2 ms-auto">
                                 <div className="input-wrapper">
@@ -144,14 +147,10 @@ class DataOperationQ2 extends Component {
                       {currentItems.map((item, index) => (
                     <tr key={index}>
                         <td>
-                        {item.operation !== this.props.location.state.currentDashboardOp ? (
-                              <button type="submit" className="btn btn-primary" onClick={() => this.handleAddTo(item.id_job, item.operation, this.state.modalId)}
-                              >
+                              <button type="submit" className="btn btn-primary" onClick={() => this.handleAddTo(item.id_job, item.operation, this.state.modalId, item.id_activity, item.status_work)}>
                                 Add to {this.state.modalId}
                               </button>
-                          ) : (
-                            <td></td>
-                          )}
+
                         </td>  
                         <td>{item.id_job}</td>
                         <td>{item.work_order}</td>
@@ -167,8 +166,8 @@ class DataOperationQ2 extends Component {
                         {this.state.machine_queues.map((queue, index) => {
                         return (
                           <React.Fragment key={index}>
-                          {parseInt(queue.queue_number) === 1 && item.operation === this.props.location.state.currentDashboardOp ? (
-                            <button type="button" className="btn btn-success">
+                          {parseInt(queue.queue_number) !== 1 && item.operation === this.props.location.state.currentDashboardOp ? (
+                            <button type="button" className="btn btn-outline-success">
                               {queue.id_machine}
                             </button>
                           ) : (
@@ -183,7 +182,7 @@ class DataOperationQ2 extends Component {
             </tbody>
                     </table>
                    </div>
-                   <div className="d-flex justify-content-center mt-3 pagination">
+                    <div className="d-flex justify-content-center mt-3 pagination">
                             <div className="dataTables_paginate">
                             <ReactPaginate
                                 previousLabel={"<"}
@@ -208,4 +207,4 @@ class DataOperationQ2 extends Component {
   }
 }
 
-export default withRouter(DataOperationQ2);
+export default DataNewtask;

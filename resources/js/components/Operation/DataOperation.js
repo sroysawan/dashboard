@@ -141,8 +141,10 @@ class DataOperation extends Component {
                         </tr>
                       </thead>
                       <tbody>
-                      {currentItems.map((item, index) => (
-                    <tr key={index}>
+                      {
+                        currentItems.length > 0 ? 
+                        currentItems.map((item, index) => (
+                            <tr key={index}>
                         <td>
                         {item.operation !== this.props.location.state.currentDashboardOp ? (
                               <button type="submit" className="btn btn-primary" onClick={() => this.handleAddTo(item.id_job, item.operation, this.state.modalId)}
@@ -161,7 +163,7 @@ class DataOperation extends Component {
                         <td>{item.op_color}</td>
                         <td>{item.op_side}</td>
                         <td>{item.qty_comp} / {item.qty_order}</td>
-                        <td>{item.id_job}</td>
+                        <td>{item.qty_open}</td>
                         <td>{item.date_due}</td>
                         <td>
                         {this.state.machine_queues.map((queue, index) => {
@@ -179,7 +181,12 @@ class DataOperation extends Component {
                       })}
                     </td>
                     </tr>
-                ))}
+                ))
+                : 
+                <tr>
+                    <td colSpan="12" className="text-center">No entries found</td>
+                </tr>
+                }
             </tbody>
                     </table>
                    </div>

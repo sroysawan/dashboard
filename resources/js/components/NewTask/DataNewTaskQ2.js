@@ -160,7 +160,7 @@ class DataNewtaskQ2 extends Component {
                         <td>{item.op_color}</td>
                         <td>{item.op_side}</td>
                         <td>{item.qty_comp} / {item.qty_order}</td>
-                        <td>{item.id_job}</td>
+                        <td>{item.qty_open}</td>
                         <td>{item.date_due}</td>
                         <td>
                         {this.state.machine_queues.map((queue, index) => {

@@ -1,13 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import UpdateModal from "./UpdateModal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { BrowserRouter as Router, Route, Link, Switch, Routes, redirect } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
-import "./modalStyle.css";
-import DataOperation from "../../Operation/DataOperation";
 import * as bootstrap from 'bootstrap';
 
 
@@ -256,6 +251,23 @@ class ViewModal extends Component {
             dashboardQtyactivity: event.target.value,
         });
     };
+
+    // inputDashboardQtypertray = (event) => {
+    //     let value = event.target.value;
+    //     if ((value === "" || isNaN(value) || Number(value) < 0) && value !== "0") {
+    //         return;
+    //     }
+    //     this.setState({dashboardQtypertray: Number(value)});
+    // };
+    
+    // inputDashboardQtyactivity = (event) => {
+    //     let value = event.target.value;
+    //     if ((value === "" || isNaN(value) || Number(value) < 0) && value !== "0") {
+    //         return;
+    //     }
+    //     this.setState({dashboardQtyactivity: Number(value)});
+    // };
+    
 
     
     inputDashboardQtyaccum = (event) => {

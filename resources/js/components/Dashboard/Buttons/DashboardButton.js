@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { Component } from "react";
 import { FaRegEdit } from "react-icons/Fa";
 import ViewModal from "../Modals/ViewModal";
-import UpdateModal from "../Modals/UpdateModal";
 
 class DashboardButton extends Component {
     constructor(props) {
@@ -22,17 +21,18 @@ class DashboardButton extends Component {
             currentDashboardIdtask: null,
             currentDashboardDtupdate: null,
             currentDashboardIdactivity: null,
+            currentDashboardIdstaff: null,
+            currentDashboardStatusWork: null,
+
+            currentDashboardIdRfid: null,
+            currentDashboardActivityType: null,
+            currentDashboardNosend: null,
+            currentDashboardNoPulse1: null,
+            no_pulse2: null,
+            no_pulse3: null,
         };
     }
-    // componentDidMount = () =>{
-    //     console.log("#updateModal" + this.props.eachRowId);
-    // }
 
-    //Getting Indivvidual Dashboard data
-    // getDashboardDetails = (id_machine) => {
-    //     console.log(id_machine);
-    //     axios.post('/get/indivvidual/dashboard/details',{
-    //         dashboardID: id_machine
     getDashboardDetailsNewDB = (id_machine) => {
         console.log(id_machine);
         axios
@@ -48,7 +48,7 @@ class DashboardButton extends Component {
                     currentDashboardOp: response.data.operation,
                     currentDashboardDatedue: response.data.date_due,
                     currentDashboardQtypertray: response.data.qty_per_pulse2,
-                    currentDashboardQtyactivity:response.data.no_pulse1,
+                    currentDashboardQtyactivity: response.data.no_pulse_sum,
                     currentDashboardQtyaccum: response.data.qty_accum,
                     currentDashboardQtyaccumsum: response.data.qty_accum_sum,
                     currentDashboardQtyorder: response.data.qty_order,
@@ -56,10 +56,17 @@ class DashboardButton extends Component {
                     currentDashboardIdtask: response.data.id_task,
                     currentDashboardDtupdate: response.data.datetime_update,
                     currentDashboardIdactivity: response.data.id_activity,
+                    currentDashboardIdstaff: response.data.id_staff,
+                    currentDashboardStatusWork: response.data.status_work,
+                    currentDashboardIdbreak: response.data.id_break,
+                    currentDashboardIdactivityDowntime: response.data.id_activity_downtime,
+                    currentDashboardIdRfid: response.data.id_rfid,
+                    currentDashboardActivityType: response.data.type,
+                    currentDashboardNosend: response.data.no_send,
+                    currentDashboardNoPulse1: response.data.no_pulse1,
+                    no_pulse2: response.data.no_pulse2,
+                    no_pulse3: response.data.no_pulse3,
                 });
-
-                //console.log(this.getDashboardDetailsNewDB);
-                //console.log(Object.values(response.data));
             });
     };
 
@@ -82,10 +89,6 @@ class DashboardButton extends Component {
                     dashboardData={this.state}
                     level={this.props.level}
                 />
-                {/* <UpdateModal
-                    modalId={this.props.eachRowId}
-                    dashboardData={this.state}
-                /> */}
             </div>
         );
     }

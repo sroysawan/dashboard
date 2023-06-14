@@ -28,33 +28,19 @@ Route::get('/', function () {
     return view('dashboard');
 });
 
-//Dashboard New DB
-// Route::get('/update/DashboardRefresh/',
-//     [dashboardRefreshController::class, 'dashboardRefreshV5']
-// );
-
+//Dashboard 
 Route::get('/update/DashboardRefresh/',
     [dashboardRefreshController::class, 'dashboardRefreshV6']
 );
 
-//Dashboard old DB
-Route::get('/update/DashboardRefreshold/',
-    [dashboardRefreshController::class, 'dashboardRefreshV5old']
-);
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-Route::get('/get/indivvidual/dashboard/details',
-[dashboardRefreshController::class, 'getDashboardDetails'])->name('dashboard.details');
 
 //edit modal
 Route::post('/update/dashboard/modal',
        [dashboardRefreshController::class, 'updateModalDashboard'])->name('dashboard.update'); 
 
-// Route::get('/get/indivvidual/dashboard/detailsNew',
-// [dashboardRefreshController::class, 'getDashboardDetailsNewDB'])->name('dashboard.detailsNew');
 
-//modal
+//modal first
 Route::get('/get/indivvidual/dashboard/detailsNew',
 [dashboardRefreshController::class, 'getDashboardDetailsNewDBV2'])->name('dashboard.detailsNew');
 
@@ -64,11 +50,6 @@ Route::get('/get/indivvidual/dashboard/detailsNew',
 //Modal DB Use this
 Route::get('/update/DashboardRefreshQueue2/',
     [dashboardRefreshController::class, 'dashboardRefreshQueue2']
-);
-
-//Next Modal New DB 
-Route::get('/update/DashboardRefreshQueue2New/',
-    [dashboardRefreshController::class, 'dashboardRefreshQueue2New']
 );
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,8 +64,10 @@ Route::get('/operationQ2', function () {
 
 //show data change operation
 Route::post('/change/Operation', [operationController::class, 'ChangeOperation']);
+
 //Add New Operation
 Route::post('/add/Operation', [operationController::class, 'AddNewOperation']);
+
 //Add New Operation Q2
 Route::post('/add/OperationQ2', [operationController::class, 'AddNewOperationQ2']);
 
@@ -106,24 +89,20 @@ Route::get('/newtask', function () {
 Route::get('/newtaskQ2', function () {
     return view('newtaskQ2');
 });
+
 //show data new task
 Route::post('/select/Newtask', [newtaskController::class, 'NewTask']);
+
 //Add New Newtask QUEUE 1
 Route::post('/add/Newtask', [newtaskController::class, 'AddNewtask']);
+
 //Add New Newtask QUEUE 2
 Route::post('/add/Newtask2', [newtaskController::class, 'AddNewtaskQ2']);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //reset activity
-Route::post('/reset/activity', [operationController::class, 'ResetActivittyV1']);
-Route::post('/reset/quit', [operationController::class, 'quitActivity'])->name('quit.machine');
-
 Route::post('/reset_activity', [operationController::class, 'ResetActivittyV2']);
-
-
-
-
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -209,30 +188,7 @@ Route::post('/update/uploadStaff',
 Route::post('/update/uploadImport',
     [StaffController::class, 'UploadFileImport']);
 
-// Auth::routes();
-
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-
-
-//save setting
-// Route::get('/settings', function (Request $request) {
-//     return UserSetting::where('user_id', $request->user()->id)->first();
-// });
-
-// Route::post('/settings', function (Request $request) {
-//     $settings = UserSetting::updateOrCreate(
-//         ['user_id' => $request->user()->id],
-//         ['settings' => $request->settings]
-//     );
-
-//     return $settings;
-// });
-Route::group(['middleware' => 'auth:api'], function(){
-    Route::get('/user_settings/{user_id}', [loginController::class, 'getUserSetting']);
-    Route::put('/user_settings/{user_id}', [loginController::class, 'updateUserSetting']);
-});
-
 
 
 
