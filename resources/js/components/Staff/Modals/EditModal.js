@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import UpdateModal from './UpdateModal';
-
-
 class EditModal extends Component {
 
     constructor(props) {
