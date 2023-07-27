@@ -308,6 +308,7 @@ return dashboardUpdate;
                         <option value="9">Manager</option>
                         <option value="11">Data Entry</option>
                         </select>
+                        Shif :
                                 <select className='form-select form-select-sm'aria-label=".form-select-sm example"id="dashboardShif" onChange={this.inputDashboardShif}value ={this.state.dashboardShif}>
                         <option selected=" ">กรุณาเลือก...</option>
                         <option value="A">A</option>
